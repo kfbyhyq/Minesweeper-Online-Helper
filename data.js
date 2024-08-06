@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ['金竞技场币', '铜竞技场币', '银竞技场币', '镍竞技场币', '钢竞技场币', '铁竞技场币', '钯竞技场币', '钛竞技场币', '锌竞技场币', '铂竞技场币'],
                         ['Gold coins', 'Copper coins', 'Silver coins', 'Nickel coins', 'Steel coins', 'Iron coins', 'Palladium coins', 'Titanium coins', 'Zinc coins', 'Platinum coins'],
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        [''],
+                        ['Arena Tickets'],
                         ['Speed', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['Speed NG', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['No flags', 0, 0, 0, 0, 0, 0, 0, 0],
@@ -23,9 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         ['Hardcore NG', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['Endurance', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['Nightmare', 0, 0, 0, 0, 0, 0, 0, 0],
-                        [''],
+                        ['Resources'],
                         ['Minecoins', 'Gems', 'Arena coins', 'Arena tickets', 'Equipment', 'Spare parts'],
-                        [0, 0, 0, 0, 0, 0]
+                        [0, 0, 0, 0, 0, 0],
+                        ['Equipment'],
+                        ['Experience', 'Minecoins', 'Gems', 'Arena tickets', 'Daily quests', 'Season quests', 'Quest level', 'Arena coins', '', 'Activity', 'Event points'],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['Topaz', 'Ruby', 'Sapphire', 'Amethyst', 'Onyx', 'Aquamarine', 'Emerald', 'Garnet', 'Jade', 'Diamond'],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     ];
                     var row = 0;        // 当前录入行
                     try {
@@ -35,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         hoverBox(coin);     // 鼠标悬浮展开竞技场币数量
                         let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
                         hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
+                        let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-child(11) > span > span");
+                        hoverBox(equipment);   // 鼠标悬浮展开装备信息
 
                         /* 读宝石数量 */
                         let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
@@ -83,9 +90,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         /* 读资源数 */
                         let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
                         let res = resource.textContent.replace(/(\d) (\d)/g, '$1$2').split(/\s+/);
-                        console.log(res);
                         for (let i = 0; i < res.length; i++) {
                             priceMap[row + 1][i] = res[i];
+                        }
+                        row += 3;       // 空一行
+
+                        /* 读装备信息 */
+                        let equipList = document.querySelector("body > div:nth-child(55) > div.popover-content > div > div:nth-child(5) > div");
+                        let equip = equipList.children;
+                        for (let i = 0; i < equip.length; i++) {
+                            let item = equip[i].className.match(/bonus-(\d+)/)[1];
+                            let percent = equip[i].textContent.match(/\+([^+]+)/)[1];
+                            if (item < 4) {
+                                priceMap[row + 1][item] = percent;
+                            } else if (item > 10 && item < 14) {
+                                priceMap[row + 1][item - 7] = percent;
+                            } else if (item > 17 && item < 22) {
+                                priceMap[row + 1][item - 11] = percent;
+                            } else if (item > 30 && item < 41) {
+                                priceMap[row + 3][item - 31] = percent;
+                            }
                         }
 
                         console.log(priceMap);
