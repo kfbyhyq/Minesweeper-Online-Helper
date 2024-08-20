@@ -1,47 +1,55 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#button2').addEventListener('click', function () {
+        const button = document.getElementById('button2');
+        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
             const tabId = tab1[0].id;
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
                     var priceMap = [
-                        ['Speed', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Speed NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['No flags', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Efficiency', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['High difficulty', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Random difficulty', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Hardcore', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Hardcore NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Endurance', 0, 0, 0, 0, 0, 0, 0, 0],
-                        ['Nightmare', 0, 0, 0, 0, 0, 0, 0, 0]
+                        ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                        ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
                     ];
-                    var line = [8, 8, 8, 8, 7, 8, 10, 9, 8, 10];
-                    var t1 = 1000;
-                    var typeMax = 10;
-                    var LMax = 5;
+                    var t1 = 500;        // 等待间隔
+                    var typeMax = 10;    // 多少种竞技场
+                    var LMax = 8;       // 最大等级
                     try {
                         for (let type = 1; type <= typeMax; type++) {
                             for (let L = 1; L <= LMax; L++) {
                                 setTimeout(() => {
                                     let ticket = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > span > button`);
-                                    hoverBox(ticket);
-                                }, (type - 1)*LMax*t1 + L*t1);
-                                setTimeout(() =>{
-                                    let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L+1}) > div > div.popover-content > div > div:nth-child(${line[type-1]}) > span`);
-                                    priceMap[type - 1][L] = price.textContent.replace(/ /g, "");
-                                    console.log(priceMap);
-                                }, (type - 1)*LMax*t1 + L*t1 + 3*t1);
+                                    if (ticket) {
+                                        hoverBox(ticket);   // 模拟鼠标悬浮 展开详情
+                                    }
+                                }, (type - 1) * LMax * t1 + L * t1);
+                                setTimeout(() => {
+                                    let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > div > div.popover-content > div > div:last-child > span`);
+                                    if (price) {
+                                        priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
+                                    }
+                                }, (type - 1) * LMax * t1 + L * t1 + 3 * t1);
                             }
                         }
-                        setTimeout(() =>{
-                            saveAsCsv(priceMap, '门票实时价格.csv');
-                        }, (LMax*typeMax + 3)*t1);
+                        setTimeout(() => {
+                            console.log(priceMap);
+                            chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                            // saveAsCsv(priceMap, '门票实时价格.csv');
+                        }, (LMax * typeMax + 3) * t1);
                     } catch (error) {
                         window.alert('错误页面');
                     }
 
+                    /* 模拟鼠标悬浮在button */
                     function hoverBox(button) {
                         let event = new MouseEvent("mouseover", {
                             bubbles: true,
@@ -52,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                         button.dispatchEvent(event);
                     }
-                    
+
                     function saveAsCsv(dataMap, filename) {
                         const csv = dataMap.map(row => row.join(',')).join('\n');
                         const blob = new Blob([csv], { type: 'text/csv', encoding: 'UTF-8' });
