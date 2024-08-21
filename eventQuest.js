@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         var toE = [];
                         var nextLevel = [];
                         var nextRange = [];
-                        if (secShift) { secret = secCycle - (+firstId + secShift) % secCycle; } else { secret = '未知'; }
+                        if (secShift) { secret = (secCycle - (+firstId + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
                         if (next < 0) {
                             let firstLevel = document.querySelector('#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+$/)[0];
                             console.log(firstLevel);
@@ -76,10 +76,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             nextRange = 'L' + levelRange[nextLevel][0] + '-' + levelRange[nextLevel][1];
                         }
                         eqInfo[7] = '距离机密：' + secret + '，距离E：' + toE;
+                        eqInfo[0] = '下一任务等级：' + nextRange;
                         if (secret == 0) {
-                            eqInfo[0] = '下一任务等级：' + nextRange + ' 【机密】';
-                        } else {
-                            eqInfo[0] = '下一任务等级：' + nextRange;
+                            eqInfo[0] = eqInfo[0] + ' 【机密】';
+                        }
+                        if (toE == 0) {
+                            eqInfo[0] = eqInfo[0] + ' 【E】';
                         }
 
                         var row = 2;

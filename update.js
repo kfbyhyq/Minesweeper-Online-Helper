@@ -1,9 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('button0').addEventListener('click', function() {
-        chrome.tabs.create({ url: chrome.runtime.getURL('main.html') });
-    });
-});
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'eventQuest') {
         let eqInfo = request.eqInfo;
@@ -18,15 +12,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         let gemsPrice = request.gemsPrice;
         console.log('收到价格更新:', gemsPrice);   // 在控制台打出结果
         chrome.storage.local.set({ gemsPrice: gemsPrice });     // 保存数据
-        document.getElementById('button1').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag1').textContent = 1;   // 设置成功标记
 
         displayMatrix(gemsPrice, 'table1');
     } else if (request.action === 'sendTicketPrice') {
         let ticketPrice = request.ticketPrice;
-        console.log('收到价格更新:', ticketPrice);   // 在控制台打出结果
+        console.log('收到门票价格更新:', ticketPrice);   // 在控制台打出结果
         chrome.storage.local.set({ ticketPrice: ticketPrice });     // 保存数据
-        document.getElementById('button2').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag2').textContent = 1;   // 设置成功标记
         
         displayMatrix(ticketPrice, 'table2');
@@ -34,7 +26,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         let personalData = request.personalData;
         console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
         chrome.storage.local.set({ personalData: personalData });     // 保存数据
-        document.getElementById('button3').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag3').textContent = 1;   // 设置成功标记
         
         displayMatrix(personalData, 'table3');
@@ -151,11 +142,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/arena', active: false }, function (tab2) {
             const ti2 = tab2.id;
-            recur(ti2, 0);
+            recur(ti2, 1);
 
             function recur(tabId, i) {
-                var maxI = 100;
-                var t0 = 200;
+                var maxI = 10;
+                var t0 = 10000;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag2').textContent;
@@ -445,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             var toE = [];
                             var nextLevel = [];
                             var nextRange = [];
-                            if (secShift) { secret = secCycle - (+firstId + secShift) % secCycle; } else { secret = '未知'; }
+                            if (secShift) { secret = (secCycle - (+firstId + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
                             if (next < 0) {
                                 let firstLevel = document.querySelector('#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+$/)[0];
                                 console.log(firstLevel);
@@ -477,12 +468,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                 nextRange = 'L' + levelRange[nextLevel][0] + '-' + levelRange[nextLevel][1];
                             }
                             eqInfo[7] = '距离机密：' + secret + '，距离E：' + toE;
+                            eqInfo[0] = '下一任务等级：' + nextRange;
                             if (secret == 0) {
-                                eqInfo[0] = '下一任务等级：' + nextRange + ' 【机密】';
-                            } else {
-                                eqInfo[0] = '下一任务等级：' + nextRange;
+                                eqInfo[0] = eqInfo[0] + ' 【机密】';
                             }
-    
+                            if (toE == 0) {
+                                eqInfo[0] = eqInfo[0] + ' 【E】';
+                            }
+                            
                             var row = 2;
                             if (next < 0) {
                                 for (let k = 0; k < 14; k++) {
