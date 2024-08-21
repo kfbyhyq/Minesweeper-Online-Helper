@@ -41,10 +41,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#update').addEventListener('click', function () {
         const button = document.getElementById('update');
+        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         document.getElementById('flag1').textContent = 0;
         document.getElementById('flag2').textContent = 0;
         document.getElementById('flag3').textContent = 0;
-        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tab1) {
             const ti1 = tab1.id;
             recur(ti1, 0);
@@ -378,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#updateEq').addEventListener('click', function () {
         const button = document.getElementById('updateEq');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+        document.getElementById('flag4').textContent = 0;
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/event-quests', active: false }, function (tab0) {
             const ti0 = tab0.id;
             recurEq(ti0, 0);
