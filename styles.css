@@ -1,0 +1,256 @@
+/* 设置整个页面的布局为 flexbox，使其支持左右布局 */
+body {
+    display: flex;
+    flex-direction: column; /* 使页面垂直方向上的元素布局 */
+    margin: 0; /* 去掉默认的边距 */
+    height: 100vh; /* 设置高度为视口高度 */
+}
+
+/* 标题栏的样式 */
+#header {
+    background-color: #70B2E2; /* 背景颜色 */
+    font-size: 14px; /* 字体大小 */
+    color: #fff; /* 字体颜色 */
+    padding: 0px; /* 内边距 */
+    text-align: center; /* 居中对齐文本 */
+    position: fixed; /* 固定位置 */
+    top: 0; /* 到页面顶部 */
+    left: 0; /* 到页面左侧 */
+    width: 100%; /* 宽度为100% */
+}
+
+#container {
+    padding-top: 76px;  /* 防止内容被标题栏遮挡，设置一个足够的顶部填充 */
+    display: flex;
+    height: calc(100vh - 76px); /* 调整高度以适应标题栏 */
+}
+
+/* 设置导航栏的样式 */
+#navbar {
+    width: 160px; /* 设置导航栏的宽度 */
+    height: 100%;
+    min-width: 160px; /* 最小宽度 */
+    font-size: 16px; /* 字体大小 */
+    background-color: #ADDFBA; /* 背景颜色 */
+    padding: 0px; /* 内边距 */
+    border-top: 1px solid #ddd; /* 顶部边框 */
+    position: fixed; /* 固定位置 */
+    top: 76px; /* 到页面顶部 */
+    left: 0; /* 到页面左侧 */
+}
+#navbar0 {
+    width: 160px; /* 设置导航栏的宽度 */
+    height: 100%;
+    min-width: 160px; /* 最小宽度 */
+    font-size: 16px; /* 字体大小 */
+    padding: 0px; /* 内边距 */
+    border-top: 1px solid #ddd; /* 顶部边框 */
+    top: 76px; /* 到页面顶部 */
+}
+/* 设置导航栏链接的样式 */
+#navbar a {
+    display: block; /* 使每个链接占据一整行 */
+    padding: 20px 40px; /* 内边距 */
+    text-decoration: none; /* 去掉下划线 */
+    color: #333; /* 字体颜色 */
+}
+
+/* 设置导航栏链接的悬停效果 */
+#navbar a:hover {
+    background-color: #D6EBB3; /* 悬停时的背景颜色 */
+}
+
+/* 设置激活的导航栏链接的效果 */
+#navbar a.active {
+    background-color: #7AD295;
+    color: white;
+}
+
+/* 设置内容区域的样式 */
+#content {
+    flex: 1; /* 使内容区域占据剩余的空间 */
+    padding: 20px; /* 内边距 */
+    background-color: #fff; /* 背景颜色 */
+}
+
+/* 隐藏所有页面内容 */
+.page {
+    display: none; /* 默认隐藏页面 */
+}
+
+/* 显示当前激活的页面 */
+.active {
+    display: block; /* 使当前激活的页面可见 */
+}
+
+#navbar .event {
+    background-color: #bbc3f1; /* 背景颜色 */
+}
+#navbar .event:hover {
+    background-color: #bbd9f1; /* 背景颜色 */
+}
+#navbar .event.active {
+    background-color: #92a1f7; /* 背景颜色 */
+    color: white;
+}
+
+/* 刷新按钮格式 */
+#navbar #update {
+    background-color: #fdda4f;
+}
+#navbar #update:hover {
+    background-color: #fce27c;
+}
+
+/* 通用表格格式 */
+table {
+    border-collapse: collapse; /* 合并边框 */
+    width: 100%;
+    max-width: 600px;
+}
+th, td {
+    border: 0px solid #474747; /* 边框颜色 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 文本居中 */
+    white-space: nowrap; /* 防止换行 */
+}
+tr:nth-child(odd) {
+    background-color: #E4EEC9; /* 每隔行背景颜色 */
+}
+tr:nth-child(even) {
+    background-color: #d4ebf9; /* 每隔行背景颜色 */
+}
+td:empty {
+    visibility: hidden;
+}
+/* 专属表格格式 */
+.ticketTable tbody td:first-child {
+    /* background-color: #ACD8A7; */
+    background-color: #E4EEC9; /* 第一列背景颜色 */
+    font-weight: bold;
+    width: 10%;
+}
+.ticketTable tbody tr:first-child {
+    background-color: #E4EEC9; /* 第一行背景颜色 */
+    font-weight: bold;
+}
+.ticketTable tr:nth-child(odd) {
+    background-color: #a8dfff; /* 每隔行背景颜色 */
+}
+.ticketTable tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+}
+
+.ticketTable2 tbody td:first-child {
+    /* background-color: #ACD8A7; */
+    background-color: #E4EEC9; /* 第一列背景颜色 */
+    font-weight: bold;
+    width: 10%;
+}
+.ticketTable2 tbody td:nth-child(2) {
+    font-weight: bold;
+    width: 10%;
+}
+.ticketTable2 tbody tr:first-child {
+    background-color: #E4EEC9; /* 第一行背景颜色 */
+    font-weight: bold;
+}
+.ticketTable2 tr:nth-child(odd) {
+    background-color: #a8dfff;
+}
+/* .ticketTable2 tr:nth-child(3n+2) {
+    background-color: #ebf2f7;
+} */
+.ticketTable2 tr:nth-child(even) {
+    background-color: #d4ebf9;
+}
+.ticketTable2 tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+}
+.atv {
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 文本居中 */
+    white-space: nowrap; /* 防止换行 */
+    display: inline-block;
+    gap: 0px;
+}
+#atv1 {
+    background-color: #b3eb9d;
+}
+#atv2 {
+    background-color: #ddf196;
+}
+#atv3 {
+    background-color: #e4c79a;
+}
+
+/* 设置按钮格式 */
+button {
+    background-color: #D8F1EE; /* 背景颜色 */
+    color: #000; /* 文字颜色 */
+    margin: 10px;
+    padding: 10px 20px; /* 内边距，上下10px，左右20px */
+    border: none; /* 去掉边框 */
+    border-radius: 2px; /* 圆角边框 */
+    cursor: pointer; /* 鼠标指针样式 */
+    font-size: 16px; /* 字体大小 */
+    transition: background-color 0.3s; /* 背景颜色过渡效果 */
+}
+
+/* 活动竞技场输入框格式 */
+.divSet {
+    font-size: 0px;
+}
+.eaText {
+    text-align: center;
+    display: inline-block;
+    margin: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 0px solid #ccc;
+    gap: 0px;
+    width: 80px;
+    height: 22px;
+    background-color: #E4EEC9;
+}
+.eaRate {
+    background-color: #d4ebf9;
+}
+.editable {
+    text-align: center;
+    display: inline-block;
+    margin: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 0px solid #ccc;
+    cursor: pointer;
+    gap: 0px;
+    width: 80px;
+    background-color: #6bc1f3;
+}
+.nonedit {
+    text-align: center;
+    display: inline-block;
+    margin: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 0px solid #ccc;
+    gap: 0px;
+    width: 80px;
+    background-color: #6bc1f3;
+}
+input {
+    display: inline-block;
+    margin: 0px;
+    padding: 5px;
+    font-size: 16px;
+    border: 0px solid #ccc;
+    cursor: pointer;
+    gap: 0px;
+    width: 80px;
+    background-color: #6bc1f3;
+}
+
+.hidden {
+    display: none;
+}

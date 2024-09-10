@@ -1,9 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     document.querySelector('#button1').addEventListener('click', function () {
-//         const button = document.getElementById('button1');
-//         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
-            
-        // chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#button1').addEventListener('click', function () {
         const button = document.getElementById('button1');
@@ -79,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(priceMap);
                         chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
 
-                        // saveAsCsv(priceMap, '宝石实时价格.csv');
+                        saveAsCsv(priceMap, '宝石实时价格.csv');
                     } catch (e) {
                         window.alert('错误页面');
                         // console.error('错误页面', e);
@@ -103,5 +97,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    });
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === 'sendGemsPrice') {
+        let gemsPrice = request.gemsPrice;
+        console.log('收到价格：', gemsPrice);   // 在控制台打出结果
+        chrome.storage.local.set({ gemsPrice: gemsPrice });     // 保存数据
+        /* 按日期保存 */
+        chrome.storage.local.get(['gemsPriceMap'], function(result) {
+            const gpMap = result.gemsPriceMap || {}; // 确保存在数据，防止为 undefined
+            const currentDate = new Date();
+            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            // 更新数据
+            gpMap[newDate] = gemsPrice;
+        
+            // 保存更新后的数据
+            chrome.storage.local.set({ gemsPriceMap: gpMap });
+        });
+
+        const button = document.getElementById('button1');
+        button.style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('button0').addEventListener('click', function() {
+        chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
     });
 });

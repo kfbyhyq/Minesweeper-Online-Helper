@@ -1,57 +1,19 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.action === 'eventQuest') {
-        let eqInfo = request.eqInfo;
-        console.log('活动任务信息:', eqInfo);   // 在控制台打出结果
-        chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
-        document.getElementById('updateEq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
-        document.getElementById('flag4').textContent = 1;   // 设置成功标记
-
-        const output = eqInfo.map(item => item + '<br>').join('');
-        document.getElementById('eqInfo').innerHTML = output;
-    } else if (request.action === 'sendGemsPrice') {
-        let gemsPrice = request.gemsPrice;
-        console.log('收到价格更新:', gemsPrice);   // 在控制台打出结果
-        chrome.storage.local.set({ gemsPrice: gemsPrice });     // 保存数据
-        document.getElementById('flag1').textContent = 1;   // 设置成功标记
-
-        displayMatrix(gemsPrice, 'table1');
-    } else if (request.action === 'sendTicketPrice') {
-        let ticketPrice = request.ticketPrice;
-        console.log('收到门票价格更新:', ticketPrice);   // 在控制台打出结果
-        chrome.storage.local.set({ ticketPrice: ticketPrice });     // 保存数据
-        document.getElementById('flag2').textContent = 1;   // 设置成功标记
-        
-        displayMatrix(ticketPrice, 'table2');
-    } else if (request.action === 'sendPersonalData') {
-        let personalData = request.personalData;
-        console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
-        chrome.storage.local.set({ personalData: personalData });     // 保存数据
-        document.getElementById('flag3').textContent = 1;   // 设置成功标记
-        
-        displayMatrix(personalData, 'table3');
-    }
-
-    if (document.getElementById('flag1').textContent == 1
-     && document.getElementById('flag2').textContent == 1
-     && document.getElementById('flag3').textContent == 1) {
-        document.getElementById('update').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
-    }
-});
-
+/* 刷新价格、个人数据 */
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#update').addEventListener('click', function () {
-        const button = document.getElementById('update');
-        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+        // const button = document.getElementById('update');
+        // button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         document.getElementById('flag1').textContent = 0;
         document.getElementById('flag2').textContent = 0;
         document.getElementById('flag3').textContent = 0;
+        document.getElementById('flag5').textContent = 0;
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tab1) {
             const ti1 = tab1.id;
             recur(ti1, 0);
 
             function recur(tabId, i) {
-                var maxI = 100;
-                var t0 = 200;
+                var maxI = 10;
+                var t0 = 500;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag1').textContent;
@@ -140,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-        chrome.tabs.create({ url: 'https://minesweeper.online/cn/arena', active: false }, function (tab2) {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/arena', active: true }, function (tab2) {
             const ti2 = tab2.id;
             recur(ti2, 1);
 
@@ -219,13 +181,77 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/statistics/15862596', active: false }, function (tab5) {
+            const ti5 = tab5.id;
+            recur(ti5, 0);
+
+            function recur(tabId, i) {
+                var maxI = 10;
+                var t0 = 500;
+                setTimeout(() => {
+                    extract(tabId);
+                    const flag = document.getElementById('flag5').textContent;
+                    if (flag == 1 || i > maxI) {
+                        chrome.tabs.remove(tabId, function() {});
+                    } else {
+                        recur(tabId, i + 1);
+                    }
+                }, i * t0);
+            }
+
+            function extract(tabId) {
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        var statistics = [
+                            ['总局数', '胜局数', '总耗时', '完成的任务', '完成的竞技场', '已解决3BV', '经验', '金币', '宝石', '竞技场门票', '活跃度', '活动物品', '竞技场币'],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        ];
+                        try {
+                            var totalGames = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(1)");
+                            statistics[1][0] = totalGames.textContent.replace(/ /g, "");
+                            var totalWins = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(3)");
+                            statistics[1][1] = totalWins.textContent.replace(/ /g, "");
+                            var totalTime = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(5)");
+                            statistics[1][2] = totalTime.textContent.replace(/ /g, "");
+                            var quests = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(7)");
+                            statistics[1][3] = quests.textContent.replace(/ /g, "");
+                            var arenas = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(9)");
+                            statistics[1][4] = arenas.textContent.replace(/ /g, "");
+                            var bv = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(11)");
+                            statistics[1][5] = bv.textContent.replace(/ /g, "");
+                            var experience = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(1)");
+                            statistics[1][6] = experience.textContent.replace(/ /g, "");
+                            var minecoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(3)");
+                            statistics[1][7] = minecoins.textContent.replace(/ /g, "");
+                            var gems = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(5) > span > span");
+                            statistics[1][8] = gems.textContent.replace(/ /g, "");
+                            var tickets = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(7)");
+                            statistics[1][9] = tickets.textContent.replace(/ /g, "");
+                            var activity = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(9)");
+                            statistics[1][10] = activity.textContent.replace(/ /g, "");
+                            var eventPoints = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(11)");
+                            statistics[1][11] = eventPoints.textContent.replace(/ /g, "");
+                            var arenaCoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(13) > span > span");
+                            statistics[1][12] = arenaCoins.textContent.replace(/ /g, "");
+                            
+                            console.log(statistics);
+                            chrome.runtime.sendMessage({ action: 'sendStatistics', statistics: statistics });
+                        } catch (e) {
+                            console.error('错误页面', e);
+                        }
+
+                    }
+                });
+            }
+        });
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/player/15862596', active: false }, function (tab3) {
             const ti3 = tab3.id;
             recur(ti3, 0);
 
             function recur(tabId, i) {
-                var maxI = 100;
-                var t0 = 200;
+                var maxI = 10;
+                var t0 = 500;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag3').textContent;
@@ -259,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
                             ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
                             ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0],
+                            [],
                             ['资源'],
                             ['金币', '宝石', '竞技场币', '竞技场门票', '装备', '装备碎片'],
                             [0, 0, 0, 0, 0, 0],
@@ -280,7 +307,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             hoverBox(equipment);   // 鼠标悬浮展开装备信息
     
                             /* 读宝石数量 */
-                            let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
+                            let popoverList = document.querySelectorAll('div.popover.fade.top.in');
+                            // let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
+                            let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
                             let gems = gemList.children;
                             for (let i = 0; i < gems.length; i++) {
                                 let gemPrice = gems[i].querySelector("td.text-right");
@@ -294,8 +323,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                             // personalData.splice(row, 1);      // 删除用于匹配的中文行
                             row += 2;
+
                             /* 读竞技场币数量 */
-                            let coinList = document.querySelector("body > div:nth-child(53) > div.popover-content > table > tbody");
+                            // let coinList = document.querySelector("body > div:nth-child(53) > div.popover-content > table > tbody");
+                            let coinList = popoverList[1].querySelector("div.popover-content > table > tbody");
                             let coins = coinList.children;
                             for (let i = 0; i < coins.length; i++) {
                                 let coinPrice = coins[i].querySelector("td.text-right");
@@ -311,17 +342,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             row += 3;       // 空一行
     
                             /* 读竞技场门票数量 */
-                            let ticketList = document.querySelector("body > div:nth-child(54) > div.popover-content > div");
+                            // let ticketList = document.querySelector("body > div:nth-child(54) > div.popover-content > div");
+                            let ticketList = popoverList[2].querySelector("div.popover-content > div");
                             let tickets = ticketList.children;
                             for (let i = 0; i < tickets.length; i++) {
                                 let typeClass = tickets[i].querySelector("i.fa-ticket");
                                 var type = typeClass.className.match(/ticket(\d+)/)[1];
+                                if (type == 15) { // 如果有活动票
+                                    personalData[15][0] = '活动竞技场';
+                                    type = 11; 
+                                }
                                 var level = tickets[i].textContent.match(/L(\d+)/)[1];
                                 var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
                                 var n = num.replace(/ /g, "");
                                 personalData[row + +type - 1][level] = n;
                             }
-                            row += 11;      // 空一行
+                            row += 12;      // 空一行
     
                             /* 读资源数 */
                             let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
@@ -332,7 +368,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             row += 3;       // 空一行
     
                             /* 读装备信息 */
-                            let equipList = document.querySelector("body > div:nth-child(55) > div.popover-content > div > div:nth-child(5) > div");
+                            // let equipList = document.querySelector("body > div:nth-child(55) > div.popover-content > div > div:nth-child(5) > div");
+                            let equipList = popoverList[3].querySelector("div.popover-content > div > div:nth-child(5) > div");
                             let equip = equipList.children;
                             for (let i = 0; i < equip.length; i++) {
                                 let item = equip[i].className.match(/bonus-(\d+)/)[1];
@@ -374,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+/* 分析活动任务 */
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#updateEq').addEventListener('click', function () {
         const button = document.getElementById('updateEq');
@@ -547,53 +585,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-    var priceMap;
-
-    /* 读宝石 */
-    chrome.storage.local.get(['gemsPrice'], function(result) {
-        let gemsPrice = result.gemsPrice;
-        console.log('宝石/场币/碎片价格:', gemsPrice);
-        tableId = 'table1';
-        displayMatrix(gemsPrice, tableId);    // 显示表格
-    });
-
-    /* 读竞技场门票 */
-    chrome.storage.local.get(['ticketPrice'], function(result) {
-        let ticketPrice = result.ticketPrice;
-        console.log('竞技场门票价格:', ticketPrice);
-        tableId = 'table2';
-        displayMatrix(ticketPrice, tableId);    // 显示表格
-    });
-    
-    /* 读个人数据 */
-    chrome.storage.local.get(['personalData'], function(result) {
-        let personalData = result.personalData;
-        console.log('个人数据:', result.personalData);
-        tableId = 'table3';
-        displayMatrix(personalData, tableId);    // 显示表格
-    });
-
-});
-
-
-/* 处理矩阵并显示为表格 */
-function displayMatrix(matrix, tableId) {
-    
-    const rows = matrix.length;
-    const cols = matrix[0].length;
-
-    const table = document.getElementById(tableId);    // 定位表格
-    table.innerHTML = ''; // 清空现有的表格内容
-
-    /* 表格主体 */
-    let tbody = table.createTBody();
-    for (let i = 0; i < rows; i++) {
-        let row = tbody.insertRow();
-        for (let j = 0; j < cols; j++) {
-            let cell = row.insertCell();
-            cell.textContent = matrix[i][j];
-        }
-    }
-}

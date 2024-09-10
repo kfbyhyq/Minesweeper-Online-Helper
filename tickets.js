@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
+                    if (window.location.href != 'https://minesweeper.online/cn/arena') {
+                        window.alert('错误页面');
+                        return;
+                    }
                     var priceMap = [
                         ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
                         ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
@@ -80,4 +84,26 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === 'sendTicketPrice') {
+        let ticketPrice = request.ticketPrice;
+        console.log('收到门票价格：', ticketPrice);
+        chrome.storage.local.set({ ticketPrice: ticketPrice });
+        /* 按日期保存 */
+        chrome.storage.local.get(['ticketPriceMap'], function(result) {
+            const tpMap = result.ticketPriceMap || {}; // 确保存在数据，防止为 undefined
+            const currentDate = new Date();
+            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            // 更新数据
+            tpMap[newDate] = ticketPrice;
+        
+            // 保存更新后的数据
+            chrome.storage.local.set({ ticketPriceMap: tpMap });
+        });
+
+        const button = document.getElementById('button2');
+        button.style.backgroundColor = '#4caf50';
+    } 
 });

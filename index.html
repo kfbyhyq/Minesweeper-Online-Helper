@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper Online Helper</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- 标题栏 -->
+    <div id="header">
+        <h1>Minesweeper Online Helper</h1>
+    </div>
+
+    <div id="container">
+        <!-- 导航栏 -->
+        <div id="navbar">
+            <a href="#" id="nav-statistic">游戏数据</a>
+            <a href="#" id="nav-price">当前市价</a>
+            <a href="#" id="nav-resource">资源数据</a>
+            <a href="#" id="nav-perfect">完美装备</a>
+            <a href="#" id="nav-eventArena" class="event">活动竞技场</a>
+            <a href="#" id="nav-eventQuest" class="event">活动任务</a>
+            <a href="#" id="update">刷新数据</a>
+        </div>
+        <!-- 占位符 -->
+        <div id="navbar0"></div>
+
+        <!-- 内容区域 -->
+        <div id="content">
+            <div id="statistic" class="page">
+                <h1>游戏数据</h1>
+                <div id="flag5" style="display:none;">0</div>
+                <table id="table5"></table>
+                <h1>每日数据</h1>
+                <table id="statisticDaily" class="ticketTable"></table>
+                <div id="noStDaily" style="display:none; font-size: 16px;">暂无每日数据</div>
+            </div>
+            <div id="price" class="page active">
+                <h1>宝石/竞技场币/碎片价格</h1>
+                <div id="flag1" style="display:none;">0</div>
+                <table id="table1"></table>
+                <h1>竞技场门票价格</h1>
+                <div id="flag2" style="display:none;">0</div>
+                <table id="table2" class="ticketTable"></table>
+                <h1>竞技场门票使用vs出售</h1>
+                <div class="atv" id="atv1">最赚</div>
+                <div class="atv" id="atv2">次赚</div>
+                <div class="atv" id="atv3">卖掉赚</div><br><br>
+                <table id="tableArenaValue" class="ticketTable2"></table>
+            </div>
+            <div id="resource" class="page">
+                <div id="flag3" style="display:none;">0</div>
+                <h1>总资源数</h1>
+                <table id="table3-1"></table>
+                <h1>明细</h1>
+                <table id="table3-2"></table>
+                <br>
+                <table id="table3-3" class="ticketTable"></table>
+                <h1>装备加成</h1>
+                <table id="table3-4"></table>
+            </div>
+            <div id="perfect" class="page">
+                <h2>金币需求：1 000 000</h2>
+                <h2>宝石需求：5 000</h2>
+                <h2>竞技场币需求：1 000</h2>
+                <table id="table4" class="ticketTable"></table>
+            </div>
+            <div id="eventArena" class="page">
+                <h1>活动竞技场门票价格</h1>
+                <div id="noEap" style="display:none; font-size: 16px;">暂无活动竞技场价格数据</div>
+                <button id="updateEa1">自动刷新价格</button>
+                <div id="flagEa" style="display:none;">0</div>
+                <button id="updateEa2">手动刷新价格</button><br>
+                <div class="divSet eaSet">
+                    <div class="eaText">等级</div>
+                    <div class="eaText">L1</div>
+                    <div class="eaText">L2</div>
+                    <div class="eaText">L3</div>
+                    <div class="eaText">L4</div>
+                    <div class="eaText">L5</div>
+                    <div class="eaText">L6</div>
+                    <div class="eaText">L7</div>
+                    <div class="eaText">L8</div>
+                </div>
+                <div class="divSet eaSet">
+                    <div class="nonedit">最低价</div>
+                    <div class="editable" data-index="0"><span id="value0">0</span></div>
+                    <input type="text" class="hidden" id="input0">
+                    <div class="editable" data-index="1"><span id="value1">0</span></div>
+                    <input type="text" class="hidden" id="input1">
+                    <div class="editable" data-index="2"><span id="value2">0</span></div>
+                    <input type="text" class="hidden" id="input2">
+                    <div class="editable" data-index="3"><span id="value3">0</span></div>
+                    <input type="text" class="hidden" id="input3">
+                    <div class="editable" data-index="4"><span id="value4">0</span></div>
+                    <input type="text" class="hidden" id="input4">
+                    <div class="editable" data-index="5"><span id="value5">0</span></div>
+                    <input type="text" class="hidden" id="input5">
+                    <div class="editable" data-index="6"><span id="value6">0</span></div>
+                    <input type="text" class="hidden" id="input6">
+                    <div class="editable" data-index="7"><span id="value7">0</span></div>
+                    <input type="text" class="hidden" id="input7">
+                </div>
+                <div class="divSet eaSet">
+                    <div class="eaText eaRate">mc/p</div>
+                    <div class="eaText eaRate" id="eaRate0"></div>
+                    <div class="eaText eaRate" id="eaRate1"></div>
+                    <div class="eaText eaRate" id="eaRate2"></div>
+                    <div class="eaText eaRate" id="eaRate3"></div>
+                    <div class="eaText eaRate" id="eaRate4"></div>
+                    <div class="eaText eaRate" id="eaRate5"></div>
+                    <div class="eaText eaRate" id="eaRate6"></div>
+                    <div class="eaText eaRate" id="eaRate7"></div>
+                </div>
+                <h1>历史价格</h1>
+                <div id="flagEa" style="display:none;">0</div>
+                <table id="tableEa" class="ticketTable"></table>
+                <div id="noEapDaily" style="display:none; font-size: 16px;">暂无历史价格数据</div>
+            </div>
+            <div id="eventQuest" class="page">
+                <button id="updateEq">活动任务分析</button>
+                <div id="flag4" style="display:none;">0</div>
+                <div id="eqInfo">...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="index.js"></script>
+    <script src="display.js"></script>
+    <script src="update.js"></script>
+    <script src="eventArena.js"></script>
+</body>
+</html>

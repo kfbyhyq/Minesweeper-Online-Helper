@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
                         ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0],
+                        [],
                         ['资源'],
                         ['金币', '宝石', '竞技场币', '竞技场门票', '装备', '装备碎片'],
                         [0, 0, 0, 0, 0, 0],
@@ -46,7 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         hoverBox(equipment);   // 鼠标悬浮展开装备信息
 
                         /* 读宝石数量 */
-                        let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
+                        let popoverList = document.querySelectorAll('div.popover.fade.top.in');
+                        // let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
+                        let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
                         let gems = gemList.children;
                         for (let i = 0; i < gems.length; i++) {
                             let gemPrice = gems[i].querySelector("td.text-right");
@@ -60,8 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         // personalData.splice(row, 1);      // 删除用于匹配的中文行
                         row += 2;
+
                         /* 读竞技场币数量 */
-                        let coinList = document.querySelector("body > div:nth-child(53) > div.popover-content > table > tbody");
+                        // let coinList = document.querySelector("body > div:nth-child(53) > div.popover-content > table > tbody");
+                        let coinList = popoverList[1].querySelector("div.popover-content > table > tbody");
                         let coins = coinList.children;
                         for (let i = 0; i < coins.length; i++) {
                             let coinPrice = coins[i].querySelector("td.text-right");
@@ -77,17 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         row += 3;       // 空一行
 
                         /* 读竞技场门票数量 */
-                        let ticketList = document.querySelector("body > div:nth-child(54) > div.popover-content > div");
+                        // let ticketList = document.querySelector("body > div:nth-child(54) > div.popover-content > div");
+                        let ticketList = popoverList[2].querySelector("div.popover-content > div");
                         let tickets = ticketList.children;
                         for (let i = 0; i < tickets.length; i++) {
                             let typeClass = tickets[i].querySelector("i.fa-ticket");
                             var type = typeClass.className.match(/ticket(\d+)/)[1];
+                            if (type == 15) { // 如果有活动票
+                                personalData[15][0] = '活动竞技场';
+                                type = 11; 
+                            }
                             var level = tickets[i].textContent.match(/L(\d+)/)[1];
                             var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
                             var n = num.replace(/ /g, "");
                             personalData[row + +type - 1][level] = n;
                         }
-                        row += 11;      // 空一行
+                        row += 12;      // 空一行
 
                         /* 读资源数 */
                         let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
@@ -98,7 +108,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         row += 3;       // 空一行
 
                         /* 读装备信息 */
-                        let equipList = document.querySelector("body > div:nth-child(55) > div.popover-content > div > div:nth-child(5) > div");
+                        // let equipList = document.querySelector("body > div:nth-child(55) > div.popover-content > div > div:nth-child(5) > div");
+                        let equipList = popoverList[3].querySelector("div.popover-content > div > div:nth-child(5) > div");
                         let equip = equipList.children;
                         for (let i = 0; i < equip.length; i++) {
                             let item = equip[i].className.match(/bonus-(\d+)/)[1];
@@ -117,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(personalData);
 
                         chrome.runtime.sendMessage({ action: 'sendPersonalData', personalData: personalData });
-                        // saveAsCsv(personalData, '个人数据.csv');
+                        saveAsCsv(personalData, '个人数据.csv');
 
                     } catch (error) {
                         window.alert('错误页面');
@@ -155,4 +166,26 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === 'sendPersonalData') {
+        let personalData = request.personalData;
+        console.log('收到资源数据：', personalData);
+        chrome.storage.local.set({ personalData: personalData });
+        /* 按日期保存 */
+        chrome.storage.local.get(['personalDataMap'], function(result) {
+            const pdMap = result.personalDataMap || {}; // 确保存在数据，防止为 undefined
+            const currentDate = new Date();
+            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            // 更新数据
+            pdMap[newDate] = personalData;
+        
+            // 保存更新后的数据
+            chrome.storage.local.set({ personalDataMap: pdMap });
+        });
+
+        const button = document.getElementById('button3');
+        button.style.backgroundColor = '#4caf50';
+    }
 });

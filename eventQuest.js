@@ -182,3 +182,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('result').innerHTML = result;
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentDate = new Date();
+    if ((currentDate.getMonth() + 1) % 4 != 0) {
+        document.getElementById("event4").style.display = 'none';
+    }
+});

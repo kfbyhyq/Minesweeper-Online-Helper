@@ -3,7 +3,7 @@
     "name": "Minesweeper Online Helper",  
     "version": "1.0",  
     "description": "A simple extension for Minesweeper Online.",  
-    "permissions": ["activeTab", "scripting", "storage", "tabs"],  
+    "permissions": ["activeTab", "scripting", "storage", "tabs", "alarms"],
     "action": {  
         "default_popup": "displayPage.html",  
         "default_icon": {  
