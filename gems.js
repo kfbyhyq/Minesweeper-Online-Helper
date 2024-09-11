@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#button1').addEventListener('click', function () {
+    document.getElementById('button1').addEventListener('click', function () {
         const button = document.getElementById('button1');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(priceMap);
                         chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
 
-                        saveAsCsv(priceMap, '宝石实时价格.csv');
+                        // saveAsCsv(priceMap, '宝石实时价格.csv');
                     } catch (e) {
                         window.alert('错误页面');
                         // console.error('错误页面', e);
@@ -117,8 +117,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ gemsPriceMap: gpMap });
         });
 
-        const button = document.getElementById('button1');
-        button.style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        document.getElementById('button1').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
     }
 });
 

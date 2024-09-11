@@ -1,8 +1,13 @@
 /* 刷新价格、个人数据 */
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('#update').addEventListener('click', function () {
+    document.getElementById('update').addEventListener('click', function () {
         // const button = document.getElementById('update');
         // button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+        const pId = document.getElementById('pIdNow').innerText;
+        if (!pId) {
+            window.alert('请先设置用户ID');
+            return;
+        }
         document.getElementById('flag1').textContent = 0;
         document.getElementById('flag2').textContent = 0;
         document.getElementById('flag3').textContent = 0;
@@ -160,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             setTimeout(() => {
                                 console.log(priceMap);
                                 chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
-                                // saveAsCsv(priceMap, '门票实时价格.csv');
                             }, (LMax * typeMax + 3) * t1);
                         } catch (error) {
                             console.error('错误页面', e);
@@ -181,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-        chrome.tabs.create({ url: 'https://minesweeper.online/cn/statistics/15862596', active: false }, function (tab5) {
+        const u1 = 'https://minesweeper.online/cn/statistics/' + pId;
+        chrome.tabs.create({ url: u1, active: false }, function (tab5) {
             const ti5 = tab5.id;
             recur(ti5, 0);
 
@@ -245,7 +250,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-        chrome.tabs.create({ url: 'https://minesweeper.online/cn/player/15862596', active: false }, function (tab3) {
+        const u2 = 'https://minesweeper.online/cn/player/' + pId;
+        chrome.tabs.create({ url: u2, active: false }, function (tab3) {
             const ti3 = tab3.id;
             recur(ti3, 0);
 
@@ -413,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* 分析活动任务 */
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('#updateEq').addEventListener('click', function () {
+    document.getElementById('updateEq').addEventListener('click', function () {
         const button = document.getElementById('updateEq');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         document.getElementById('flag4').textContent = 0;

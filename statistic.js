@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#button5').addEventListener('click', function () {
+    document.getElementById('button5').addEventListener('click', function () {
         const button = document.getElementById('button5');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
@@ -7,7 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
-                    if (window.location.href != 'https://minesweeper.online/cn/statistics/15862596') {
+                    const pId = document.getElementById('pIdNow').innerText;
+                    if (!pId) {
+                        window.alert('请先设置用户ID');
+                        return;
+                    } else if (window.location.href != 'https://minesweeper.online/cn/statistics/' + pId) {
                         window.alert('错误页面');
                         return;
                     }
@@ -46,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(statistics);
                         chrome.runtime.sendMessage({ action: 'sendStatistics', statistics: statistics });
 
-                        saveAsCsv(statistics, '游戏数据.csv');
+                        // saveAsCsv(statistics, '游戏数据.csv');
                     } catch (e) {
                         window.alert('错误页面');
                         // console.error('错误页面', e);
@@ -90,7 +94,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ statisticsMap: stMap });
         });
 
-        const button = document.getElementById('button5');
-        button.style.backgroundColor = '#4caf50';
+        document.getElementById('button5').style.backgroundColor = '#4caf50';
     } 
 });

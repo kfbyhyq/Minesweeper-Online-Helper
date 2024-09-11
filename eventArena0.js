@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('#buttonEa').addEventListener('click', function () {
+    document.getElementById('buttonEa').addEventListener('click', function () {
         const button = document.getElementById('buttonEa');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {

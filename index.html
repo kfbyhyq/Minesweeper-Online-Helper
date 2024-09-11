@@ -23,6 +23,7 @@
             <a href="#" id="nav-eventArena" class="event">活动竞技场</a>
             <a href="#" id="nav-eventQuest" class="event">活动任务</a>
             <a href="#" id="update">刷新数据</a>
+            <a href="#" id="nav-setting">设置</a>
         </div>
         <!-- 占位符 -->
         <div id="navbar0"></div>
@@ -31,6 +32,7 @@
         <div id="content">
             <div id="statistic" class="page">
                 <h1>游戏数据</h1>
+                <button id="statisticPage">打开页面</button><br><br>
                 <div id="flag5" style="display:none;">0</div>
                 <table id="table5"></table>
                 <h1>每日数据</h1>
@@ -39,9 +41,11 @@
             </div>
             <div id="price" class="page active">
                 <h1>宝石/竞技场币/碎片价格</h1>
+                <button id="marketPage">打开页面</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
                 <table id="table1"></table>
                 <h1>竞技场门票价格</h1>
+                <button id="arenaPage">打开页面</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
                 <table id="table2" class="ticketTable"></table>
                 <h1>竞技场门票使用vs出售</h1>
@@ -53,6 +57,7 @@
             <div id="resource" class="page">
                 <div id="flag3" style="display:none;">0</div>
                 <h1>总资源数</h1>
+                <button id="playerPage">打开页面</button><br><br>
                 <table id="table3-1"></table>
                 <h1>明细</h1>
                 <table id="table3-2"></table>
@@ -72,7 +77,7 @@
                 <div id="noEap" style="display:none; font-size: 16px;">暂无活动竞技场价格数据</div>
                 <button id="updateEa1">自动刷新价格</button>
                 <div id="flagEa" style="display:none;">0</div>
-                <button id="updateEa2">手动刷新价格</button><br>
+                <button id="updateEa2">手动刷新价格</button><br><br>
                 <div class="divSet eaSet">
                     <div class="eaText">等级</div>
                     <div class="eaText">L1</div>
@@ -123,6 +128,48 @@
                 <button id="updateEq">活动任务分析</button>
                 <div id="flag4" style="display:none;">0</div>
                 <div id="eqInfo">...</div>
+            </div>
+            <div id="setting" class="page">
+                <h1>账号设置</h1>
+                <span class="plainText">当前登录账号ID：</span><input id="personalId" class="inputBox"><span id="pIdNow" style="display:none"></span>
+                <h1>自动刷新</h1>
+                <div class="inRow">
+                    <span class="plainText">自动刷新数据</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleSwitch1">
+                        <span class="slider"></span>
+                    </label>
+                </div><br>
+                <span class="plainText">每日更新时间：</span>
+                <select id="hourSelect1" class="inputBox"></select>
+                <span class="plainText">点</span>
+                <select id="minuteSelect1" class="inputBox"></select>
+                <span class="plainText">分</span>
+                <select id="secondSelect1" class="inputBox"></select>
+                <span class="plainText">秒</span>
+                <br><br>
+                <div class="inRow">
+                    <span class="plainText">自动刷新活动竞技场价格</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleSwitch2">
+                        <span class="slider"></span>
+                    </label>
+                </div><br>
+                <span class="plainText">每日更新时间：</span>
+                <select id="hourSelect2" class="inputBox"></select>
+                <span class="plainText">点</span>
+                <select id="minuteSelect2" class="inputBox"></select>
+                <span class="plainText">分</span>
+                <select id="secondSelect2" class="inputBox"></select>
+                <span class="plainText">秒</span>
+                <br><br>
+                <div class="inRow">
+                    <button id="saveSetting">保存</button><span id="saveSucc" class="plainText" style="display:none">保存成功！</span>
+                </div>
+                <h1>数据备份与恢复</h1>
+                <button id="backupButton">备份数据</button><br><br>
+                <button id="restoreButton">恢复数据</button>
+                <input type="file" id="restoreInput" style="display:none" accept=".json" /><br>
             </div>
         </div>
     </div>

@@ -161,7 +161,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 /* 自动刷新 */
-document.querySelector('#updateEa1').addEventListener('click', function () {
+document.getElementById('updateEa1').addEventListener('click', function () {
     document.getElementById('flagEa').textContent = 0;
     chrome.tabs.create({ url: 'https://minesweeper.online/cn/arena', active: true }, function (tab0) {
         const ti0 = tab0.id;
@@ -233,32 +233,3 @@ document.querySelector('#updateEa1').addEventListener('click', function () {
         }
     });
 });
-
-/* 每日更新活动竞技场 */
-function dailyTaskEventArena() {
-    const now = new Date();
-    const noon = new Date();
-    noon.setHours(12, 0, 0, 0); // 设置更新时间
- 
-    // 如果现在时间已经过了，设置为明天的同一时间
-    if (now > noon) {
-        noon.setDate(now.getDate() + 1);
-    }
- 
-    // 创建闹钟
-    chrome.alarms.create('updateEaTask', { when: noon.getTime() });
-}
-
-const currentDate = new Date();
-if ((currentDate.getMonth() + 1) % 4 == 1) {
-    // 设置首次调度
-    dailyTaskEventArena();
-    // 监听闹钟事件
-    chrome.alarms.onAlarm.addListener((alarm) => {
-        if (alarm.name === 'updateEaTask') {
-            document.querySelector('#updateEa1').click();
-            // 重新调度下一天的任务
-            dailyTaskEventArena();
-        }
-    });
-}

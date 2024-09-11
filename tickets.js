@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('#button2').addEventListener('click', function () {
+    document.getElementById('button2').addEventListener('click', function () {
         const button = document.getElementById('button2');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
@@ -103,7 +103,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ ticketPriceMap: tpMap });
         });
 
-        const button = document.getElementById('button2');
-        button.style.backgroundColor = '#4caf50';
+        document.getElementById('button2').style.backgroundColor = '#4caf50';
     } 
 });

@@ -188,7 +188,7 @@ td:empty {
 button {
     background-color: #D8F1EE; /* 背景颜色 */
     color: #000; /* 文字颜色 */
-    margin: 10px;
+    margin: 0px;
     padding: 10px 20px; /* 内边距，上下10px，左右20px */
     border: none; /* 去掉边框 */
     border-radius: 2px; /* 圆角边框 */
@@ -253,4 +253,88 @@ input {
 
 .hidden {
     display: none;
+}
+
+/* 设置页 */
+.plainText {
+    font-size: 16px;
+}
+#personalId {  
+    width: 120px;
+    padding: 6px; /* 内边距 */
+    border-radius: 5px; /* 圆角边框 */
+    border: 1px solid #ccc; /* 边框颜色 */
+    background-color: #eefff8;
+}
+.inputBox:hover {
+    border-color: #6bc1f3; /* 悬停时边框颜色 */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 悬停时阴影效果 */
+}
+.inputBox:focus {
+    outline: none; /* 去掉默认聚焦边框 */
+    border-color: #6bc1f3; /* 聚焦时边框颜色 */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 聚焦时阴影效果 */
+}
+.inRow {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    margin-top: 6px;
+    padding: 0;
+}
+.switch input {
+    opacity: 0; /* 隐藏默认的checkbox */
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* 默认状态颜色 */
+    transition: .4s;
+    border-radius: 34px; /* 圆角 */
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white; /* 滑动的圆形按钮 */
+    transition: .4s;
+    border-radius: 50%; /* 圆形 */
+}
+/* 当checkbox被选中时，改变背景颜色和滑动圆形按钮的位置 */
+input:checked + .slider {
+    background-color: #8cda8f; /* 选中状态颜色 */
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px); /* 平移滑动按钮 */
+}
+
+select {
+    width: 36px; /* 设置下拉框宽度 */
+    padding: 6px; /* 内边距 */
+    font-size: 16px; /* 字体大小 */
+    border-radius: 5px; /* 圆角边框 */
+    border: 1px solid #ccc; /* 边框颜色 */
+    background-color: #eefff8; /* 背景色 */
+    appearance: none; /* 去掉默认下拉箭头 */
+    text-align: center; /* 居中对齐文本 */
+}
+option {
+    background-color: #eefff8; /* 背景色 */
 }

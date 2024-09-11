@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#button3').addEventListener('click', function () {
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('button3').addEventListener('click', function () {
         const button = document.getElementById('button3');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         hoverBox(equipment);   // 鼠标悬浮展开装备信息
 
                         /* 读宝石数量 */
-                        let popoverList = document.querySelectorAll('div.popover.fade.top.in');
+                        let popoverList = document.querySelectorAll("div.popover.fade.top.in");
                         // let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
                         let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
                         let gems = gemList.children;
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             var type = typeClass.className.match(/ticket(\d+)/)[1];
                             if (type == 15) { // 如果有活动票
                                 personalData[15][0] = '活动竞技场';
-                                type = 11; 
+                                type = 11;
                             }
                             var level = tickets[i].textContent.match(/L(\d+)/)[1];
                             var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log(personalData);
 
                         chrome.runtime.sendMessage({ action: 'sendPersonalData', personalData: personalData });
-                        saveAsCsv(personalData, '个人数据.csv');
+                        // saveAsCsv(personalData, '个人数据.csv');
 
                     } catch (error) {
                         window.alert('错误页面');
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                         button.dispatchEvent(event);
                     }
-                    
+
                     /* 保存为csv文件 */
                     function saveAsCsv(dataMap, filename) {
                         const csv = dataMap.map(row => row.join(',')).join('\n');
@@ -168,24 +168,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action === 'sendPersonalData') {
         let personalData = request.personalData;
         console.log('收到资源数据：', personalData);
         chrome.storage.local.set({ personalData: personalData });
         /* 按日期保存 */
-        chrome.storage.local.get(['personalDataMap'], function(result) {
+        chrome.storage.local.get(['personalDataMap'], function (result) {
             const pdMap = result.personalDataMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
             const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
             // 更新数据
             pdMap[newDate] = personalData;
-        
+
             // 保存更新后的数据
             chrome.storage.local.set({ personalDataMap: pdMap });
         });
 
-        const button = document.getElementById('button3');
-        button.style.backgroundColor = '#4caf50';
+        document.getElementById('button3').style.backgroundColor = '#4caf50';
     }
 });
