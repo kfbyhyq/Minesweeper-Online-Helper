@@ -7,11 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
-                    const pId = document.getElementById('pIdNow').innerText;
-                    if (!pId) {
-                        window.alert('请先设置用户ID');
-                        return;
-                    } else if (window.location.href != 'https://minesweeper.online/cn/statistics/' + pId) {
+                    if (window.location.href === 'https://minesweeper.online/cn/statistics') {
                         window.alert('错误页面');
                         return;
                     }
