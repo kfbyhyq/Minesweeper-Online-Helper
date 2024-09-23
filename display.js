@@ -146,6 +146,9 @@ function displayTables() {
         equip[0][10] = '';
         equip[1][10] = '';
         displayMatrix(equip, 'table3-4');    // 显示装备加成
+        document.getElementById('tropNum').textContent = personalData[24][1];
+        document.getElementById('tropRank').textContent = personalData[24][3] || '暂无';
+        displayMatrix(personalData.slice(25, 28), 'table3-5');
         /* 完美装备花费 */
         var coin = 1000000;
         var gems = 5000;
@@ -165,11 +168,12 @@ function displayTables() {
         }
         displayMatrix(perfect, 'table4');
         /* 竞技场收益 */
-        var xL = [1, 3, 5, 10, 15, 20, 30, 40];
+        var xL = [1, 2.5, 5, 10, 15, 20, 30, 40]; // 各等级的奖励倍率
+        var elite = [1, 2.5, 5, 10, 12.5, 15, 20, 25] // 各等级升精英需要的功勋点倍率
         var xType = [
             [500, 500, 500, 500, 500, 500, 500, 500, 1000, 2500], // 基础经验
             [50, 50, 50, 50, 50, 50, 50, 50, 100, 250], // 基础金币
-            [10, 10, 10, 10, 10, 10, 10, 10, 20, 50] // 基础场币（升精英需要的功勋点也是这个数字）
+            [10, 10, 10, 10, 10, 10, 10, 10, 20, 50] // 基础场币（基础升精英功勋点）
         ];
         var hp2mc = 50; // 功勋点折算金币
         var hp2ex = 1000; // 每1000经验1功勋
@@ -204,7 +208,7 @@ function displayTables() {
                 var mcCoe = parseFloat(equip[1][1].replace('%', '')) / 100;
                 var acCoe = parseFloat(equip[1][7].replace('%', '')) / 100;
                 arenaValue[2 * t + 1][l + 2] = (xType[0][t] * xL[l] * (1 + exCoe) / hp2ex * hp2mc + xType[1][t] * xL[l] * (1 + mcCoe) + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]] * (1 + acCoe)) | 0;
-                arenaValue[2 * t + 2][l + 2] = arenaValue[2 * t + 1][l + 2] * 2 - xType[2][t] * xL[l] * hp2mc;
+                arenaValue[2 * t + 2][l + 2] = arenaValue[2 * t + 1][l + 2] * 2 - xType[2][t] * elite[l] * hp2mc;
                 // arenaValue[3 * t + 3][l + 2] = ticketPrice[t + 1][l + 1];
             }
         }

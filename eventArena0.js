@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             // saveAsCsv(eaPrice, '活动门票价格.csv');
                         }, (LMax + 3) * t1);
                     } catch (error) {
+                        console.log(error);
                         window.alert('错误页面');
                     }
 

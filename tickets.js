@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             // saveAsCsv(priceMap, '门票实时价格.csv');
                         }, (LMax * typeMax + 3) * t1);
                     } catch (error) {
+                        console.log(error);
                         window.alert('错误页面');
                     }
 

@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
             recur(ti1, 0);
 
             function recur(tabId, i) {
-                var maxI = 10;
-                var t0 = 500;
+                var maxI = 50;
+                var t0 = 200;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag1').textContent;
@@ -191,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function () {
             recur(ti5, 0);
 
             function recur(tabId, i) {
-                var maxI = 10;
-                var t0 = 500;
+                var maxI = 50;
+                var t0 = 200;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag5').textContent;
@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', function () {
             recur(ti3, 0);
 
             function recur(tabId, i) {
-                var maxI = 10;
-                var t0 = 500;
+                var maxI = 50;
+                var t0 = 200;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flag3').textContent;
@@ -299,6 +299,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             ['经验', '金币', '宝石', '竞技场门票', '每日任务', '赛季任务', '任务等级', '竞技场币', '', '活跃度', '活动物品'],
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                             ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            ['奖杯', 0, '排名', ''],
+                            ['Time', '效率', '经验', '装备', '动态胜率', '连胜', '竞技场', '难度', '开速', '成就'],
+                            ['', '', '', '', '', '', '', '', '', ''],
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                         ];
                         var row = 0;        // 当前录入行
@@ -311,6 +315,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
                             let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-child(11) > span > span");
                             hoverBox(equipment);   // 鼠标悬浮展开装备信息
+                            let trophy = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span");
+                            hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
     
                             /* 读宝石数量 */
                             let popoverList = document.querySelectorAll('div.popover.fade.top.in');
@@ -390,6 +396,28 @@ document.addEventListener('DOMContentLoaded', function () {
                                     personalData[row + 3][item - 31] = percent;
                                 }
                             }
+                            row += 4;
+    
+                            /* 读奖杯信息 */
+                            let trophyList = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > div > div.popover-content > table");
+                            let trs = trophyList.querySelectorAll('tr');
+                            
+                            personalData[row][1] = parseInt(document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span").textContent, 10);
+                            let rank = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > a");
+                            if (rank && rank.textContent) {
+                                personalData[row][3] = parseInt(rank.textContent.match(/\d+/), 10) || '';
+                            }
+                            // 遍历每一行
+                            trs.forEach(tr => {
+                                let cells = tr.querySelectorAll('td'); // 获取所有td元素
+                                let title = cells[0].textContent; // 第一个td为标题
+                                let index = personalData[row + 1].indexOf(title); // 匹配标题在personalData中的索引
+                                if (index !== -1) {
+                                    // 填入值和奖杯数
+                                    personalData[row + 2][index] = cells[1].textContent || '';
+                                    personalData[row + 3][index] = parseInt(cells[2].textContent, 10) || 0;
+                                }
+                            });
     
                             console.log(personalData);
 
@@ -428,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
             recurEq(ti0, 0);
 
             function recurEq(tabId, i) {
-                var maxI = 100;
+                var maxI = 50;
                 var t0 = 200;
                 setTimeout(() => {
                     extractEq(tabId);

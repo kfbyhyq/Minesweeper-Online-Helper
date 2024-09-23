@@ -147,8 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         chrome.runtime.sendMessage({ action: 'eventQuest', eqInfo: eqInfo });
                     } catch (error) {
-                        window.alert('错误页面', error);
                         console.log(error);
+                        window.alert('错误页面', error);
                     }
                     
                     function saveAsTxt(dataArray, filename) {

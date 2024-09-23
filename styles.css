@@ -171,6 +171,7 @@ td:empty {
     padding: 10px; /* 内边距 */
     text-align: center; /* 文本居中 */
     white-space: nowrap; /* 防止换行 */
+    background-color: #ddf196;
     display: inline-block;
     gap: 0px;
 }
