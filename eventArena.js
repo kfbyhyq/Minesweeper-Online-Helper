@@ -68,7 +68,7 @@ function saveValue(index) {
         chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
             const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
-            const date = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             if (!eapMap[date]) { // 如果当前日期无条目，先新建
                 eapMap[date] = new Array(8).fill(0);
             }
@@ -125,7 +125,7 @@ document.getElementById("updateEa2").onclick = function() {
         if (count > 0) {
             const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
-            const date = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             eapMap[date] = values;
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
             console.log('保存条目：', date, values);
@@ -143,7 +143,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
             const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
-            const date = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             if (!eapMap[date]) { // 如果当前日期无条目，先新建
                 eapMap[date] = new Array(8).fill(0);
             }
@@ -156,7 +156,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         document.getElementById('flagEa').textContent = 1;   // 设置成功标记
         // document.getElementById('buttonEa').style.backgroundColor = '#4caf50';
-        displayEventArena();
+        setTimeout(() => {
+            displayEventArena();
+        }, 100);
     }
 });
 

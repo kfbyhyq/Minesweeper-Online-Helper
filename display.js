@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             const gpMap = result.gemsPriceMap || {}; // 确保存在数据，防止为 undefined
             console.log('历史价格：', gpMap);
             const currentDate = new Date();
-            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
             gpMap[newDate] = gemsPrice;
         
@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             const tpMap = result.ticketPriceMap || {}; // 确保存在数据，防止为 undefined
             console.log('历史门票价格：', tpMap);
             const currentDate = new Date();
-            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
             tpMap[newDate] = ticketPrice;
         
@@ -54,7 +54,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             const stMap = result.statisticsMap || {}; // 确保存在数据，防止为 undefined
             console.log('历史游戏数据：', stMap);
             const currentDate = new Date();
-            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
             stMap[newDate] = statistics;
         
@@ -65,14 +65,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         displayTables();
     } else if (request.action === 'sendPersonalData') {
         let personalData = request.personalData;
-        console.log('收到资源数据更新:', personalData);   // 在控制台打出结果
+        console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
         chrome.storage.local.set({ personalData: personalData });     // 保存数据
         /* 按日期保存 */
         chrome.storage.local.get(['personalDataMap'], function(result) {
             const pdMap = result.personalDataMap || {}; // 确保存在数据，防止为 undefined
-            console.log('历史资源数据：', pdMap);
+            console.log('历史个人数据：', pdMap);
             const currentDate = new Date();
-            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
             pdMap[newDate] = personalData;
         
@@ -132,9 +132,9 @@ function displayTables() {
         } else {
             document.getElementById('noStDaily').style.display = "block";
         }
-        /* 读资源数据 */
+        /* 读个人数据 */
         personalData = result.personalData;
-        console.log('资源数据:', result.personalData);
+        console.log('个人数据:', result.personalData);
         displayMatrix(personalData.slice(17, 19), 'table3-1');    // 显示总资源数
         displayMatrix(personalData.slice(0, 4), 'table3-2');    // 显示宝石和场币明细
         displayMatrix(personalData.slice(4, 16), 'table3-3');    // 显示门票明细
@@ -146,9 +146,32 @@ function displayTables() {
         equip[0][10] = '';
         equip[1][10] = '';
         displayMatrix(equip, 'table3-4');    // 显示装备加成
-        document.getElementById('tropNum').textContent = personalData[24][1];
-        document.getElementById('tropRank').textContent = personalData[24][3] || '暂无';
-        displayMatrix(personalData.slice(25, 28), 'table3-5');
+        // document.getElementById('tropNum').textContent = personalData[24][1];
+        // document.getElementById('tropRank').textContent = personalData[24][3] || '暂无';
+        let tableTrophy = personalData.slice(24, 28);
+        tableTrophy[0][4] = '达成日期';
+        let ipd = 0;
+        const pdMap = result.personalDataMap;
+        const pdDate = Object.keys(pdMap);
+        pdDate.sort((a, b) => b.localeCompare(a)); // 降序排列
+        let dnow = pdDate[0];
+        tableTrophy[0][5] = dnow.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+        pdDate.forEach(date => {
+            if (pdMap[date][24]) {
+                if (pdMap[date][24] && (pdMap[date][24][1] < pdMap[dnow][24][1])) {
+                    const trophyNew = pdMap[date].slice(24, 28);
+                    trophyNew[0][4] = '达成日期';
+                    trophyNew[0][5] = date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+                    tableTrophy = [...tableTrophy, ...trophyNew];
+                    ipd++;
+                    dnow = date;
+                } else {
+                    tableTrophy[ipd*4][5] = date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+                    dnow = date;
+                }
+            }
+        });
+        displayMatrix(tableTrophy, 'tableTrophy', 10);
         /* 完美装备花费 */
         var coin = 1000000;
         var gems = 5000;
@@ -207,7 +230,9 @@ function displayTables() {
                 var exCoe = parseFloat(equip[1][0].replace('%', '')) / 100;
                 var mcCoe = parseFloat(equip[1][1].replace('%', '')) / 100;
                 var acCoe = parseFloat(equip[1][7].replace('%', '')) / 100;
+                // 打竞技场的期望收益
                 arenaValue[2 * t + 1][l + 2] = (xType[0][t] * xL[l] * (1 + exCoe) / hp2ex * hp2mc + xType[1][t] * xL[l] * (1 + mcCoe) + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]] * (1 + acCoe)) | 0;
+                // 打精英的期望收益减去功勋花费
                 arenaValue[2 * t + 2][l + 2] = arenaValue[2 * t + 1][l + 2] * 2 - xType[2][t] * elite[l] * hp2mc;
                 // arenaValue[3 * t + 3][l + 2] = ticketPrice[t + 1][l + 1];
             }
@@ -216,7 +241,10 @@ function displayTables() {
         for (let t = 0; t < tm; t++) {
             for (let l = 0; l < lm; l++) {
                 /* 比较大小 设置颜色 */
-                if (arenaValue[2 * t + 1][l + 2] > arenaValue[2 * t + 2][l + 2]) {
+                if (arenaValue[2 * t + 1][l + 2] > arenaValue[2 * t + 2][l + 2]) { // 打精英不如打普通
+                    document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
+                    document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                } else if (xType[2][t] * elite[l] * hp2mc > ticketPrice[t + 1][l + 1]) { // 升精英的花费不如买个新的
                     document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
                     document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
                 } else {
@@ -235,10 +263,13 @@ function displayTables() {
 }
 
 /* 处理矩阵并显示为表格 */
-function displayMatrix(matrix, tableId) {
+function displayMatrix(matrix, tableId, width = 0) {
     
-    const rows = matrix.length;
-    const cols = matrix[0].length;
+    let rows = matrix.length;
+    let cols = matrix[0].length;
+    if (width) {
+        cols = width;
+    }
 
     const table = document.getElementById(tableId);    // 定位表格
     table.innerHTML = ''; // 清空现有的表格内容

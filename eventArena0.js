@@ -86,14 +86,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
             const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
-            const date = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
-            if (!eapMap[date]) { // 如果当前日期无条目，直接赋值
-                eapMap[date] = eaPrice.slice(1, 2);
-            } else { // 如果有，更新非0的
-                for (let i = 0; i < LMax; i++) {
-                    if (eaPrice[1][i] > 0) {
-                        eapMap[date][i] = eaPrice[1][i];
-                    }
+            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            if (!eapMap[date]) { // 如果当前日期无条目，先新建
+                eapMap[date] = new Array(8).fill(0);
+            }
+            for (let i = 0; i < LMax; i++) {
+                if (eaPrice[1][i] > 0) {
+                    eapMap[date][i] = eaPrice[1][i];
                 }
             }
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
@@ -104,7 +103,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const currentDate = new Date();
-    if ((currentDate.getMonth() + 1) % 4 != 1) {
+    if ((currentDate.getUTCMonth() + 1) % 4 != 1) {
         document.getElementById("event1").style.display = 'none';
     }
 });

@@ -21,33 +21,44 @@ document.addEventListener('DOMContentLoaded', function() {
     showPage('statistic');
     // 获取导航数据的元素 添加点击事件监听器
     document.getElementById('nav-statistic').addEventListener('click', function(event) {
-        showPage('statistic'); // 调用 showPage 函数
+        showPage('statistic');
     });
     document.getElementById('nav-price').addEventListener('click', function(event) {
-        showPage('price'); // 调用 showPage 函数
+        showPage('price');
     });
     document.getElementById('nav-resource').addEventListener('click', function(event) {
-        showPage('resource'); // 调用 showPage 函数
+        showPage('resource');
     });
     document.getElementById('nav-perfect').addEventListener('click', function(event) {
-        showPage('perfect'); // 调用 showPage 函数
+        showPage('perfect');
     });
     document.getElementById('nav-eventArena').addEventListener('click', function(event) {
-        showPage('eventArena'); // 调用 showPage 函数
+        showPage('eventArena');
+    });
+    document.getElementById('nav-friendQuest').addEventListener('click', function(event) {
+        showPage('friendQuest');
     });
     document.getElementById('nav-eventQuest').addEventListener('click', function(event) {
-        showPage('eventQuest'); // 调用 showPage 函数
+        showPage('eventQuest');
     });
     document.getElementById('nav-setting').addEventListener('click', function(event) {
-        showPage('setting'); // 调用 showPage 函数
+        document.getElementById('saveSucc').style.display = "none";
+        showPage('setting');
     });
 
     const currentDate = new Date();
-    if ((currentDate.getMonth() + 1) % 4 != 0) {
-        document.getElementById('nav-eventQuest').style.display = 'none';
-    }
-    if ((currentDate.getMonth() + 1) % 4 != 1) {
-        document.getElementById('nav-eventArena').style.display = 'none';
+    switch ((currentDate.getUTCMonth() + 1) % 4) {
+        case 0: 
+            document.getElementById('nav-eventQuest').style.display = 'block';
+            break;
+        case 1:
+            document.getElementById('nav-eventArena').style.display = 'block';
+            break;
+        case 2:
+            document.getElementById('nav-friendQuest').style.display = 'block';
+            break;
+        case 3:
+            break;
     }
 });
 
@@ -77,6 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.alert('请先设置用户ID');
         }
     });
+    document.getElementById('friendQuestPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true });
+    });
 });
 
 /* 设置页 */
@@ -97,6 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("hourSelect2").value = autoUpdate[1][1];
         document.getElementById("minuteSelect2").value = autoUpdate[1][2];
         document.getElementById("secondSelect2").value = autoUpdate[1][3];
+        document.getElementById('toggleSwitch3').checked = autoUpdate[2][0];
+        document.getElementById("hourSelect3").value = autoUpdate[2][1];
+        document.getElementById("minuteSelect3").value = autoUpdate[2][2];
+        document.getElementById("secondSelect3").value = autoUpdate[2][3];
     });
     /* 自动刷新下拉菜单 */
     const h1 = document.getElementById("hourSelect1");
@@ -105,6 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const h2 = document.getElementById("hourSelect2");
     const m2 = document.getElementById("minuteSelect2");
     const s2 = document.getElementById("secondSelect2");
+    const h3 = document.getElementById("hourSelect3");
+    const m3 = document.getElementById("minuteSelect3");
+    const s3 = document.getElementById("secondSelect3");
     for (let hour = 0; hour < 24; hour++) { // 生成小时选项
         let o1 = document.createElement("option");
         o1.value = hour;
@@ -114,6 +135,10 @@ document.addEventListener('DOMContentLoaded', function() {
         o2.value = hour;
         o2.textContent = String(hour).padStart(2, '0'); // 格式化小时
         h2.appendChild(o2);
+        let o3 = document.createElement("option");
+        o3.value = hour;
+        o3.textContent = String(hour).padStart(2, '0'); // 格式化小时
+        h3.appendChild(o3);
     }
     for (let min = 0; min < 60; min++) { // 生成分钟选项
         let o1 = document.createElement("option");
@@ -124,6 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
         o2.value = min;
         o2.textContent = String(min).padStart(2, '0'); // 格式化分钟
         m2.appendChild(o2);
+        let o3 = document.createElement("option");
+        o3.value = min;
+        o3.textContent = String(min).padStart(2, '0'); // 格式化分钟
+        m3.appendChild(o3);
     }
     for (let sec = 0; sec < 60; sec++) { // 生成秒钟选项
         let o1 = document.createElement("option");
@@ -134,10 +163,14 @@ document.addEventListener('DOMContentLoaded', function() {
         o2.value = sec;
         o2.textContent = String(sec).padStart(2, '0'); // 格式化秒钟
         s2.appendChild(o2);
+        let o3 = document.createElement("option");
+        o3.value = sec;
+        o3.textContent = String(sec).padStart(2, '0'); // 格式化秒钟
+        s3.appendChild(o3);
     }
     /* 保存设置 */
     document.getElementById('saveSetting').addEventListener('click', function () {
-        var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0]];
+        var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
         autoUpdate[0][0]  = document.getElementById("toggleSwitch1").checked;
         if (autoUpdate[0][0]) {
             dailyTaskUpdate();
@@ -145,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[0][1] = h1.value;
         autoUpdate[0][2] = m1.value;
         autoUpdate[0][3] = s1.value;
+
         autoUpdate[1][0]  = document.getElementById("toggleSwitch2").checked;
         if (autoUpdate[1][0]) {
             dailyTaskEventArena();
@@ -152,6 +186,15 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[1][1] = h2.value;
         autoUpdate[1][2] = m2.value;
         autoUpdate[1][3] = s2.value;
+
+        autoUpdate[2][0]  = document.getElementById("toggleSwitch3").checked;
+        if (autoUpdate[2][0]) {
+            dailyTaskFriendQuest();
+        }
+        autoUpdate[2][1] = h3.value;
+        autoUpdate[2][2] = m3.value;
+        autoUpdate[2][3] = s3.value;
+
         chrome.storage.local.set({ autoUpdate: autoUpdate });
 
         const pId = document.getElementById('personalId').value;
@@ -179,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             a.style.display = 'none';
             a.href = url;
             const currentDate = new Date();
-            const d = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const d = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             a.download = 'WoM_helper_backup-' + d + '.json';
             document.body.appendChild(a);
             a.click();
@@ -220,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         stMap[key] = stMapIn[key];
                     }
                     chrome.storage.local.set({ statisticsMap: stMap });
-                    /* 资源数据 */
+                    /* 个人数据 */
                     const pdMap = result.personalDataMap || {};
                     const pdMapIn = dataIn['personalDataMap'];
                     for (const key in pdMapIn) {
@@ -234,6 +277,37 @@ document.addEventListener('DOMContentLoaded', function() {
                         eapMap[key] = eapMapIn[key];
                     }
                     chrome.storage.local.set({ eaPriceMap: eapMap });
+                    /* 友谊任务 */
+                    const fqInfo = result.friendQuestInfo || {};
+                    const fqInfoIn = dataIn['friendQuestInfo'];
+                    for (const month in fqInfoIn) {
+                        if (!fqInfo[month]) {
+                            fqInfo[month] = fqInfoIn[month];
+                        } else {
+                            fqInfo[month].fqSend = { ...fqInfoIn[month].fqSend, ...fqInfo[month].fqSend };
+                            fqInfo[month].fqReceive = { ...fqInfoIn[month].fqReceive, ...fqInfo[month].fqReceive };
+                        }
+                    }
+                    chrome.storage.local.set({ friendQuestInfo: fqInfo });
+
+                    let acMap = result.activityMap || {};
+                    const acMapIn = dataIn['activityMap'];
+                    for (const date in acMapIn) {
+                        acMap[date] = acMapIn[date]
+                    }
+                    chrome.storage.local.set({ activityMap: acMap });
+
+                    let fqDaily = result.friendQuestDaily || {};
+                    const fqDailyIn = dataIn['friendQuestDaily'];
+                    for (const date in fqDailyIn) {
+                        if (!fqDaily[date]) {
+                            fqDaily[date] = fqDailyIn[date];
+                        } else {
+                            fqDaily[date].fqSend = { ...fqDailyIn[date].fqSend, ...fqDaily[date].fqSend };
+                            fqDaily[date].fqReceive = { ...fqDailyIn[date].fqReceive, ...fqDaily[date].fqReceive };
+                        }
+                    }
+                    chrome.storage.local.set({ friendQuestDaily: fqDaily });
                     /* 设置 */
                     const pId = result.pId
                     if (pId) {
@@ -258,25 +332,27 @@ document.addEventListener('DOMContentLoaded', function() {
  /* 每日更新数据 */
 function dailyTaskUpdate() {
     const now = new Date();
-    const noon = new Date();
+    const clock = new Date();
     var tw;
     var h;
     var m;
     var s;
     chrome.storage.local.get('autoUpdate', function (result) {
         const autoUpdate = result.autoUpdate;
-        tw = autoUpdate[0][0];
-        h = autoUpdate[0][1];
-        m = autoUpdate[0][2];
-        s = autoUpdate[0][3];
-        noon.setHours(h, m, s, 0); // 设置更新时间
-        // 如果现在时间已经过了，设置为明天的同一时间
-        if (now > noon) {
-            noon.setDate(now.getDate() + 1);
-        }
-        // 创建闹钟
-        if (tw) {
-            chrome.alarms.create('updateData', { when: noon.getTime() });
+        if (autoUpdate && autoUpdate[0]) {
+            tw = autoUpdate[0][0];
+            h = autoUpdate[0][1];
+            m = autoUpdate[0][2];
+            s = autoUpdate[0][3];
+            clock.setHours(h, m, s, 0); // 设置更新时间
+            // 如果现在时间已经过了，设置为明天的同一时间
+            if (now > clock) {
+                clock.setDate(now.getDate() + 1);
+            }
+            // 创建闹钟
+            if (tw) {
+                chrome.alarms.create('updateData', { when: clock.getTime() });
+            }
         }
     });
 }
@@ -294,31 +370,31 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 /* 每日更新活动竞技场 */
 function dailyTaskEventArena() {
     const now = new Date();
-    const noon = new Date();
+    const clock = new Date();
     var tw;
     var h;
     var m;
     var s;
     chrome.storage.local.get('autoUpdate', function (result) {
         const autoUpdate = result.autoUpdate;
-        tw = autoUpdate[1][0];
-        h = autoUpdate[1][1];
-        m = autoUpdate[1][2];
-        s = autoUpdate[1][3];
-        noon.setHours(h, m, s, 0); // 设置更新时间
-        // 如果现在时间已经过了，设置为明天的同一时间
-        if (now > noon) {
-            noon.setDate(now.getDate() + 1);
-        }
-        // 创建闹钟
-        const currentDate = new Date();
-        if (tw && (currentDate.getMonth() + 1) % 4 == 1) {
-            chrome.alarms.create('updateEaTask', { when: noon.getTime() });
+        if (autoUpdate && autoUpdate[1]) {
+            tw = autoUpdate[1][0];
+            h = autoUpdate[1][1];
+            m = autoUpdate[1][2];
+            s = autoUpdate[1][3];
+            clock.setHours(h, m, s, 0); // 设置更新时间
+            // 如果现在时间已经过了，设置为明天的同一时间
+            if (now > clock) {
+                clock.setDate(now.getDate() + 1);
+            }
+            // 创建闹钟
+            const currentDate = new Date();
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 1) {
+                chrome.alarms.create('updateEaTask', { when: clock.getTime() });
+            }
         }
     });
 }
-
-const currentDate = new Date();
 // 设置首次调度
 dailyTaskEventArena();
 // 监听闹钟事件
@@ -327,5 +403,44 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         document.getElementById('updateEa1').click();
         // 重新调度下一天的任务
         dailyTaskEventArena();
+    }
+});
+
+/* 每日更新友谊任务 */
+function dailyTaskFriendQuest() {
+    const now = new Date();
+    const clock = new Date();
+    var tw;
+    var h;
+    var m;
+    var s;
+    chrome.storage.local.get('autoUpdate', function (result) {
+        const autoUpdate = result.autoUpdate;
+        if (autoUpdate && autoUpdate[2]) {
+            tw = autoUpdate[2][0];
+            h = autoUpdate[2][1];
+            m = autoUpdate[2][2];
+            s = autoUpdate[2][3];
+            clock.setHours(h, m, s, 0); // 设置更新时间
+            // 如果现在时间已经过了，设置为明天的同一时间
+            if (now > clock) {
+                clock.setDate(now.getDate() + 1);
+            }
+            // 创建闹钟
+            const currentDate = new Date();
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 2) {
+                chrome.alarms.create('updateFqTask', { when: clock.getTime() });
+            }
+        }
+    });
+}
+// 设置首次调度
+dailyTaskFriendQuest();
+// 监听闹钟事件
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === 'updateFqTask') {
+        document.getElementById('updateFq').click();
+        // 重新调度下一天的任务
+        dailyTaskFriendQuest();
     }
 });

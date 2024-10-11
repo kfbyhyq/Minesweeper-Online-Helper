@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('button4').addEventListener('click', function () {
-        const button = document.getElementById('button4');
+    document.getElementById('buttonEq').addEventListener('click', function () {
+        const button = document.getElementById('buttonEq');
         button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
             const tabId = tab1[0].id;
@@ -177,7 +177,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         let eqInfo = request.eqInfo;
         console.log('活动任务信息:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
-        document.getElementById('button4').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        document.getElementById('buttonEq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         const result = eqInfo.map(item => item + '<br>').join('');
         document.getElementById('result').innerHTML = result;
     }
@@ -185,7 +185,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const currentDate = new Date();
-    if ((currentDate.getMonth() + 1) % 4 != 0) {
+    if ((currentDate.getUTCMonth() + 1) % 4 != 0) {
         document.getElementById("event4").style.display = 'none';
     }
 });

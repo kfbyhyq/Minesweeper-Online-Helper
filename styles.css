@@ -120,7 +120,7 @@ tr:nth-child(odd) {
 tr:nth-child(even) {
     background-color: #d4ebf9; /* 每隔行背景颜色 */
 }
-td:empty {
+.noempty td:empty {
     visibility: hidden;
 }
 /* 专属表格格式 */
@@ -338,4 +338,29 @@ select {
 }
 option {
     background-color: #eefff8; /* 背景色 */
+}
+
+/* 友谊任务相关设置 */
+#fqContent {
+    display: flex;
+}
+.fqContentSon {
+    padding: 20px;
+    /* border: 1px solid #ccc; */
+}
+/* 表格格式 */
+.questTable tbody tr:first-child {
+    background-color: #E4EEC9; /* 第一行背景颜色 */
+    font-weight: bold;
+}
+.questTable tr:nth-child(odd) {
+    background-color: #a8dfff; /* 每隔行背景颜色 */
+}
+.questTable tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+}
+
+/* 奖杯表格格式 */
+#tableTrophy tr:nth-child(4n+1) {
+    background-color: #ddf196; 
 }

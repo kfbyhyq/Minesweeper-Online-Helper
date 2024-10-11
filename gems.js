@@ -109,7 +109,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.storage.local.get(['gemsPriceMap'], function(result) {
             const gpMap = result.gemsPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
-            const newDate = currentDate.getFullYear() + String(currentDate.getMonth() + 1).padStart(2, '0') + String(currentDate.getDate()).padStart(2, '0');
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
             gpMap[newDate] = gemsPrice;
         

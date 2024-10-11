@@ -20,8 +20,9 @@
             <a href="#" id="nav-price">当前市价</a>
             <a href="#" id="nav-resource">个人数据</a>
             <a href="#" id="nav-perfect">完美装备</a>
-            <a href="#" id="nav-eventArena" class="event">活动竞技场</a>
-            <a href="#" id="nav-eventQuest" class="event">活动任务</a>
+            <a href="#" id="nav-eventArena" class="event" style="display: none;">活动竞技场</a>
+            <a href="#" id="nav-friendQuest" class="event" style="display: none;">友谊任务</a>
+            <a href="#" id="nav-eventQuest" class="event" style="display: none;">全球任务</a>
             <a href="#" id="update">刷新数据</a>
             <a href="#" id="nav-setting">设置</a>
         </div>
@@ -43,11 +44,11 @@
                 <h1>宝石/竞技场币/碎片价格</h1>
                 <button id="marketPage">打开页面</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
-                <table id="table1"></table>
+                <table id="table1" class="noempty"></table>
                 <h1>竞技场门票价格</h1>
                 <button id="arenaPage">打开页面</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
-                <table id="table2" class="ticketTable"></table>
+                <table id="table2" class="ticketTable noempty"></table>
                 <h1>竞技场门票使用vs出售</h1>
                 <div class="atv" id="atv1">最赚</div>
                 <div class="atv" id="atv2">次赚</div>
@@ -66,14 +67,14 @@
                 <h1>装备加成</h1>
                 <table id="table3-4"></table>
                 <h1>奖杯</h1>
-                <div class="atv">总奖杯数：</div><div class="atv" id="tropNum"></div><div class="atv">排名：</div><div class="atv" id="tropRank"></div>
-                <table id="table3-5"></table><br><br>
+                <!-- <div class="atv">总奖杯数：</div><div class="atv" id="tropNum"></div><div class="atv">排名：</div><div class="atv" id="tropRank"></div> -->
+                <table id="tableTrophy" class="noempty"></table><br><br>
             </div>
             <div id="perfect" class="page">
                 <h2>金币需求：1 000 000</h2>
                 <h2>宝石需求：5 000</h2>
                 <h2>竞技场币需求：1 000</h2>
-                <table id="table4" class="ticketTable"></table>
+                <table id="table4" class="ticketTable noempty"></table>
             </div>
             <div id="eventArena" class="page">
                 <h1>活动竞技场门票价格</h1>
@@ -127,6 +128,25 @@
                 <table id="tableEa" class="ticketTable"></table>
                 <div id="noEapDaily" style="display:none; font-size: 16px;">暂无历史价格数据</div>
             </div>
+            <div id="friendQuest" class="page">
+                <h1>总统计</h1>
+                <button id="friendQuestPage">打开页面</button>
+                <div id="flagFq" style="display:none;">0</div>
+                <button id="updateFq">刷新任务</button><br><br>
+                <table id="tableFqStats" class="ticketTable noempty"></table>
+                <h1>每日数据</h1>
+                <table id="tableFqDaily" class="ticketTable"></table>
+                <div id="fqContent">
+                    <div class="fqContentSon">
+                        <h1>发任务</h1>
+                        <table id="tableFqs" class="questTable"></table>
+                    </div>
+                    <div class="fqContentSon">
+                        <h1>收任务</h1>
+                        <table id="tableFqr" class="questTable"></table>
+                    </div>
+                </div>
+            </div>
             <div id="eventQuest" class="page">
                 <button id="updateEq">活动任务分析</button>
                 <div id="flag4" style="display:none;">0</div>
@@ -167,6 +187,21 @@
                 <span class="plainText">秒</span>
                 <br><br>
                 <div class="inRow">
+                    <span class="plainText">自动刷新友谊任务</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleSwitch3">
+                        <span class="slider"></span>
+                    </label>
+                </div><br>
+                <span class="plainText">每日更新时间：</span>
+                <select id="hourSelect3" class="inputBox"></select>
+                <span class="plainText">点</span>
+                <select id="minuteSelect3" class="inputBox"></select>
+                <span class="plainText">分</span>
+                <select id="secondSelect3" class="inputBox"></select>
+                <span class="plainText">秒</span>
+                <br><br>
+                <div class="inRow">
                     <button id="saveSetting">保存</button><span id="saveSucc" class="plainText" style="display:none">保存成功！</span>
                 </div>
                 <h1>数据备份与恢复</h1>
@@ -181,5 +216,6 @@
     <script src="display.js"></script>
     <script src="update.js"></script>
     <script src="eventArena.js"></script>
+    <script src="friendQuest.js"></script>
 </body>
 </html>

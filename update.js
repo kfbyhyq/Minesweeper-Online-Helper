@@ -313,13 +313,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             hoverBox(coin);     // 鼠标悬浮展开竞技场币数量
                             let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
                             hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
-                            let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-child(11) > span > span");
+                            let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-last-child(1) > span > span");
                             hoverBox(equipment);   // 鼠标悬浮展开装备信息
                             let trophy = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span");
                             hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
     
+                            let popoverList = document.querySelectorAll("div.popover.fade.top.in, div.popover.fade.left.in");
                             /* 读宝石数量 */
-                            let popoverList = document.querySelectorAll('div.popover.fade.top.in');
                             // let gemList = document.querySelector("body > div:nth-child(52) > div.popover-content > table > tbody");
                             let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
                             let gems = gemList.children;
@@ -408,6 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 personalData[row][3] = parseInt(rank.textContent.match(/\d+/), 10) || '';
                             }
                             // 遍历每一行
+                            var gls = ['', '初', '中', '高', '自'];
                             trs.forEach(tr => {
                                 let cells = tr.querySelectorAll('td'); // 获取所有td元素
                                 let title = cells[0].textContent; // 第一个td为标题
@@ -416,6 +417,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                     // 填入值和奖杯数
                                     personalData[row + 2][index] = cells[1].textContent || '';
                                     personalData[row + 3][index] = parseInt(cells[2].textContent, 10) || 0;
+                                    // 检查初中高级
+                                    let grade = cells[1].querySelector("i");
+                                    if (grade) {
+                                        let cname = grade.className;
+                                        let glevel = cname.charAt(cname.length - 1);
+                                        if (!isNaN(glevel)) {
+                                            personalData[row + 2][index] = gls[glevel] + personalData[row + 2][index];
+                                        }
+                                    }
                                 }
                             });
     
