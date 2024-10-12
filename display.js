@@ -100,26 +100,26 @@ function displayTables() {
     /* 读取数据 */
     chrome.storage.local.get(null, function(result) {
         /* 宝石 */
-        gemsPrice = result.gemsPrice;
-        if (gemsPrice) {
+        if (result.gemsPrice) {
+            gemsPrice = result.gemsPrice;
             console.log('宝石/场币/碎片价格:', gemsPrice);
             displayMatrix(gemsPrice, 'table1');
         }
         /* 竞技场门票 */
-        ticketPrice = result.ticketPrice;
-        if (ticketPrice) {
+        if (result.ticketPrice) {
+            ticketPrice = result.ticketPrice;
             console.log('竞技场门票价格:', ticketPrice);
             displayMatrix(ticketPrice, 'table2');
         }
         /* 游戏数据 */
-        statistics = result.statistics;
-        if (statistics) {
+        if (result.statistics) {
+            statistics = result.statistics;
             console.log('游戏数据:', statistics);
             displayMatrix(statistics, 'table5');
         }
         /* 每日游戏数据 */
-        const stMap = result.statisticsMap;
-        if (stMap) {
+        if (result.statisticsMap) {
+            const stMap = result.statisticsMap;
             console.log('历史游戏数据:', stMap);
             const dates = Object.keys(stMap);
             if (dates.length > 1) {
@@ -141,7 +141,7 @@ function displayTables() {
             }
         }
         /* 读个人数据 */
-        if (personalData) {
+        if (result.personalData) {
             personalData = result.personalData;
             console.log('个人数据:', result.personalData);
             displayMatrix(personalData.slice(17, 19), 'table3-1');    // 显示总资源数
@@ -183,7 +183,7 @@ function displayTables() {
             displayMatrix(tableTrophy, 'tableTrophy', 10);
         }
         /* 完美装备花费 */
-        if (gemsPrice && personalData) {
+        if (result.gemsPrice && result.personalData) {
             var coin = 1000000;
             var gems = 5000;
             var ac = 10000;
@@ -203,7 +203,7 @@ function displayTables() {
             displayMatrix(perfect, 'table4');
         }
         /* 竞技场收益 */
-        if (gemsPrice && ticketPrice) {
+        if (result.gemsPrice && result.ticketPrice) {
             var xL = [1, 2.5, 5, 10, 15, 20, 30, 40]; // 各等级的奖励倍率
             var elite = [1, 2.5, 5, 10, 12.5, 15, 20, 25] // 各等级升精英需要的功勋点倍率
             var xType = [
