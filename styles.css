@@ -363,4 +363,17 @@ option {
 /* 奖杯表格格式 */
 #tableTrophy tr:nth-child(4n+1) {
     background-color: #ddf196; 
+    font-weight: bold;
+}
+
+.sortTable th {
+    background-color: #E4EEC9;
+    font-weight: bold;
+    cursor: pointer;
+}
+.sortTable tr:nth-child(odd) {
+    background-color: #a8dfff; /* 每隔行背景颜色 */
+}
+.sortTable tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
 }

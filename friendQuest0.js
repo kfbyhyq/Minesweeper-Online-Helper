@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
+                    if (window.location.href !== 'https://minesweeper.online/cn/friend-quests') {
+                        window.alert('错误页面');
+                        return;
+                    }
                     const currentDate = new Date();
                     const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
                     var fqInfo = {[newMonth]: {'fqSend': {}, 'fqReceive': {}}};

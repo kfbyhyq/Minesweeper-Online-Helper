@@ -281,7 +281,7 @@ function displayMatrix(matrix, tableId, width = 0) {
         for (let j = 0; j < cols; j++) {
             let cell = row.insertCell();
             const n = Number(matrix[i][j]);
-            if (!isNaN(n) && matrix[i][j] !== '') {
+            if (!isNaN(n) && matrix[i][j] !== '' && Number.isInteger(n)) {
                 cell.textContent = num(n);
             } else {
                 cell.textContent = matrix[i][j];

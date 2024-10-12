@@ -133,7 +133,18 @@
                 <button id="friendQuestPage">打开页面</button>
                 <div id="flagFq" style="display:none;">0</div>
                 <button id="updateFq">刷新任务</button><br><br>
-                <table id="tableFqStats" class="ticketTable noempty"></table>
+                <table id="tableFqStats" class="noempty sortTable">
+                    <thead>
+                        <tr>
+                            <th data-index="0">id</th>
+                            <th data-index="1">发任务数</th>
+                            <th data-index="2">发任务等级</th>
+                            <th data-index="3">收任务数</th>
+                            <th data-index="4">收任务等级</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
                 <h1>每日数据</h1>
                 <table id="tableFqDaily" class="ticketTable"></table>
                 <div id="fqContent">

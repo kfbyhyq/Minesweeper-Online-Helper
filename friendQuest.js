@@ -40,7 +40,10 @@ function displayFriendQuest() {
                 if (lsMatch[2]) { // 如果有 E 等级乘3
                     levelS *= 3;
                 }
-                const person = entry[4]; // 用户id
+                let person = entry[4]; // 用户id
+                if (person === undefined) {
+                    person = '待发送';
+                }
             
                 // 累加等级
                 sumLevelS += levelS;
@@ -95,11 +98,12 @@ function displayFriendQuest() {
             fqStats.sort((a, b) => {
                 return b[1] - a[1]; // 进行降序比较
             });
-            let fqStasTitle = ['', '发任务数', '发任务等级', '收任务数', '收任务等级'];
+            // let fqStasTitle = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
             let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR];
             fqStats.unshift(fqStasTotal);
-            fqStats.unshift(fqStasTitle);
-            displayMatrix(fqStats, 'tableFqStats');
+            // fqStats.unshift(fqStasTitle);
+            displayMatrixBody(fqStats, 'tableFqStats');
+            currentFqStats = fqStats;
 
             /* 每日统计 */
             let fqDailyMap = [['日期', '昨日活跃度', '发任务数', '发任务等级', '转化率', '收任务数', '收任务等级', '收发比']];
@@ -107,9 +111,9 @@ function displayFriendQuest() {
             let fqDaily = result.friendQuestDaily || {}; // 确保存在数据，防止为 undefined
             for (const date in fqDaily) {
                 if (activityMap[date]) {
-                    let countS = fqDaily[date].fqSend.length; // 发任务总数
+                    let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
                     let sumLevelS = 0; // 发任务总等级
-                    let countR = fqDaily[date].fqReceive.length; // 收任务总数
+                    let countR = Object.keys(fqDaily[date].fqReceive).length; // 收任务总数
                     let sumLevelR = 0; // 收任务总等级
                     Object.values(fqDaily[date].fqSend).forEach(entry => {
                         const lsMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
@@ -131,7 +135,7 @@ function displayFriendQuest() {
                     });
                     let changeRate = sumLevelS / activityMap[date];
                     let rsRate = sumLevelR / sumLevelS;
-                    const daylyRow = [date, activityMap[date], countS, sumLevelS, changeRate.toFixed(2), countR, sumLevelR, rsRate.toFixed(2)];
+                    const daylyRow = [date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), activityMap[date], countS, sumLevelS, changeRate.toFixed(3), countR, sumLevelR, rsRate.toFixed(3)];
                     fqDailyMap.push(daylyRow);
                 }
             }
@@ -140,8 +144,78 @@ function displayFriendQuest() {
     });
 }
 
+const defaltTitleFqStats = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
+let currentSortOrder = [true, true, true, true, true]; // 用于跟踪每列的排序状态
+let currentFqStats = []; // 用于存储当前显示的数据
+
+/* 处理矩阵并显示为表格 不动表头 */
+function displayMatrixBody(matrix, tableId, width = 0) {
+    
+    let rows = matrix.length;
+    let cols = matrix[0].length;
+    if (width) {
+        cols = width;
+    }
+
+    const table = document.getElementById(tableId);    // 定位表格
+
+    /* 表格主体 */
+    let tbody = table.querySelector('tbody'); // 获取表格主体
+    tbody.innerHTML = ''; // 清空tbody
+    for (let i = 0; i < rows; i++) {
+        let row = tbody.insertRow();
+        for (let j = 0; j < cols; j++) {
+            let cell = row.insertCell();
+            const n = Number(matrix[i][j]);
+            if (!isNaN(n) && matrix[i][j] !== '' && Number.isInteger(n)) {
+                cell.textContent = num(n);
+            } else {
+                cell.textContent = matrix[i][j];
+            }
+        }
+    }
+}
+
+function sortTable(colIndex) {
+    const titleFqStats = document.querySelector('#tableFqStats thead').rows[0].cells;
+    // 切换当前列的排序顺序
+    if (currentSortOrder[colIndex]) {
+        currentSortOrder[colIndex] = false; // false为降序
+        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '↓';
+    } else {
+        currentSortOrder[colIndex] = true; // true为升序
+        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '↑';
+    }
+    for (let i = 0; i < titleFqStats.length; i++) {
+        if (i != colIndex) {
+            currentSortOrder[i] = true; // 默认设置为升序
+            titleFqStats[i].textContent = defaltTitleFqStats[i];
+        }
+    }
+    const totalRow = currentFqStats.shift();
+    // currentFqStats = currentFqStats.slice(1);
+    currentFqStats.sort((a, b) => {
+        const aValue = a[colIndex];
+        const bValue = b[colIndex];
+        if (aValue === bValue) return 0;
+        return (currentSortOrder[colIndex] ? aValue > bValue : aValue < bValue) ? 1 : -1;
+    });
+    currentFqStats.unshift(totalRow);
+
+    displayMatrixBody(currentFqStats, 'tableFqStats'); // 重新渲染排序后的表格
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     displayFriendQuest();
+
+    const headers = document.querySelectorAll('th[data-index]');
+    
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const index = parseInt(header.getAttribute('data-index'));
+            sortTable(index);
+        });
+    });
 });
 
 /* 接收网页传回的数据 */
@@ -283,7 +357,7 @@ document.getElementById('updateFq').addEventListener('click', function () {
                             activity = parseInt(activityP.textContent.match(/\d+$/)[0], 10);
                         }
 
-                        if (activity) {
+                        if (activity !== undefined) {
                             console.log(activity, fqInfo);
                             chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
                         }
