@@ -294,9 +294,10 @@ function displayMatrix(matrix, tableId, width = 0) {
         let row = tbody.insertRow();
         for (let j = 0; j < cols; j++) {
             let cell = row.insertCell();
-            const n = Number(matrix[i][j]);
-            if (!isNaN(n) && matrix[i][j] !== '' && Number.isInteger(n)) {
-                cell.textContent = num(n);
+            const integerPattern = /^[+-]?\d+$/;
+            const strValue = String(matrix[i][j]).trim();
+            if (integerPattern.test(strValue)) {
+                cell.textContent = num(strValue);
             } else {
                 cell.textContent = matrix[i][j];
             }

@@ -133,3 +133,5 @@ https://minesweeper.online/
 - 改动
 
    个人信息页条目不全也能正确录入
+
+   小数输出格式

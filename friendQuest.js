@@ -134,6 +134,7 @@ function displayFriendQuest() {
                         sumLevelR += levelR;
                     });
                     let changeRate = sumLevelS / activityMap[date];
+                    console.log(changeRate, changeRate.toFixed(3));
                     let rsRate = sumLevelR / sumLevelS;
                     const daylyRow = [date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), activityMap[date], countS, sumLevelS, changeRate.toFixed(3), countR, sumLevelR, rsRate.toFixed(3)];
                     fqDailyMap.push(daylyRow);
@@ -166,9 +167,10 @@ function displayMatrixBody(matrix, tableId, width = 0) {
         let row = tbody.insertRow();
         for (let j = 0; j < cols; j++) {
             let cell = row.insertCell();
-            const n = Number(matrix[i][j]);
-            if (!isNaN(n) && matrix[i][j] !== '' && Number.isInteger(n)) {
-                cell.textContent = num(n);
+            const integerPattern = /^[+-]?\d+$/;
+            const strValue = String(matrix[i][j]).trim();
+            if (integerPattern.test(strValue)) {
+                cell.textContent = num(strValue);
             } else {
                 cell.textContent = matrix[i][j];
             }
