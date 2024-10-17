@@ -98,18 +98,31 @@ function displayFriendQuest() {
             fqStats.sort((a, b) => {
                 return b[1] - a[1]; // 进行降序比较
             });
-            // let fqStasTitle = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
+            let fqStasTitle = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
             let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR];
             fqStats.unshift(fqStasTotal);
-            // fqStats.unshift(fqStasTitle);
+            displayMatrixBody([fqStasTotal, []], 'shortTableFqStats');
             displayMatrixBody(fqStats, 'tableFqStats');
             currentFqStats = fqStats;
 
             /* 每日统计 */
             let fqDailyMap = [['日期', '昨日活跃度', '发任务数', '发任务等级', '转化率', '收任务数', '收任务等级', '收发比']];
             let activityMap = result.activityMap || {}; // 确保存在数据，防止为 undefined
+            // 当前UTC时间
+            const currentDate = new Date();
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            const lastAct = activityMap[newDate];
+            if (lastAct) {
+                document.getElementById('lastActNew').placeholder = lastAct;
+            }
+            // delete activityMap['20241015'];
+            // activityMap['20241017'] = 303; // 修改数据用
+            // chrome.storage.local.set({ activityMap: activityMap });
             let fqDaily = result.friendQuestDaily || {}; // 确保存在数据，防止为 undefined
-            for (const date in fqDaily) {
+
+            const dates = Object.keys(fqDaily).sort().reverse();
+            // 按顺序遍历
+            dates.forEach(date => {
                 if (activityMap[date]) {
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
                     let sumLevelS = 0; // 发任务总等级
@@ -134,12 +147,11 @@ function displayFriendQuest() {
                         sumLevelR += levelR;
                     });
                     let changeRate = sumLevelS / activityMap[date];
-                    console.log(changeRate, changeRate.toFixed(3));
                     let rsRate = sumLevelR / sumLevelS;
                     const daylyRow = [date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), activityMap[date], countS, sumLevelS, changeRate.toFixed(3), countR, sumLevelR, rsRate.toFixed(3)];
                     fqDailyMap.push(daylyRow);
                 }
-            }
+            });
             displayMatrix(fqDailyMap, 'tableFqDaily');
         }
     });
@@ -150,7 +162,7 @@ let currentSortOrder = [true, true, true, true, true]; // 用于跟踪每列的�
 let currentFqStats = []; // 用于存储当前显示的数据
 
 /* 处理矩阵并显示为表格 不动表头 */
-function displayMatrixBody(matrix, tableId, width = 0) {
+function displayMatrixBody(matrix, tableId, width = 0, editable = []) {
     
     let rows = matrix.length;
     let cols = matrix[0].length;
@@ -217,6 +229,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const index = parseInt(header.getAttribute('data-index'));
             sortTable(index);
         });
+    });
+    document.getElementById('detailFq').addEventListener('click', function () {
+        if (document.getElementById('detailFlag').textContent == 1) {
+            document.getElementById('detailFq').textContent = '展开详情';
+            document.getElementById('shortTableFqStats').style.display = "block";
+            document.getElementById('tableFqStats').style.display = "none";
+            document.getElementById('detailFlag').textContent = 0;
+        } else {
+            document.getElementById('detailFq').textContent = '收起详情';
+            document.getElementById('shortTableFqStats').style.display = "none";
+            document.getElementById('tableFqStats').style.display = "block";
+            document.getElementById('detailFlag').textContent = 1;
+        }
+    });
+    document.getElementById('updateLastAct').addEventListener('click', function () {
+        const lastActNew = document.getElementById('lastActNew').value;
+        if (lastActNew) {
+            chrome.storage.local.get(['activityMap'], function(result) {
+                let activityMap = result.activityMap || {};
+                const currentDate = new Date();
+                const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+                activityMap[newDate] = lastActNew;
+                chrome.storage.local.set({ activityMap: activityMap });
+                displayFriendQuest();
+            });
+        }
     });
 });
 

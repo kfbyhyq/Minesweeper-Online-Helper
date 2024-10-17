@@ -132,8 +132,22 @@
                 <h1>总统计</h1>
                 <button id="friendQuestPage">打开页面</button>
                 <div id="flagFq" style="display:none;">0</div>
-                <button id="updateFq">刷新任务</button><br><br>
-                <table id="tableFqStats" class="noempty sortTable">
+                <button id="updateFq">刷新任务</button>
+                <div id="detailFlag" style="display:none;">0</div>
+                <button id="detailFq">展开详情</button><br><br>
+                <table id="shortTableFqStats"  class="noempty sortTable">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>发任务数</th>
+                            <th>发任务等级</th>
+                            <th>收任务数</th>
+                            <th>收任务等级</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <table id="tableFqStats" class="noempty sortTable" style="display:none;">
                     <thead>
                         <tr>
                             <th data-index="0">id</th>
@@ -146,6 +160,8 @@
                     <tbody></tbody>
                 </table>
                 <h1>每日数据</h1>
+                <input id="lastActNew" class="inputBox inputBlank">
+                <button id="updateLastAct">更新昨日活跃度</button><br><br>
                 <table id="tableFqDaily" class="ticketTable"></table>
                 <div id="fqContent">
                     <div class="fqContentSon">
@@ -165,7 +181,7 @@
             </div>
             <div id="setting" class="page">
                 <h1>账号设置</h1>
-                <span class="plainText">当前登录账号ID：</span><input id="personalId" class="inputBox"><span id="pIdNow" style="display:none"></span>
+                <span class="plainText">当前登录账号ID：</span><input id="personalId" class="inputBox inputBlank"><span id="pIdNow" style="display:none"></span>
                 <h1>自动刷新</h1>
                 <div class="inRow">
                     <span class="plainText">自动刷新数据</span>

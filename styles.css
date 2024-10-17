@@ -192,7 +192,7 @@ button {
     margin: 0px;
     padding: 10px 20px; /* 内边距，上下10px，左右20px */
     border: none; /* 去掉边框 */
-    border-radius: 2px; /* 圆角边框 */
+    border-radius: 10px; /* 圆角边框 */
     cursor: pointer; /* 鼠标指针样式 */
     font-size: 16px; /* 字体大小 */
     transition: background-color 0.3s; /* 背景颜色过渡效果 */
@@ -260,8 +260,11 @@ input {
 .plainText {
     font-size: 16px;
 }
-#personalId {  
+#personalId {
     width: 120px;
+}
+.inputBlank {  
+    width: 60px;
     padding: 6px; /* 内边距 */
     border-radius: 5px; /* 圆角边框 */
     border: 1px solid #ccc; /* 边框颜色 */
@@ -367,6 +370,7 @@ option {
 }
 
 .sortTable th {
+    width: 500px;
     background-color: #E4EEC9;
     font-weight: bold;
     cursor: pointer;

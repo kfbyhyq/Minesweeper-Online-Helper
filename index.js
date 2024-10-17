@@ -98,8 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
     /* 读当前设置 */
     chrome.storage.local.get('pId', function (result) {
         const pId = result.pId;
-        document.getElementById('pIdNow').innerText = pId;
-        document.getElementById('personalId').placeholder = pId;
+        if (pId) {
+            document.getElementById('pIdNow').innerText = pId;
+            document.getElementById('personalId').placeholder = pId;
+        } else {
+            document.getElementById('personalId').placeholder = '请设置账号';
+        }
     });
     chrome.storage.local.get('autoUpdate', function (result) {
         const autoUpdate = result.autoUpdate;
