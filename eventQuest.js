@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var next = -1;
                     var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
                     var eqInfo = ['下一任务等级', '可用任务列表：', '', '', '', '', '', '距离', '', '近10个任务：', '', '', '', '', '', '', '', '', '', ''];
-                    var secShift = 19;
+                    var secShift = 15;
                     var secCycle = 19;
                     try {
                         for (let i = 0; i < 10; i++) {
@@ -54,10 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         // var toE = [];
                         var nextLevel = [];
                         var nextRange = [];
-                        if (secShift) { secret = (secCycle - (+firstId + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
+                        if (secShift) { secret = (secCycle - (parseInt((+firstId + 1) / 2) + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
                         // if (next < 0) {
                         let firstLevel = document.querySelector('#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+/)[0];
-                        console.log(firstLevel);
                         if (firstLevel <= levelRange[0][1]) { 
                             next = 3;  // 3或8，level=3
                             // toE = '1或6';
