@@ -4,7 +4,9 @@ function displayFriendQuest() {
         let fqInfoAll = result.friendQuestInfo || {}; // 确保存在数据，防止为 undefined
         // 获取当前月份
         const currentDate = new Date();
-        const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+        const dateMinus2 = new Date(currentDate);
+        dateMinus2.setUTCDate(currentDate.getUTCDate() - 2);  // 每个月前两天划给上一个月
+        const newMonth = dateMinus2.getUTCFullYear() + String(dateMinus2.getUTCMonth() + 1).padStart(2, '0');
         if (fqInfoAll[newMonth]) {
             /* 所有任务 */
             // 对任务id排序

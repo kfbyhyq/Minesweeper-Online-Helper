@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const currentDate = new Date();
-    switch ((currentDate.getUTCMonth() + 1) % 4) {
+    const dateMinus2 = new Date(currentDate);
+    dateMinus2.setUTCDate(currentDate.getUTCDate() - 2);  // 每个月前两天划给上一个月
+    switch ((dateMinus2.getUTCMonth() + 1) % 4) {
         case 0: 
             document.getElementById('nav-eventQuest').style.display = 'block';
             break;
@@ -288,8 +290,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (!fqInfo[month]) {
                             fqInfo[month] = fqInfoIn[month];
                         } else {
-                            fqInfo[month].fqSend = { ...fqInfoIn[month].fqSend, ...fqInfo[month].fqSend };
-                            fqInfo[month].fqReceive = { ...fqInfoIn[month].fqReceive, ...fqInfo[month].fqReceive };
+                            for (const qsid in fqInfoIn[month].fqSend) {
+                                fqInfo[month].fqSend[qsid] = fqInfoIn[month].fqSend[qsid];
+                            }
+                            for (const qrid in fqInfoIn[month].fqReceive) {
+                                fqInfo[month].fqReceive[qrid] = fqInfoIn[month].fqReceive[qrid];
+                            }
+                            // fqInfo[month].fqSend = { ...fqInfoIn[month].fqSend, ...fqInfo[month].fqSend };
+                            // fqInfo[month].fqReceive = { ...fqInfoIn[month].fqReceive, ...fqInfo[month].fqReceive };
                         }
                     }
                     chrome.storage.local.set({ friendQuestInfo: fqInfo });
