@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // saveAsCsv(priceMap, '宝石实时价格.csv');
                     } catch (e) {
-                        console.log(error);
+                        console.log(e);
                         window.alert('错误页面');
                     }
 

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var next = -1;
                     var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
                     var eqInfo = ['下一任务等级', '可用任务列表：', '', '', '', '', '', '距离', '', '近10个任务：', '', '', '', '', '', '', '', '', '', ''];
-                    var secShift = 15;
+                    var secShift = 16;
                     var secCycle = 19;
                     try {
                         for (let i = 0; i < 10; i++) {

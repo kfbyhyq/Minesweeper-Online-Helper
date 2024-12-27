@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // saveAsCsv(statistics, '游戏数据.csv');
                     } catch (e) {
-                        console.log(error);
+                        console.log(e);
                         window.alert('错误页面');
                     }
 

@@ -215,7 +215,7 @@ document.getElementById('updateEa1').addEventListener('click', function () {
                             console.log(eaPrice);
                             chrome.runtime.sendMessage({ action: 'sendEventArenaPrice', eaPrice: eaPrice });
                         }, (LMax + 3) * t1);
-                    } catch (error) {
+                    } catch (e) {
                         console.error('错误页面', e);
                     }
 

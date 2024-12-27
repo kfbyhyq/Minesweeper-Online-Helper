@@ -215,27 +215,27 @@ function displayTables() {
             var hp2ex = 1000; // 每1000经验1功勋
             var acInd = [1, 5, 2, 0, 4, 9, 3, 8, 6, 7];
             var arenaValue = [
-                ['类别', '价值', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                ['速度', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['速度', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['速度NG', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['速度NG', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['盲扫', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['盲扫', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['效率', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['效率', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['高难度', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['高难度', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['随机难度', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['随机难度', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['硬核', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['硬核', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['硬核NG', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['硬核NG', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['耐力', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['耐力', '精英', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['噩梦', '估价', 0, 0, 0, 0, 0, 0, 0, 0],
-                ['噩梦', '精英', 0, 0, 0, 0, 0, 0, 0, 0]
+                ['类别', '估价/比市场价', 'L1', '', 'L2', '', 'L3', '', 'L4', '', 'L5', '', 'L6', '', 'L7', '', 'L8', ''],
+                ['速度', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['速度', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['速度NG', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['速度NG', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['盲扫', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['盲扫', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['效率', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['效率', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['高难度', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['高难度', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['随机难度', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['随机难度', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['硬核', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['硬核', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['硬核NG', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['硬核NG', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['耐力', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['耐力', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['噩梦', '普通', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ['噩梦', '精英', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ];
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
@@ -244,9 +244,13 @@ function displayTables() {
                     var mcCoe = parseFloat(equip[1][1].replace('%', '')) / 100;
                     var acCoe = parseFloat(equip[1][7].replace('%', '')) / 100;
                     // 打竞技场的期望收益
-                    arenaValue[2 * t + 1][l + 2] = (xType[0][t] * xL[l] * (1 + exCoe) / hp2ex * hp2mc + xType[1][t] * xL[l] * (1 + mcCoe) + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]] * (1 + acCoe)) | 0;
+                    arenaValue[2 * t + 1][2 * l + 2] = (xType[0][t] * xL[l] * (1 + exCoe) / hp2ex * hp2mc + xType[1][t] * xL[l] * (1 + mcCoe) + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]] * (1 + acCoe)) | 0;
+                    var rate = arenaValue[2 * t + 1][2 * l + 2] / ticketPrice[t + 1][l + 1];
+                    arenaValue[2 * t + 1][2 * l + 3] = rate.toFixed(2);
                     // 打精英的期望收益减去功勋花费
-                    arenaValue[2 * t + 2][l + 2] = arenaValue[2 * t + 1][l + 2] * 2 - xType[2][t] * elite[l] * hp2mc;
+                    arenaValue[2 * t + 2][2 * l + 2] = arenaValue[2 * t + 1][2 * l + 2] * 2 - xType[2][t] * elite[l] * hp2mc;
+                    var rateE = arenaValue[2 * t + 2][2 * l + 2] / ticketPrice[t + 1][l + 1];
+                    arenaValue[2 * t + 2][2 * l + 3] = rateE.toFixed(2);
                     // arenaValue[3 * t + 3][l + 2] = ticketPrice[t + 1][l + 1];
                 }
             }
@@ -254,21 +258,29 @@ function displayTables() {
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
                     /* 比较大小 设置颜色 */
-                    if (arenaValue[2 * t + 1][l + 2] > arenaValue[2 * t + 2][l + 2]) { // 打精英不如打普通
-                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
-                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                    if (arenaValue[2 * t + 1][2 * l + 2] > arenaValue[2 * t + 2][2 * l + 2]) { // 打精英不如打普通
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
                     } else if (xType[2][t] * elite[l] * hp2mc > ticketPrice[t + 1][l + 1]) { // 升精英的花费不如买个新的
-                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
-                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
                     } else {
-                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
-                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
                     }
-                    if (arenaValue[2 * t + 1][l + 2] < ticketPrice[t + 1][l + 1]) {
-                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[l + 2].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                    if (arenaValue[2 * t + 1][2 * l + 2] < ticketPrice[t + 1][l + 1]) {
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#e4c79a"; // 卖掉赚
                     }
-                    if (arenaValue[2 * t + 2][l + 2] < ticketPrice[t + 1][l + 1]) {
-                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[l + 2].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                    if (arenaValue[2 * t + 2][2 * l + 2] < ticketPrice[t + 1][l + 1]) {
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                        document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#e4c79a"; // 卖掉赚
                     }
                 }
             }

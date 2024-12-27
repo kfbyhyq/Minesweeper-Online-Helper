@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0],
                         [],
                         ['资源'],
-                        ['金币', '宝石', '竞技场币', '竞技场门票', '装备', '装备碎片'],
-                        [0, 0, 0, 0, 0, 0],
+                        ['金币', '宝石', '竞技场币', '竞技场门票', '装备', '装备碎片', '功勋点'],
+                        [0, 0, 0, 0, 0, 0, 0],
                         ['装备加成'],
                         ['经验', '金币', '宝石', '竞技场门票', '每日任务', '赛季任务', '任务等级', '竞技场币', '', '活跃度', '活动物品'],
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 personalData[row + 1][3] = span.querySelector("span").textContent.replace(/\s+/g, '');
                             }
                         });
+                        let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
+                        personalData[row + 1][6] = hp.textContent;
                         row += 3;       // 空一行
 
                         /* 读装备信息 */

@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('friendQuestPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true });
     });
+    document.getElementById('eventQuestPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/event-quests', active: true });
+    });
 });
 
 /* 设置页 */

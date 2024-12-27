@@ -403,7 +403,7 @@ document.getElementById('updateFq').addEventListener('click', function () {
                             console.log(activity, fqInfo);
                             chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
                         }
-                    } catch (error) {
+                    } catch (e) {
                         console.error('错误页面', e);
                     }
                 }

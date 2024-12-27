@@ -381,3 +381,9 @@ option {
 .sortTable tr:hover {
     background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
 }
+
+.blank {
+    width: 10px;
+    height: 0;
+    display: inline-block;
+}
