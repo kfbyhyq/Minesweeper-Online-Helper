@@ -12,21 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         var mineNum = 0;
 
                         const mineNum100 = document.querySelector("#top_area_mines_100").className;
-                        const match100 = mineNum100.match(/hd_top-area-num(\d+)$/);
+                        const match100 = mineNum100.match(/top-area-num(\d+)$/);
                         if (match100) {
                             mineNum += parseInt(match100[1].slice(-1))*100;
                         }
                         const mineNum10 = document.querySelector("#top_area_mines_10").className;
-                        const match10 = mineNum10.match(/hd_top-area-num(\d+)$/);
+                        const match10 = mineNum10.match(/top-area-num(\d+)$/);
                         if (match10) {
                             mineNum += parseInt(match10[1].slice(-1))*10;
                         }
                         const mineNum1 = document.querySelector("#top_area_mines_1").className;
-                        const match1 = mineNum1.match(/hd_top-area-num(\d+)$/);
+                        const match1 = mineNum1.match(/top-area-num(\d+)$/);
                         if (match1) {
                             mineNum += parseInt(match1[1].slice(-1));
                         }
-
                         const area = document.querySelector("#AreaBlock");
                         if (area) {
                             for (const cell of area.children) {
@@ -38,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                     if (!board[row]) {
                                         board[row] = [];
                                     }
-                                    if (cell.classList.contains('hd_flag')) {
+                                    if (cell.classList.contains('hd_flag') || cell.classList.contains('hdd_flag')) {
                                         board[row][col] = 'F';
                                         mineNum++;
-                                    } else if (cell.classList.contains('hd_closed')) {
+                                    } else if (cell.classList.contains('hd_closed') || cell.classList.contains('hdd_closed')) {
                                         board[row][col] = 'H';
                                     } else {
                                         board[row][col] = cell.classList.item(cell.classList.length - 1).slice(-1);
