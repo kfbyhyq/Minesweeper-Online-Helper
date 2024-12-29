@@ -96,6 +96,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('eventQuestPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/event-quests', active: true });
     });
+    document.getElementById('personEcoPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: true });
+    });
+});
+
+/* 收起与展开 */
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('showPeDaily').addEventListener('click', function () {
+        if (document.getElementById('showPedFlag').textContent == 1) {
+            document.getElementById('showPeDaily').textContent = '展开财产变化';
+            document.getElementById('peDaily').style.display = "none";
+            document.getElementById('showPedFlag').textContent = 0;
+        } else {
+            document.getElementById('showPeDaily').textContent = '收起财产变化';
+            document.getElementById('peDaily').style.display = "block";
+            document.getElementById('showPedFlag').textContent = 1;
+        }
+    });
 });
 
 /* 设置页 */

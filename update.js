@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('flag2').textContent = 0;
         document.getElementById('flag3').textContent = 0;
         document.getElementById('flag5').textContent = 0;
+        document.getElementById('flagPe').textContent = 0;
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tab1) {
             const ti1 = tab1.id;
             recur(ti1, 0);
@@ -490,6 +491,73 @@ document.addEventListener('DOMContentLoaded', function () {
                             button.dispatchEvent(event);
                         }
 
+                    }
+                });
+            }
+        });
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: false }, function (tabEco) {
+            const tiE = tabEco.id;
+            recur(tiE, 0);
+
+            function recur(tabId, i) {
+                var maxI = 10;
+                var t0 = 5000;
+                setTimeout(() => {
+                    extract(tabId);
+                    const flag = document.getElementById('flagPe').textContent;
+                    if (flag == 1 || i > maxI) {
+                        chrome.tabs.remove(tabId, function() {});
+                    } else {
+                        recur(tabId, i + 1);
+                    }
+                }, i * t0);
+            }
+
+            function extract(tabId) {
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        var personalEco = [
+                            ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币'],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        ];
+                        try {
+                            let myRank = document.querySelector("#stat_my_rank > a");
+                            myRank.click();
+                            setTimeout(() => {
+                                let myRow = document.querySelector("#stat_table_body > tr.stat-my-row");
+                                let value = myRow.querySelector("td:nth-child(3) > span.help.dotted-underline");
+                                personalEco[1][0] = value.textContent;
+                                hoverBox(value);
+                                let dataDisp = myRow.querySelector("td:nth-child(3) > div > div.popover-content");
+                                var data = dataDisp.innerHTML.split(/<[^>]*>/g);
+                                for (let i = 0; i < data.length; i++) {
+                                    for (let j = 1; j <= personalEco[0].length; j++) {
+                                        if (data[i].includes(personalEco[0][j] + '：')) {
+                                            var match = data[i].match(/：(.*)/);
+                                            personalEco[1][j] = match[1];
+                                            break;
+                                        }
+                                    }
+                                }
+                                console.log(personalEco);
+                                chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
+                            }, 2000);
+                            
+                            /* 模拟鼠标悬浮在button */
+                            function hoverBox(button) {
+                                let event = new MouseEvent("mouseover", {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window,
+                                    clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                                    clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                                });
+                                button.dispatchEvent(event);
+                            }
+                        } catch (e) {
+                            console.log(e);
+                        }
                     }
                 });
             }

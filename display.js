@@ -81,6 +81,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         document.getElementById('flag3').textContent = 1;   // 设置成功标记
         displayTables();
+    } else if (request.action === 'personalEconomy') {
+        let personalEco = request.personalEco;
+        console.log('收到财产估值更新：', personalEco);   // 在控制台打出结果
+        chrome.storage.local.set({ personalEco: personalEco });     // 保存数据
+        /* 按日期保存 */
+        chrome.storage.local.get(['personalEcoMap'], function(result) {
+            const peMap = result.personalEcoMap || {}; // 确保存在数据，防止为 undefined
+            console.log('历史财产估值：', peMap);
+            const currentDate = new Date();
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            // 更新数据
+            peMap[newDate] = personalEco;
+        
+            // 保存更新后的数据
+            chrome.storage.local.set({ personalEcoMap: peMap });
+        });
+        document.getElementById('flagPe').textContent = 1;   // 设置成功标记
+        displayTables();
     }
 });
 
@@ -181,6 +199,79 @@ function displayTables() {
                 }
             });
             displayMatrix(tableTrophy, 'tableTrophy', 10);
+        }
+        /* 财产估值 */
+        if (result.personalEco) {
+            personalEco = result.personalEco;
+            console.log('财产估值:', personalEco);
+            displayMatrix(personalEco, 'tablePe');
+        }
+        /* 每日财产估值 */
+        if (result.personalEcoMap) {
+            const peMap = result.personalEcoMap;
+            console.log('历史财产估值:', peMap);
+            const dates = Object.keys(peMap);
+            if (dates.length > 1) {
+                dates.sort((a, b) => Number(b) - Number(a));
+                var peDaily = [['日期', '总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币']];
+                for (let i = 1; i < dates.length; i++) {
+                    const pe1 = peMap[dates[i-1]];
+                    const pe2 = peMap[dates[i]];
+                    var row = [dates[i-1].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")];
+                    for (let j = 0; j < pe1[0].length; j++) {
+                        var num1 = parseFloat(pe1[1][j].replace(/[MK]/, ''));
+                        var num2 = parseFloat(pe2[1][j].replace(/[MK]/, ''));
+                        var incru;
+                        if (pe1[1][j].endsWith('M')) {
+                            if (pe2[1][j].endsWith('M')) {
+                                incru = num1 - num2 + 'M';
+                            } else if (pe2[1][j].endsWith('K')) {
+                                incru = num1 * 1e3 - num2;
+                                if (Math.abs(incru) >= 1e3) {
+                                    incru = incru / 1e3 + 'M';
+                                } else {
+                                    incru = incru + 'K';
+                                }
+                            } else {
+                                incru = num1 + 'M';
+                            }
+                        } else if (pe1[1][j].endsWith('K')) {
+                            if (pe2[1][j].endsWith('M')) {
+                                incru = num1 - num2 * 1e3;
+                                if (Math.abs(incru) >= 1e3) {
+                                    incru = incru / 1e3 + 'M';
+                                } else {
+                                    incru = incru + 'K';
+                                }
+                            } else if (pe2[1][j].endsWith('K')) {
+                                incru = num1 - num2 + 'M';
+                            } else {
+                                incru = num1 * 1e3 - num2;
+                                if (Math.abs(incru) >= 1e3) {
+                                    incru = incru / 1e3 + 'K';
+                                }
+                            }
+                        } else {
+                            if (pe2[1][j].endsWith('M')) {
+                                incru = -num2 + 'M';
+                            } else if (pe2[1][j].endsWith('K')) {
+                                incru = num1 - num2 * 1e3;
+                                if (Math.abs(incru) >= 1e3) {
+                                    incru = incru / 1e3 + 'K';
+                                }
+                            } else {
+                                incru = num1 - num2;
+                            }
+                        }
+                        row.push(incru);
+                    }
+                    peDaily.push(row);
+                }
+                console.log('每日财产估值:', peDaily);
+                displayMatrix(peDaily, 'peDaily');    // 显示表格
+            } else {
+                document.getElementById('noPeDaily').style.display = "block";
+            }
         }
         /* 完美装备花费 */
         if (result.gemsPrice && result.personalData) {
