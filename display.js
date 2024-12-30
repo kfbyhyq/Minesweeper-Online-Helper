@@ -221,49 +221,34 @@ function displayTables() {
                     for (let j = 0; j < pe1[0].length; j++) {
                         var num1 = parseFloat(pe1[1][j].replace(/[MK]/, ''));
                         var num2 = parseFloat(pe2[1][j].replace(/[MK]/, ''));
-                        var incru;
                         if (pe1[1][j].endsWith('M')) {
-                            if (pe2[1][j].endsWith('M')) {
-                                incru = num1 - num2 + 'M';
-                            } else if (pe2[1][j].endsWith('K')) {
-                                incru = num1 * 1e3 - num2;
-                                if (Math.abs(incru) >= 1e3) {
-                                    incru = incru / 1e3 + 'M';
-                                } else {
-                                    incru = incru + 'K';
-                                }
-                            } else {
-                                incru = num1 + 'M';
-                            }
+                            num1 *= 1e6;
                         } else if (pe1[1][j].endsWith('K')) {
-                            if (pe2[1][j].endsWith('M')) {
-                                incru = num1 - num2 * 1e3;
-                                if (Math.abs(incru) >= 1e3) {
-                                    incru = incru / 1e3 + 'M';
-                                } else {
-                                    incru = incru + 'K';
-                                }
-                            } else if (pe2[1][j].endsWith('K')) {
-                                incru = num1 - num2 + 'M';
-                            } else {
-                                incru = num1 * 1e3 - num2;
-                                if (Math.abs(incru) >= 1e3) {
-                                    incru = incru / 1e3 + 'K';
-                                }
-                            }
-                        } else {
-                            if (pe2[1][j].endsWith('M')) {
-                                incru = -num2 + 'M';
-                            } else if (pe2[1][j].endsWith('K')) {
-                                incru = num1 - num2 * 1e3;
-                                if (Math.abs(incru) >= 1e3) {
-                                    incru = incru / 1e3 + 'K';
-                                }
-                            } else {
-                                incru = num1 - num2;
-                            }
+                            num1 *= 1e3;
                         }
-                        row.push(incru);
+                        if (pe2[1][j].endsWith('M')) {
+                            num2 *= 1e6;
+                        } else if (pe2[1][j].endsWith('K')) {
+                            num2 *= 1e3;
+                        }
+                        var incru = num1 - num2;
+                        var signIncru;
+                        if (Math.abs(incru) > 1e6) {
+                            signIncru = incru / 1e6;
+                            signIncru = signIncru.toFixed(2);
+                            signIncru = signIncru + 'M';
+                        } else if (Math.abs(incru) > 1e3) {
+                            signIncru = incru / 1e3;
+                            signIncru = signIncru.toFixed(2);
+                            signIncru = signIncru + 'K';
+                        } else {
+                            signIncru = incru.toString();
+                        }
+                        if (incru > 0) {
+                            signIncru = '+' + signIncru;
+                        }
+                        signIncru = signIncru.replace('.00', '');
+                        row.push(signIncru);
                     }
                     peDaily.push(row);
                 }
