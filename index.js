@@ -297,6 +297,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         pdMap[key] = pdMapIn[key];
                     }
                     chrome.storage.local.set({ personalDataMap: pdMap });
+                    /* 财产数据 */
+                    const peMap = result.personalEcoMap || {};
+                    const peMapIn = dataIn['personalEcoMap'];
+                    for (const key in peMapIn) {
+                        peMap[key] = peMapIn[key];
+                    }
+                    chrome.storage.local.set({ personalEcoMap: peMap });
                     /* 活动竞技场 */
                     const eapMap = result.eaPriceMap || {};
                     const eapMapIn = dataIn['eaPriceMap'];
