@@ -219,16 +219,18 @@ function displayTables() {
                     const pe2 = peMap[dates[i]];
                     var row = [dates[i-1].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")];
                     for (let j = 0; j < pe1[0].length; j++) {
-                        var num1 = parseFloat(pe1[1][j].replace(/[MK]/, ''));
-                        var num2 = parseFloat(pe2[1][j].replace(/[MK]/, ''));
-                        if (pe1[1][j].endsWith('M')) {
+                        var peData1 = pe1[1][j].toString();
+                        var peData2 = pe2[1][j].toString();
+                        var num1 = parseFloat(peData1.replace(/[MK]/, ''));
+                        var num2 = parseFloat(peData2.replace(/[MK]/, ''));
+                        if (peData1.endsWith('M')) {
                             num1 *= 1e6;
-                        } else if (pe1[1][j].endsWith('K')) {
+                        } else if (peData1.endsWith('K')) {
                             num1 *= 1e3;
                         }
-                        if (pe2[1][j].endsWith('M')) {
+                        if (peData2.endsWith('M')) {
                             num2 *= 1e6;
-                        } else if (pe2[1][j].endsWith('K')) {
+                        } else if (peData2.endsWith('K')) {
                             num2 *= 1e3;
                         }
                         var incru = num1 - num2;

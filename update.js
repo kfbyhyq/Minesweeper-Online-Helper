@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             function recur(tabId, i) {
                 var maxI = 10;
-                var t0 = 5000;
+                var t0 = 3000;
                 setTimeout(() => {
                     extract(tabId);
                     const flag = document.getElementById('flagPe').textContent;
