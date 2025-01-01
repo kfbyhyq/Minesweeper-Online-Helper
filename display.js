@@ -1,6 +1,6 @@
 /* 接收网页传回的数据 */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.action === 'eventQuest') {
+    if (request.action === 'eventQuest') { // 活动任务
         let eqInfo = request.eqInfo;
         console.log('活动任务信息:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
@@ -9,10 +9,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
         const output = eqInfo.map(item => item + '<br>').join('');
         document.getElementById('eqInfo').innerHTML = output;
-    } else if (request.action === 'sendGemsPrice') {
+    } else if (request.action === 'sendGemsPrice') { // 宝石场币
         let gemsPrice = request.gemsPrice;
-        console.log('收到价格更新:', gemsPrice);   // 在控制台打出结果
-        chrome.storage.local.set({ gemsPrice: gemsPrice });     // 保存数据
+        console.log('收到价格更新:', gemsPrice);
+        chrome.storage.local.set({ gemsPrice: gemsPrice });
         /* 按日期保存 */
         chrome.storage.local.get(['gemsPriceMap'], function(result) {
             const gpMap = result.gemsPriceMap || {}; // 确保存在数据，防止为 undefined
@@ -25,15 +25,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             // 保存更新后的数据
             chrome.storage.local.set({ gemsPriceMap: gpMap });
         });
-        document.getElementById('flag1').textContent = 1;   // 设置成功标记
+        document.getElementById('flag1').textContent = 1;
         displayTables();
-    } else if (request.action === 'sendTicketPrice') {
+    } else if (request.action === 'sendTicketPrice') { // 竞技场门票
+        let tpNew = request.ticketPrice;
         let ticketPrice = request.ticketPrice;
-        console.log('收到门票价格更新:', ticketPrice);   // 在控制台打出结果
-        chrome.storage.local.set({ ticketPrice: ticketPrice });     // 保存数据
+        console.log('收到门票价格更新:', tpNew);
         /* 按日期保存 */
-        chrome.storage.local.get(['ticketPriceMap'], function(result) {
-            const tpMap = result.ticketPriceMap || {}; // 确保存在数据，防止为 undefined
+        chrome.storage.local.get(['ticketPrice', 'ticketPriceMap'], function(result) {
+            let tpOld = result.ticketPrice;
+            var typeMax = 10;    // 多少种竞技场
+            var LMax = 8;       // 最大等级
+            for (let t = 1; t <= typeMax; t++) {
+                for (let L = 1; L <= LMax; L++) {
+                    if (ticketPrice[t][L] == 0) {
+                        ticketPrice[t][L] = tpOld[t][L]; // 票价为0说明没采集到，用原来的
+                    }
+                }
+            }
+            let tpMap = result.ticketPriceMap || {};
             console.log('历史门票价格：', tpMap);
             const currentDate = new Date();
             const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
@@ -41,6 +51,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             tpMap[newDate] = ticketPrice;
         
             // 保存更新后的数据
+            chrome.storage.local.set({ ticketPrice: ticketPrice });
             chrome.storage.local.set({ ticketPriceMap: tpMap });
         });
         document.getElementById('flag2').textContent = 1;   // 设置成功标记
