@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         flag = document.getElementById('flag2').textContent;
                         if (flag == 1) {
                             chrome.tabs.remove(tabId, function() {});
+                            return;
                         }
                     }, i * t1);
                 }

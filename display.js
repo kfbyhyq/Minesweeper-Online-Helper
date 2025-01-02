@@ -26,7 +26,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ gemsPriceMap: gpMap });
         });
         document.getElementById('flag1').textContent = 1;
-        displayTables();
+        setTimeout(() => {
+            displayTables();
+        }, 100);
     } else if (request.action === 'sendTicketPrice') { // 竞技场门票
         let tpNew = request.ticketPrice;
         let ticketPrice = request.ticketPrice;
@@ -55,7 +57,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ ticketPriceMap: tpMap });
         });
         document.getElementById('flag2').textContent = 1;   // 设置成功标记
-        displayTables();
+        setTimeout(() => {
+            displayTables();
+        }, 100);
     } else if (request.action === 'sendStatistics') {
         let statistics = request.statistics;
         console.log('收到游戏数据更新：', statistics);
@@ -73,7 +77,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ statisticsMap: stMap });
         });
         document.getElementById('flag5').textContent = 1;   // 设置成功标记
-        displayTables();
+        setTimeout(() => {
+            displayTables();
+        }, 100);
     } else if (request.action === 'sendPersonalData') {
         let personalData = request.personalData;
         console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
@@ -91,7 +97,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ personalDataMap: pdMap });
         });
         document.getElementById('flag3').textContent = 1;   // 设置成功标记
-        displayTables();
+        setTimeout(() => {
+            displayTables();
+        }, 100);
     } else if (request.action === 'personalEconomy') {
         let personalEco = request.personalEco;
         console.log('收到财产估值更新：', personalEco);   // 在控制台打出结果
@@ -109,7 +117,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ personalEcoMap: peMap });
         });
         document.getElementById('flagPe').textContent = 1;   // 设置成功标记
-        displayTables();
+        setTimeout(() => {
+            displayTables();
+        }, 100);
     }
 });
 
