@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("hourSelect3").value = autoUpdate[2][1];
         document.getElementById("minuteSelect3").value = autoUpdate[2][2];
         document.getElementById("secondSelect3").value = autoUpdate[2][3];
+        document.getElementById('toggleSwitchAt').checked = autoUpdate[3][0];
     });
     /* 自动刷新下拉菜单 */
     const h1 = document.getElementById("hourSelect1");
@@ -197,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     /* 保存设置 */
     document.getElementById('saveSetting').addEventListener('click', function () {
-        var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+        var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0]];
         autoUpdate[0][0]  = document.getElementById("toggleSwitch1").checked;
         if (autoUpdate[0][0]) {
             dailyTaskUpdate();
@@ -221,6 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[2][1] = h3.value;
         autoUpdate[2][2] = m3.value;
         autoUpdate[2][3] = s3.value;
+
+        autoUpdate[3][0]  = document.getElementById("toggleSwitchAt").checked;
 
         chrome.storage.local.set({ autoUpdate: autoUpdate });
 
@@ -468,7 +471,7 @@ function dailyTaskFriendQuest() {
             }
             // 创建闹钟
             const currentDate = new Date();
-            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 2) {
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDay() > 3) {
                 chrome.alarms.create('updateFqTask', { when: clock.getTime() });
             }
         }

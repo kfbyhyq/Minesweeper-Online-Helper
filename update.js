@@ -108,139 +108,149 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-        chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: true }, function (tab2) {
-            const ti2 = tab2.id;
-            recur(ti2, 1);
-
-            function recur(tabId, i) {
-                var maxI = 1; // 不循环了，只运行一次
-                var t0 = 10000;
-                var t1 = 1000;
-                var maxTi = 60;
-                setTimeout(() => {
-                    extract(tabId);
-                }, t0);
-                var flag;
-                for (var i = 1; i < maxTi; i++) {
-                    setTimeout(() => {
-                        flag = document.getElementById('flag2').textContent;
-                        if (flag == 1) {
-                            chrome.tabs.remove(tabId, function() {});
-                            return;
-                        }
-                    }, i * t1);
-                }
-                setTimeout(() => {
-                    chrome.tabs.remove(tabId, function() {});
-                }, 10 * t0);
+        chrome.storage.local.get('autoUpdate', function (result) {
+            var backgroundCoe = 1;
+            var activePage = true;
+            if (result.autoUpdate[3][0]) {
+                backgroundCoe = 4;
+                activePage = false;
             }
-
-            function extract(tabId) {
-                chrome.scripting.executeScript({
-                    target: { tabId },
-                    function: function () {
-                        try {
-                            var ticketPrice = [
-                                ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                                ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
-                                ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
-                            ];
-                            let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                            choice1.click(); // 选择竞技场门票分类
-                            var t1 = 500;        // 等待间隔
-                            var typeMax = 10;    // 多少种竞技场
-                            var LMax = 8;       // 最大等级
-                            for (let type = 1; type <= typeMax; type++) {
-                                setTimeout(() => {
-                                    // console.log('分类', type, t1 * LMax * (type - 1) + t1);
-                                    let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 1}) > a`);
-                                    typeMenu.click(); // 选择门票种类
-                                }, t1 * LMax * (type - 1) + t1);
-                                for (let L = 1; L <= LMax; L++) {
-                                    setTimeout(() => {
-                                        // console.log('等级', L, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
-                                        let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${L + 1}) > a`);
-                                        levelMenu.click(); // 选择门票等级
-                                    }, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
-                                    setTimeout(() => {
-                                        // console.log('采集', type, L, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
-                                        let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                                        ticketPrice[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
-                                        let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
-                                        console.log(name.textContent, ticketPrice[type][L]);
-                                    }, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
-                                }
-                            }
-                            setTimeout(() => {
-                                console.log(ticketPrice);
-                                chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: ticketPrice });
-                            }, t1 * LMax * typeMax + t1);
-                        } catch (e) {
-                            console.log(e);
-                        }
-                        // var priceMap = [
-                        //     ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                        //     ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
-                        //     ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
-                        // ];
-                        // var t1 = 500;        // 等待间隔
-                        // var typeMax = 10;    // 多少种竞技场
-                        // var LMax = 8;       // 最大等级
-                        // try {
-                        //     for (let type = 1; type <= typeMax; type++) {
-                        //         for (let L = 1; L <= LMax; L++) {
-                        //             setTimeout(() => {
-                        //                 let ticket = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > span > button`);
-                        //                 if (ticket) {
-                        //                     hoverBox(ticket);   // 模拟鼠标悬浮 展开详情
-                        //                 }
-                        //             }, (type - 1) * LMax * t1 + L * t1);
-                        //             setTimeout(() => {
-                        //                 let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > div > div.popover-content > div > div:last-child > span`);
-                        //                 if (price) {
-                        //                     priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
-                        //                 }
-                        //             }, (type - 1) * LMax * t1 + L * t1 + 3 * t1);
-                        //         }
-                        //     }
-                        //     setTimeout(() => {
-                        //         console.log(priceMap);
-                        //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
-                        //     }, (LMax * typeMax + 3) * t1);
-                        // } catch (e) {
-                        //     console.error('错误页面', e);
-                        // }
+            chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: activePage }, function (tab2) {
+                const ti2 = tab2.id;
+                recur(ti2, 1);
+                console.log(backgroundCoe);
     
-                        // /* 模拟鼠标悬浮在button */
-                        // function hoverBox(button) {
-                        //     let event = new MouseEvent("mouseover", {
-                        //         bubbles: true,
-                        //         cancelable: true,
-                        //         view: window,
-                        //         clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
-                        //         clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
-                        //     });
-                        //     button.dispatchEvent(event);
-                        // }
+                function recur(tabId, i) {
+                    var maxI = 1; // 不循环了，只运行一次
+                    var t0 = 10000;
+                    var t1 = 1000;
+                    var maxTi = 45 * backgroundCoe;
+                    setTimeout(() => {
+                        extract(tabId, backgroundCoe);
+                    }, t0);
+                    var flag;
+                    for (var i = 1; i < maxTi; i++) {
+                        setTimeout(() => {
+                            flag = document.getElementById('flag2').textContent;
+                            if (flag == 1) {
+                                chrome.tabs.remove(tabId, function() {});
+                                return;
+                            }
+                        }, i * t1);
                     }
-                });
-            }
+                    setTimeout(() => {
+                        chrome.tabs.remove(tabId, function() {});
+                    }, 5 * backgroundCoe * t0 + t0);
+                }
+    
+                function extract(tabId, backgroundCoe) {
+                    chrome.scripting.executeScript({
+                        target: { tabId },
+                        args: [backgroundCoe],
+                        function: function (backgroundCoe) {
+                            try {
+                                var ticketPrice = [
+                                    ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                                    ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                                    ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
+                                ];
+                                let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                                choice1.click(); // 选择竞技场门票分类
+                                var t1 = 500 * backgroundCoe;        // 等待间隔
+                                var typeMax = 10;    // 多少种竞技场
+                                var LMax = 8;       // 最大等级
+                                for (let type = 1; type <= typeMax; type++) {
+                                    setTimeout(() => {
+                                        // console.log('分类', type, t1 * LMax * (type - 1) + t1);
+                                        let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 1}) > a`);
+                                        typeMenu.click(); // 选择门票种类
+                                    }, t1 * LMax * (type - 1) + t1);
+                                    for (let L = 1; L <= LMax; L++) {
+                                        setTimeout(() => {
+                                            // console.log('等级', L, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
+                                            let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${L + 1}) > a`);
+                                            levelMenu.click(); // 选择门票等级
+                                        }, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
+                                        setTimeout(() => {
+                                            // console.log('采集', type, L, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
+                                            let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                                            ticketPrice[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
+                                            let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
+                                            console.log(name.textContent, ticketPrice[type][L]);
+                                        }, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
+                                    }
+                                }
+                                setTimeout(() => {
+                                    console.log(ticketPrice);
+                                    chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: ticketPrice });
+                                }, t1 * LMax * typeMax + t1);
+                            } catch (e) {
+                                console.log(e);
+                            }
+                            // var priceMap = [
+                            //     ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                            //     ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                            //     ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
+                            // ];
+                            // var t1 = 500;        // 等待间隔
+                            // var typeMax = 10;    // 多少种竞技场
+                            // var LMax = 8;       // 最大等级
+                            // try {
+                            //     for (let type = 1; type <= typeMax; type++) {
+                            //         for (let L = 1; L <= LMax; L++) {
+                            //             setTimeout(() => {
+                            //                 let ticket = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > span > button`);
+                            //                 if (ticket) {
+                            //                     hoverBox(ticket);   // 模拟鼠标悬浮 展开详情
+                            //                 }
+                            //             }, (type - 1) * LMax * t1 + L * t1);
+                            //             setTimeout(() => {
+                            //                 let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > div > div.popover-content > div > div:last-child > span`);
+                            //                 if (price) {
+                            //                     priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
+                            //                 }
+                            //             }, (type - 1) * LMax * t1 + L * t1 + 3 * t1);
+                            //         }
+                            //     }
+                            //     setTimeout(() => {
+                            //         console.log(priceMap);
+                            //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                            //     }, (LMax * typeMax + 3) * t1);
+                            // } catch (e) {
+                            //     console.error('错误页面', e);
+                            // }
+        
+                            // /* 模拟鼠标悬浮在button */
+                            // function hoverBox(button) {
+                            //     let event = new MouseEvent("mouseover", {
+                            //         bubbles: true,
+                            //         cancelable: true,
+                            //         view: window,
+                            //         clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                            //         clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                            //     });
+                            //     button.dispatchEvent(event);
+                            // }
+                        }
+                    });
+                }
+            });
         });
         const u1 = 'https://minesweeper.online/cn/statistics/' + pId;
         chrome.tabs.create({ url: u1, active: false }, function (tab5) {
