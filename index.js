@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav-resource').addEventListener('click', function(event) {
         showPage('resource');
     });
+    document.getElementById('nav-eventShop').addEventListener('click', function(event) {
+        showPage('eventShop');
+    });
     document.getElementById('nav-perfect').addEventListener('click', function(event) {
         showPage('perfect');
     });
@@ -89,6 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             window.alert('请先设置用户ID');
         }
+    });
+    document.getElementById('eventPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/events', active: true });
+    });
+    document.getElementById('equipmentPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: true });
     });
     document.getElementById('friendQuestPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true });

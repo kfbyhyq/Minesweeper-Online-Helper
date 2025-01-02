@@ -19,6 +19,7 @@
             <a href="#" id="nav-statistic">游戏数据</a>
             <a href="#" id="nav-price">当前市价</a>
             <a href="#" id="nav-resource">个人数据</a>
+            <a href="#" id="nav-eventShop">活动商店</a>
             <a href="#" id="nav-perfect">完美装备</a>
             <a href="#" id="nav-eventArena" class="event" style="display: none;">活动竞技场</a>
             <a href="#" id="nav-friendQuest" class="event" style="display: none;">友谊任务</a>
@@ -33,7 +34,7 @@
         <div id="content">
             <div id="statistic" class="page">
                 <h1>游戏数据</h1>
-                <button id="statisticPage">打开页面</button><br><br>
+                <button id="statisticPage">打开我的数据统计</button><br><br>
                 <div id="flag5" style="display:none;">0</div>
                 <table id="table5"></table>
                 <h1>每日数据</h1>
@@ -42,11 +43,11 @@
             </div>
             <div id="price" class="page active">
                 <h1>宝石/竞技场币/碎片价格</h1>
-                <button id="marketPage">打开页面</button><br><br>
+                <button id="marketPage">打开市场页</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
                 <table id="table1" class="noempty"></table>
                 <h1>竞技场门票价格</h1>
-                <button id="arenaPage">打开页面</button><br><br>
+                <button id="arenaPage">打开竞技场页</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
                 <table id="table2" class="ticketTable noempty"></table>
                 <h1>竞技场门票使用vs出售</h1>
@@ -58,7 +59,7 @@
             <div id="resource" class="page">
                 <div id="flag3" style="display:none;">0</div>
                 <h1>总资源数</h1>
-                <button id="playerPage">打开页面</button><br><br>
+                <button id="playerPage">打开我的主页</button><br><br>
                 <table id="table3-1"></table>
                 <h1>明细</h1>
                 <table id="table3-2"></table>
@@ -68,7 +69,7 @@
                 <table id="table3-4"></table>
                 <div id="flagPe" style="display:none;">0</div>
                 <h1>财产估值</h1>
-                <button id="personEcoPage">打开页面</button>
+                <button id="personEcoPage">打开游戏经济页</button>
                 <span class="blank"></span>
                 <button id="showPeDaily">展开财产变化</button><br><br>
                 <div id="showPedFlag" style="display:none;">0</div>
@@ -79,7 +80,16 @@
                 <!-- <div class="atv">总奖杯数：</div><div class="atv" id="tropNum"></div><div class="atv">排名：</div><div class="atv" id="tropRank"></div> -->
                 <table id="tableTrophy" class="noempty"></table><br><br>
             </div>
+            <div id="eventShop" class="page">
+                <h1>活动商店兑换参考</h1>
+                <button id="eventPage">打开活动页</button><br><br>
+                <span class="plainText">所有价格为估计值或期望，仅供参考。数据通过当前市场最低价计算。</span><br>
+                <span class="plainText">功勋为固定的参考值，不考虑代币售价；宝石以最贵的一项为准；门票包为平均值；所有装备均为拆解碎片价。</span><br><br>
+                <table id="tableEventShop" class="ticketTable noempty"></table>
+            </div>
             <div id="perfect" class="page">
+                <h1>完美装备制作信息</h1>
+                <button id="equipmentPage">打开装备页</button><br><br>
                 <h2>金币需求：1 000 000</h2>
                 <h2>宝石需求：5 000</h2>
                 <h2>竞技场币需求：1 000</h2>
@@ -139,7 +149,7 @@
             </div>
             <div id="friendQuest" class="page">
                 <h1>总统计</h1>
-                <button id="friendQuestPage">打开页面</button>
+                <button id="friendQuestPage">打开友谊任务页</button>
                 <div id="flagFq" style="display:none;">0</div>
                 <button id="updateFq">刷新任务</button>
                 <div id="detailFlag" style="display:none;">0</div>
@@ -187,7 +197,7 @@
                 <button id="updateEq">活动任务分析</button>
                 <div id="flag4" style="display:none;">0</div>
                 <span class="blank"></span>
-                <button id="eventQuestPage">打开页面</button>
+                <button id="eventQuestPage">打开活动任务页</button>
                 <div id="eqInfo">...</div>
             </div>
             <div id="setting" class="page">
