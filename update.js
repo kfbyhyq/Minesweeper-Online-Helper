@@ -169,29 +169,29 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var LMax = 8;       // 最大等级
                                 for (let type = 1; type <= typeMax; type++) {
                                     setTimeout(() => {
-                                        // console.log('分类', type, t1 * LMax * (type - 1) + t1);
+                                        // console.log('分类', type, t1 * LMax * (type - 1) + 2 * t1);
                                         let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 1}) > a`);
                                         typeMenu.click(); // 选择门票种类
-                                    }, t1 * LMax * (type - 1) + t1);
+                                    }, t1 * LMax * (type - 1) + 2 * t1);
                                     for (let L = 1; L <= LMax; L++) {
                                         setTimeout(() => {
-                                            // console.log('等级', L, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
+                                            // console.log('等级', L, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
                                             let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${L + 1}) > a`);
                                             levelMenu.click(); // 选择门票等级
-                                        }, t1 * LMax * (type - 1) + t1 + t1 * (L - 1));
+                                        }, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
                                         setTimeout(() => {
-                                            // console.log('采集', type, L, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
+                                            // console.log('采集', type, L, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
                                             let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
                                             ticketPrice[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
                                             let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
                                             console.log(name.textContent, ticketPrice[type][L]);
-                                        }, t1 * LMax * (type - 1) + 1.9 * t1 + t1 * (L - 1));
+                                        }, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
                                     }
                                 }
                                 setTimeout(() => {
                                     console.log(ticketPrice);
                                     chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: ticketPrice });
-                                }, t1 * LMax * typeMax + t1);
+                                }, t1 * LMax * typeMax + 2 * t1);
                             } catch (e) {
                                 console.log(e);
                             }
