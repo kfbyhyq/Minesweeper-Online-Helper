@@ -201,3 +201,5 @@ https://minesweeper.online/
    竞技场门票价格采集方式重写，利用setInterval循环调用+递归
 
    游戏经济刷新逻辑小改
+
+   保存当前版面完善更多情况
