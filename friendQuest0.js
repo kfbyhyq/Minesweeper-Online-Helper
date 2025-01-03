@@ -1,96 +1,102 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('buttonFq').addEventListener('click', function () {
-        const button = document.getElementById('buttonFq');
-        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-            const tabId = tab1[0].id;
-            chrome.scripting.executeScript({
-                target: { tabId },
-                function: function () {
-                    if (window.location.href !== 'https://minesweeper.online/cn/friend-quests') {
-                        window.alert('错误页面');
-                        return;
-                    }
-                    const currentDate = new Date();
-                    const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
-                    var fqInfo = {[newMonth]: {'fqSend': {}, 'fqReceive': {}}};
-                    let questSending;
-                    let questReceived;
-                    let questSent;
-                    try {
-                        let tableList = document.querySelectorAll("#QuestsBlock .table.table-bordered");
+    const button = document.getElementById('buttonFq');
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
+        if (tab1[0].url == 'https://minesweeper.online/cn/friend-quests' || tab1[0].url == 'https://minesweeper.online/friend-quests') {
+            button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
+            button.style.cursor = 'pointer'; // 鼠标指针样式
+            button.addEventListener('click', function () {
+                button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+                const tabId = tab1[0].id;
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        if (window.location.href !== 'https://minesweeper.online/cn/friend-quests') {
+                            window.alert('错误页面');
+                            return;
+                        }
+                        const currentDate = new Date();
+                        const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+                        var fqInfo = {[newMonth]: {'fqSend': {}, 'fqReceive': {}}};
+                        let questSending;
+                        let questReceived;
+                        let questSent;
+                        try {
+                            let tableList = document.querySelectorAll("#QuestsBlock .table.table-bordered");
+        
+                            tableList.forEach(table => {
+                                if (table.querySelector("thead > tr > th:nth-child(4)").textContent == '奖励' 
+                                || table.querySelector("thead > tr > th:nth-child(4)").textContent == 'Reward') {
+                                    questSending = table;
+                                } else if (table.querySelector("thead > tr > th:nth-child(6)").textContent == '发送自' 
+                                || table.querySelector("thead > tr > th:nth-child(6)").textContent == 'Sent by') {
+                                    questReceived = table;
+                                } else {
+                                    questSent = table;
+                                }
+                            });
     
-                        tableList.forEach(table => {
-                            if (table.querySelector("thead > tr > th:nth-child(4)").textContent == '奖励' 
-                            || table.querySelector("thead > tr > th:nth-child(4)").textContent == 'Reward') {
-                                questSending = table;
-                            } else if (table.querySelector("thead > tr > th:nth-child(6)").textContent == '发送自' 
-                            || table.querySelector("thead > tr > th:nth-child(6)").textContent == 'Sent by') {
-                                questReceived = table;
-                            } else {
-                                questSent = table;
+                            if (questSending) {
+                                Array.from(questSending.getElementsByTagName('tr')).forEach(tr => {
+                                    const id = tr.id;
+                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                    if (id) {
+                                        fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                    }
+                                });
                             }
-                        });
-
-                        if (questSending) {
-                            Array.from(questSending.getElementsByTagName('tr')).forEach(tr => {
-                                const id = tr.id;
-                                const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
-                                if (id) {
-                                    fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
-                                }
-                            });
+                            if (questReceived) {
+                                Array.from(questReceived.getElementsByTagName('tr')).forEach(tr => {
+                                    const id = tr.id;
+                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                    if (id) {
+                                        fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                    }
+                                });
+                            }
+                            if (questSent) {
+                                Array.from(questSent.getElementsByTagName('tr')).forEach(tr => {
+                                    const id = tr.id;
+                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                    if (id) {
+                                        fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                    }
+                                });
+                            }
+    
+                            let activity = 0;
+                            const activityP = document.querySelector("#QuestsBlock > p");
+                            if (activityP) {
+                                activity = parseInt(activityP.textContent.match(/\d+$/)[0], 10);
+                            }
+    
+                            console.log(activity, fqInfo);
+                            chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
+                        } catch (error) {
+                            console.log(error);
+                            window.alert('错误页面', error);
                         }
-                        if (questReceived) {
-                            Array.from(questReceived.getElementsByTagName('tr')).forEach(tr => {
-                                const id = tr.id;
-                                const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
-                                if (id) {
-                                    fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
-                                }
-                            });
+                        
+                        function saveAsTxt(dataArray, filename) {
+                            const txt = dataArray.map(item => item + '\n').join('');
+                            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
                         }
-                        if (questSent) {
-                            Array.from(questSent.getElementsByTagName('tr')).forEach(tr => {
-                                const id = tr.id;
-                                const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
-                                if (id) {
-                                    fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
-                                }
-                            });
-                        }
-
-                        let activity = 0;
-                        const activityP = document.querySelector("#QuestsBlock > p");
-                        if (activityP) {
-                            activity = parseInt(activityP.textContent.match(/\d+$/)[0], 10);
-                        }
-
-                        console.log(activity, fqInfo);
-                        chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
-                    } catch (error) {
-                        console.log(error);
-                        window.alert('错误页面', error);
                     }
-                    
-                    function saveAsTxt(dataArray, filename) {
-                        const txt = dataArray.map(item => item + '\n').join('');
-                        const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        a.download = filename;
-                        document.body.appendChild(a);
-                        a.click();
-                        setTimeout(() => {
-                            document.body.removeChild(a);
-                            window.URL.revokeObjectURL(url);
-                        }, 0);
-                    }
-                }
+                });
             });
-        });
+        } else {
+            button.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
+        }
     });
 });
 

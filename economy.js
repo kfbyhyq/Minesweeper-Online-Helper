@@ -1,57 +1,63 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('buttonEco').addEventListener('click', function () {
-        const button = document.getElementById('buttonEco');
-        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-            const tabId = tab1[0].id;
-            chrome.scripting.executeScript({
-                target: { tabId },
-                function: function () {
-                    var personalEco = [
-                        ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币'],
-                        ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
-                    ];
-                    try {
-                        let myRank = document.querySelector("#stat_my_rank > a");
-                        myRank.click();
-                        setTimeout(() => {
-                            let myRow = document.querySelector("#stat_table_body > tr.stat-my-row");
-                            let value = myRow.querySelector("td:nth-child(3) > span.help.dotted-underline");
-                            personalEco[1][0] = value.textContent;
-                            hoverBox(value);
-                            let dataDisp = myRow.querySelector("td:nth-child(3) > div > div.popover-content");
-                            var data = dataDisp.innerHTML.split(/<[^>]*>/g);
-                            for (let i = 0; i < data.length; i++) {
-                                for (let j = 1; j <= personalEco[0].length; j++) {
-                                    if (data[i].includes(personalEco[0][j] + '：')) {
-                                        var match = data[i].match(/：(.*)/);
-                                        personalEco[1][j] = match[1];
-                                        break;
+    const button = document.getElementById('buttonEco');
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
+        if (tab1[0].url == 'https://minesweeper.online/cn/economy' || tab1[0].url == 'https://minesweeper.online/economy') {
+            button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
+            button.style.cursor = 'pointer'; // 鼠标指针样式
+            button.addEventListener('click', function () {
+                button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+                const tabId = tab1[0].id;
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        var personalEco = [
+                            ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币'],
+                            ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+                        ];
+                        try {
+                            let myRank = document.querySelector("#stat_my_rank > a");
+                            myRank.click();
+                            setTimeout(() => {
+                                let myRow = document.querySelector("#stat_table_body > tr.stat-my-row");
+                                let value = myRow.querySelector("td:nth-child(3) > span.help.dotted-underline");
+                                personalEco[1][0] = value.textContent;
+                                hoverBox(value);
+                                let dataDisp = myRow.querySelector("td:nth-child(3) > div > div.popover-content");
+                                var data = dataDisp.innerHTML.split(/<[^>]*>/g);
+                                for (let i = 0; i < data.length; i++) {
+                                    for (let j = 1; j <= personalEco[0].length; j++) {
+                                        if (data[i].includes(personalEco[0][j] + '：')) {
+                                            var match = data[i].match(/：(.*)/);
+                                            personalEco[1][j] = match[1];
+                                            break;
+                                        }
                                     }
                                 }
+                                console.log(personalEco);
+                                chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
+                            }, 2000);
+                            
+                            /* 模拟鼠标悬浮在button */
+                            function hoverBox(button) {
+                                let event = new MouseEvent("mouseover", {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window,
+                                    clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                                    clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                                });
+                                button.dispatchEvent(event);
                             }
-                            console.log(personalEco);
-                            chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
-                        }, 2000);
-                        
-                        /* 模拟鼠标悬浮在button */
-                        function hoverBox(button) {
-                            let event = new MouseEvent("mouseover", {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window,
-                                clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
-                                clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
-                            });
-                            button.dispatchEvent(event);
+                        } catch (e) {
+                            console.log(e);
+                            window.alert('错误页面');
                         }
-                    } catch (e) {
-                        console.log(e);
-                        window.alert('错误页面');
                     }
-                }
+                });
             });
-        });
+        } else {
+            button.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
+        }
     });
 });
 

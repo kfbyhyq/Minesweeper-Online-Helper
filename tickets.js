@@ -1,213 +1,215 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('button2').addEventListener('click', function () {
-        const button = document.getElementById('button2');
-        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-            const tabId = tab1[0].id;
-            chrome.scripting.executeScript({
-                target: { tabId },
-                function: function () {
-                    if (window.location.href != 'https://minesweeper.online/cn/marketplace' && window.location.href != 'https://minesweeper.online/marketplace') {
-                        window.alert('错误页面');
-                        return;
-                    }
-                    try {
-                        var priceMap = [
-                            ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                            ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
-                            ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
-                        ];
-                        var t0 = 100; // 等待间隔
-                        var typeMax = 10; // 多少种竞技场
-                        var levelMax = 8; // 最大等级
-
-                        function selectTicket(type, level) { // 选择市场中的单个门票条目
-                            setTimeout(() => {
-                                let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 2}) > a`);
-                                typeMenu.click(); // 选择门票种类
-                                let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${level + 2}) > a`);
-                                levelMenu.click(); // 选择门票等级
-                            }, t0 * 1);
-                        }
-                        function queryTicket() { // 查询当前页面最低价是否存在
-                            let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                            let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
-                            if (price && name) {
-                                let queryResult = [name.textContent, price.textContent.replace(/ /g, "")];    // 删去可能的空格 1 200 -> 1200
-                                return queryResult;
-                            } else {
-                                return null;
+    const button = document.getElementById('button2');
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
+        if (tab1[0].url == 'https://minesweeper.online/cn/marketplace' || tab1[0].url == 'https://minesweeper.online/marketplace') {
+            button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
+            button.style.cursor = 'pointer'; // 鼠标指针样式
+            // button.style.borderColor = '#c9c9c9';
+            button.addEventListener('click', function () {
+                button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+                const tabId = tab1[0].id;
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        try {
+                            var priceMap = [
+                                ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                                ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
+                            ];
+                            var t0 = 100; // 等待间隔
+                            var typeMax = 10; // 多少种竞技场
+                            var levelMax = 8; // 最大等级
+    
+                            function selectTicket(type, level) { // 选择市场中的单个门票条目
+                                setTimeout(() => {
+                                    let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 2}) > a`);
+                                    typeMenu.click(); // 选择门票种类
+                                    let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${level + 2}) > a`);
+                                    levelMenu.click(); // 选择门票等级
+                                }, t0 * 1);
                             }
-                        }
-                        function queryProgress(type, level) { // 递归查询函数
-                            selectTicket(type, level);
-                            setTimeout(() => {
-                                checkInterval = setInterval(() => { // 循环调用queryTicket查找是否有数据
-                                    let queryResult = queryTicket();
-                                    if (queryResult) {
-                                        console.log('找到：L', level + 1, ' type', type + 1, queryResult);
-                                        clearInterval(checkInterval); // 查询成功后停止循环
-                                        priceMap[type + 1][level + 1] = queryResult[1];
-                                        if (type == typeMax - 1) {
-                                            if (level == levelMax - 1) { // 已到达最后一张（噩梦8）
-                                                console.log(priceMap);
-                                                chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                            function queryTicket() { // 查询当前页面最低价是否存在
+                                let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                                let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
+                                if (price && name) {
+                                    let queryResult = [name.textContent, price.textContent.replace(/ /g, "")];    // 删去可能的空格 1 200 -> 1200
+                                    return queryResult;
+                                } else {
+                                    return null;
+                                }
+                            }
+                            function queryProgress(type, level) { // 递归查询函数
+                                selectTicket(type, level);
+                                setTimeout(() => {
+                                    checkInterval = setInterval(() => { // 循环调用queryTicket查找是否有数据
+                                        let queryResult = queryTicket();
+                                        if (queryResult) {
+                                            console.log('找到：L', level + 1, ' type', type + 1, queryResult);
+                                            clearInterval(checkInterval); // 查询成功后停止循环
+                                            priceMap[type + 1][level + 1] = queryResult[1];
+                                            if (type == typeMax - 1) {
+                                                if (level == levelMax - 1) { // 已到达最后一张（噩梦8）
+                                                    console.log(priceMap);
+                                                    chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                                                } else {
+                                                    queryProgress(type, level + 1); // 其他情况递归进入下一张票
+                                                }
                                             } else {
-                                                queryProgress(type, level + 1); // 其他情况递归进入下一张票
+                                                if (level == levelMax - 1) {
+                                                    queryProgress(type + 1, 0);
+                                                } else {
+                                                    queryProgress(type, level + 1);
+                                                }
                                             }
                                         } else {
-                                            if (level == levelMax - 1) {
-                                                queryProgress(type + 1, 0);
-                                            } else {
-                                                queryProgress(type, level + 1);
-                                            }
+                                            console.log('未找到：L', level + 1, ' type', type + 1);
                                         }
-                                    } else {
-                                        console.log('未找到：L', level + 1, ' type', type + 1);
-                                    }
-                                }, t0);
-                            }, t0 * 2);
+                                    }, t0);
+                                }, t0 * 2);
+                            }
+                            let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                            choice1.click(); // 选择竞技场门票分类
+                            setTimeout(() => {
+                                queryProgress(0, 0);
+                            }, t0 * 10);
+                        } catch (e) {
+                            console.log(e);
+                            window.alert('错误页面');
                         }
-                        let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                        choice1.click(); // 选择竞技场门票分类
-                        setTimeout(() => {
-                            queryProgress(0, 0);
-                        }, t0 * 10);
-                    } catch (e) {
-                        console.log(e);
-                        window.alert('错误页面');
+                        // try {
+                        //     var priceMap = [
+                        //         ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                        //         ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //         ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
+                        //     ];
+                        //     let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                        //     choice1.click(); // 选择竞技场门票分类
+                        //     var t1 = 500;        // 等待间隔
+                        //     var typeMax = 10;    // 多少种竞技场
+                        //     var LMax = 8;       // 最大等级
+                        //     for (let type = 1; type <= typeMax; type++) {
+                        //         setTimeout(() => {
+                        //             // console.log('分类', type, t1 * LMax * (type - 1) + 2 * t1);
+                        //             let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 1}) > a`);
+                        //             typeMenu.click(); // 选择门票种类
+                        //         }, t1 * LMax * (type - 1) + 2 * t1);
+                        //         for (let L = 1; L <= LMax; L++) {
+                        //             setTimeout(() => {
+                        //                 // console.log('等级', L, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
+                        //                 let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${L + 1}) > a`);
+                        //                 levelMenu.click(); // 选择门票等级
+                        //             }, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
+                        //             setTimeout(() => {
+                        //                 // console.log('采集', type, L, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
+                        //                 let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                        //                 priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
+                        //                 let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
+                        //                 console.log(name.textContent, priceMap[type][L]);
+                        //             }, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
+                        //         }
+                        //     }
+                        //     setTimeout(() => {
+                        //         console.log(priceMap);
+                        //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                        //     }, t1 * LMax * typeMax + 2 * t1);
+                        // } catch (e) {
+                        //     console.log(e);
+                        //     window.alert('错误页面');
+                        // }
+    
+                        // var priceMap = [
+                        //     ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                        //     ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
+                        //     ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
+                        // ];
+                        // var t1 = 500;        // 等待间隔
+                        // var typeMax = 10;    // 多少种竞技场
+                        // var LMax = 8;       // 最大等级
+                        // try {
+                        //     for (let type = 1; type <= typeMax; type++) {
+                        //         for (let L = 1; L <= LMax; L++) {
+                        //             setTimeout(() => {
+                        //                 let ticket = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > span > button`);
+                        //                 if (ticket) {
+                        //                     hoverBox(ticket);   // 模拟鼠标悬浮 展开详情
+                        //                 }
+                        //             }, (type - 1) * LMax * t1 + L * t1);
+                        //             setTimeout(() => {
+                        //                 let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > div > div.popover-content > div > div:last-child > span`);
+                        //                 if (price) {
+                        //                     priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
+                        //                 }
+                        //             }, (type - 1) * LMax * t1 + L * t1 + 3 * t1);
+                        //         }
+                        //     }
+                        //     setTimeout(() => {
+                        //         console.log(priceMap);
+                        //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                        //         // saveAsCsv(priceMap, '门票实时价格.csv');
+                        //     }, (LMax * typeMax + 3) * t1);
+                        // } catch (error) {
+                        //     console.log(error);
+                        //     window.alert('错误页面');
+                        // }
+    
+                        // /* 模拟鼠标悬浮在button */
+                        // function hoverBox(button) {
+                        //     let event = new MouseEvent("mouseover", {
+                        //         bubbles: true,
+                        //         cancelable: true,
+                        //         view: window,
+                        //         clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                        //         clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                        //     });
+                        //     button.dispatchEvent(event);
+                        // }
+    
+                        // function saveAsCsv(dataMap, filename) {
+                        //     const csv = dataMap.map(row => row.join(',')).join('\n');
+                        //     const blob = new Blob([csv], { type: 'text/csv', encoding: 'UTF-8' });
+                        //     const url = URL.createObjectURL(blob);
+                        //     const a = document.createElement('a');
+                        //     a.style.display = 'none';
+                        //     a.href = url;
+                        //     a.download = filename;
+                        //     document.body.appendChild(a);
+                        //     a.click();
+                        //     setTimeout(() => {
+                        //         document.body.removeChild(a);
+                        //         window.URL.revokeObjectURL(url);
+                        //     }, 0);
+                        // }
                     }
-
-                    // try {
-                    //     var priceMap = [
-                    //         ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                    //         ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //         ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
-                    //     ];
-                    //     let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                    //     choice1.click(); // 选择竞技场门票分类
-                    //     var t1 = 500;        // 等待间隔
-                    //     var typeMax = 10;    // 多少种竞技场
-                    //     var LMax = 8;       // 最大等级
-                    //     for (let type = 1; type <= typeMax; type++) {
-                    //         setTimeout(() => {
-                    //             // console.log('分类', type, t1 * LMax * (type - 1) + 2 * t1);
-                    //             let typeMenu = document.querySelector(`#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(${type + 1}) > a`);
-                    //             typeMenu.click(); // 选择门票种类
-                    //         }, t1 * LMax * (type - 1) + 2 * t1);
-                    //         for (let L = 1; L <= LMax; L++) {
-                    //             setTimeout(() => {
-                    //                 // console.log('等级', L, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
-                    //                 let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${L + 1}) > a`);
-                    //                 levelMenu.click(); // 选择门票等级
-                    //             }, t1 * LMax * (type - 1) + 2 * t1 + t1 * (L - 1));
-                    //             setTimeout(() => {
-                    //                 // console.log('采集', type, L, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
-                    //                 let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                    //                 priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
-                    //                 let name = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span");
-                    //                 console.log(name.textContent, priceMap[type][L]);
-                    //             }, t1 * LMax * (type - 1) + 2.99 * t1 + t1 * (L - 1));
-                    //         }
-                    //     }
-                    //     setTimeout(() => {
-                    //         console.log(priceMap);
-                    //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
-                    //     }, t1 * LMax * typeMax + 2 * t1);
-                    // } catch (e) {
-                    //     console.log(e);
-                    //     window.alert('错误页面');
-                    // }
-
-                    // var priceMap = [
-                    //     ['', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
-                    //     ['速度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['速度NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['盲扫', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['效率', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['高难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['随机难度', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['硬核', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['硬核NG', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['耐力', 0, 0, 0, 0, 0, 0, 0, 0],
-                    //     ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
-                    // ];
-                    // var t1 = 500;        // 等待间隔
-                    // var typeMax = 10;    // 多少种竞技场
-                    // var LMax = 8;       // 最大等级
-                    // try {
-                    //     for (let type = 1; type <= typeMax; type++) {
-                    //         for (let L = 1; L <= LMax; L++) {
-                    //             setTimeout(() => {
-                    //                 let ticket = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > span > button`);
-                    //                 if (ticket) {
-                    //                     hoverBox(ticket);   // 模拟鼠标悬浮 展开详情
-                    //                 }
-                    //             }, (type - 1) * LMax * t1 + L * t1);
-                    //             setTimeout(() => {
-                    //                 let price = document.querySelector(`#arena_content > table > tbody > tr:nth-child(${type}) > td:nth-child(${L + 1}) > div > div.popover-content > div > div:last-child > span`);
-                    //                 if (price) {
-                    //                     priceMap[type][L] = price.textContent.replace(/ /g, "");    // 删去可能的空格 1 200 -> 1200
-                    //                 }
-                    //             }, (type - 1) * LMax * t1 + L * t1 + 3 * t1);
-                    //         }
-                    //     }
-                    //     setTimeout(() => {
-                    //         console.log(priceMap);
-                    //         chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
-                    //         // saveAsCsv(priceMap, '门票实时价格.csv');
-                    //     }, (LMax * typeMax + 3) * t1);
-                    // } catch (error) {
-                    //     console.log(error);
-                    //     window.alert('错误页面');
-                    // }
-
-                    // /* 模拟鼠标悬浮在button */
-                    // function hoverBox(button) {
-                    //     let event = new MouseEvent("mouseover", {
-                    //         bubbles: true,
-                    //         cancelable: true,
-                    //         view: window,
-                    //         clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
-                    //         clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
-                    //     });
-                    //     button.dispatchEvent(event);
-                    // }
-
-                    // function saveAsCsv(dataMap, filename) {
-                    //     const csv = dataMap.map(row => row.join(',')).join('\n');
-                    //     const blob = new Blob([csv], { type: 'text/csv', encoding: 'UTF-8' });
-                    //     const url = URL.createObjectURL(blob);
-                    //     const a = document.createElement('a');
-                    //     a.style.display = 'none';
-                    //     a.href = url;
-                    //     a.download = filename;
-                    //     document.body.appendChild(a);
-                    //     a.click();
-                    //     setTimeout(() => {
-                    //         document.body.removeChild(a);
-                    //         window.URL.revokeObjectURL(url);
-                    //     }, 0);
-                    // }
-                }
+                });
             });
-        });
+        } else {
+            button.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
+        }
     });
 });
 
