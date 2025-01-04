@@ -257,11 +257,11 @@ function displayTables() {
                         }
                         var incru = num1 - num2;
                         var signIncru;
-                        if (Math.abs(incru) > 1e6) {
+                        if (Math.abs(incru) >= 1e6) {
                             signIncru = incru / 1e6;
                             signIncru = signIncru.toFixed(2);
                             signIncru = signIncru + 'M';
-                        } else if (Math.abs(incru) > 1e3) {
+                        } else if (Math.abs(incru) >= 1e3) {
                             signIncru = incru / 1e3;
                             signIncru = signIncru.toFixed(2);
                             signIncru = signIncru + 'K';
@@ -277,7 +277,7 @@ function displayTables() {
                     peDaily.push(row);
                 }
                 console.log('每日财产估值:', peDaily);
-                displayMatrix(peDaily, 'peDaily');    // 显示表格
+                displayTextMatrix(peDaily, 'peDaily');    // 显示表格
             } else {
                 document.getElementById('noPeDaily').style.display = "block";
             }
@@ -522,4 +522,27 @@ function num(number) {
     }
     output = n + output;
     return output;
+}
+
+/* 显示纯文本 */
+function displayTextMatrix(matrix, tableId, width = 0) {
+    
+    let rows = matrix.length;
+    let cols = matrix[0].length;
+    if (width) {
+        cols = width;
+    }
+
+    const table = document.getElementById(tableId);    // 定位表格
+    table.innerHTML = ''; // 清空现有的表格内容
+
+    /* 表格主体 */
+    let tbody = table.createTBody();
+    for (let i = 0; i < rows; i++) {
+        let row = tbody.insertRow();
+        for (let j = 0; j < cols; j++) {
+            let cell = row.insertCell();
+            cell.textContent = matrix[i][j].toString();
+        }
+    }
 }

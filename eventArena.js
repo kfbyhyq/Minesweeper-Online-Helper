@@ -181,11 +181,15 @@ document.getElementById('updateEa1').addEventListener('click', function () {
             //     chrome.tabs.remove(tabId, function() {});
             // }, 3 * t0);
             var flag;
+            var count = 1;
+            var countMax = 60;
             checkInterval = setInterval(() => {
                 flag = document.getElementById('flagEa').textContent;
-                if (flag == 1) {
+                if (flag == 1 || count == countMax) {
                     clearInterval(checkInterval);
                     chrome.tabs.remove(tabId, function() {});
+                } else {
+                    count++;
                 }
             }, t1);
 
