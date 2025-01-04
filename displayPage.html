@@ -13,6 +13,7 @@
     <script src="friendQuest0.js"></script>
     <script src="capture.js"></script>
     <script src="economy.js"></script>
+    <script src="monitor.js"></script>
     <style>
         button {
             /* background-color: #9b9b9b; */
@@ -21,6 +22,15 @@
             border-width: 1px;
             border-radius: 5px;
             transition: background-color 0.3s; /* 背景颜色过渡效果 */
+        }
+        input {
+            margin: 2px;
+            padding: 3px 3px;
+            border: 1px solid #000000;
+            cursor: pointer;
+            width: 50px;
+            border-radius: 5px;
+            background-color: #eefff8;
         }
     </style>
 
@@ -32,6 +42,13 @@
     <button id="button3">刷新个人数据</button><br>
     <button id="buttonEco">刷新财产估值</button><br>
     <button id="buttonSave">保存当前版面</button><br>
+    <button id="buttonMonitor">监测价格</button>
+    <div id="monitorSet" style="display:none">
+        <div id="flagMonitor" style="display:none;">0</div>
+        <span>价格达到</span><input id="priceThreshold"><span>时提醒</span><br>
+        <span id="monitorNotice" style="display:none">请输入价格阈值！</span>
+        <button id="buttonStopMonitor">停止监测</button>
+    </div>
     <hr>
     <div id="event1">
         <button id="buttonEa">刷新活动门票价格</button><br>

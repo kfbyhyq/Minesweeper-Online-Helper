@@ -126,9 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(() => {
                         extract(tabId);
                     }, t0);
-                    setTimeout(() => {
-                        chrome.tabs.remove(tabId, function() {});
-                    }, 30 * t0);
+                    // setTimeout(() => {
+                    //     chrome.tabs.remove(tabId, function() {});
+                    // }, 30 * t0);
                     var flag;
                     checkInterval = setInterval(() => {
                         flag = document.getElementById('flag2').textContent;

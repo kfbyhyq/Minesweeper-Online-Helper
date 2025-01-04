@@ -398,11 +398,8 @@ function displayTables() {
         if (result.gemsPrice && result.ticketPrice) {
             var xL = [1, 2.5, 5, 10, 15, 20, 30, 40]; // 各等级的奖励倍率
             var elite = [1, 2.5, 5, 10, 12.5, 15, 20, 25] // 各等级升精英需要的功勋点倍率
-            var xType = [
-                [500, 500, 500, 500, 500, 500, 500, 500, 1000, 2500], // 基础经验
-                [50, 50, 50, 50, 50, 50, 50, 50, 100, 250], // 基础金币
-                [10, 10, 10, 10, 10, 10, 10, 10, 20, 50] // 基础场币（基础升精英功勋点）
-            ];
+            var xType = [1, 1, 1, 1, 1, 1, 1, 1, 2, 5]; // 竞技场收益基础值，配合系数coef使用
+            var coef = [500, 50, 10, 1, 2]; // '经验系数', '金币系数', '场币系数', '升精英功勋点系数', '活跃度系数', '精英活动物品系数'
             var hp2ex = 1000; // 每1000经验1功勋
             var acInd = [1, 5, 2, 0, 4, 9, 3, 8, 6, 7];
             var arenaValue = [
@@ -430,16 +427,23 @@ function displayTables() {
             ];
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
-                    // arenaValue[3 * t + 1][l + 2] = xType[0][t] * xL[l] / hp2ex * hp2mc + xType[1][t] * xL[l] + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]];
-                    var exCoe = parseFloat(equip[1][0].replace('%', '')) / 100;
-                    var mcCoe = parseFloat(equip[1][1].replace('%', '')) / 100;
-                    var acCoe = parseFloat(equip[1][7].replace('%', '')) / 100;
+                    // arenaValue[3 * t + 1][l + 2] = xType[t] * coef[0] * xL[l] / hp2ex * hp2mc + xType[t] * coef[1] * xL[l] + xType[t] * coef[2] * xL[l] * gemsPrice[3][acInd[t]];
+                    var exCoe = parseFloat(equip[1][0].replace('%', '')) / 100; // 经验加成
+                    var mcCoe = parseFloat(equip[1][1].replace('%', '')) / 100; // 金币加成
+                    var acCoe = parseFloat(equip[1][7].replace('%', '')) / 100; // 场币加成
+                    var actCoe = parseFloat(equip[1][8].replace('%', '')) / 100; // 活跃加成
+                    var epCoe = parseFloat(equip[1][9].replace('%', '')) / 100; // 活动点加成
                     // 打竞技场的期望收益
-                    arenaValue[2 * t + 1][2 * l + 2] = (xType[0][t] * xL[l] * (1 + exCoe) / hp2ex * hp2mc + xType[1][t] * xL[l] * (1 + mcCoe) + xType[2][t] * xL[l] * gemsPrice[3][acInd[t]] * (1 + acCoe)) | 0;
+                    arenaValue[2 * t + 1][2 * l + 2] = (xType[t] * coef[0] * xL[l] * (1 + exCoe) / hp2ex * hp2mc // 经验折算为功勋
+                                                     + xType[t] * coef[1] * xL[l] * (1 + mcCoe) // 金币
+                                                     + xType[t] * coef[2] * xL[l] * (1 + acCoe) * gemsPrice[3][acInd[t]] // 场币
+                                                     + xType[t] * coef[3] * xL[l] * (1 + actCoe) * hp2mc) | 0; // 活跃1:1折算为功勋
                     var rate = arenaValue[2 * t + 1][2 * l + 2] / ticketPrice[t + 1][l + 1];
                     arenaValue[2 * t + 1][2 * l + 3] = rate.toFixed(2);
                     // 打精英的期望收益减去功勋花费
-                    arenaValue[2 * t + 2][2 * l + 2] = arenaValue[2 * t + 1][2 * l + 2] * 2 - xType[2][t] * elite[l] * hp2mc;
+                    arenaValue[2 * t + 2][2 * l + 2] = arenaValue[2 * t + 1][2 * l + 2] * 2
+                                                     - xType[t] * coef[2] * elite[l] * hp2mc // 升精英花费的期望
+                                                     + xType[t] * coef[4] * xL[l] * (1 + epCoe) * hp2mc; // 精英额外给活动点
                     var rateE = arenaValue[2 * t + 2][2 * l + 2] / ticketPrice[t + 1][l + 1];
                     arenaValue[2 * t + 2][2 * l + 3] = rateE.toFixed(2);
                     // arenaValue[3 * t + 3][l + 2] = ticketPrice[t + 1][l + 1];
@@ -454,7 +458,7 @@ function displayTables() {
                         document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
                         document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
                         document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
-                    } else if (xType[2][t] * elite[l] * hp2mc > ticketPrice[t + 1][l + 1]) { // 升精英的花费不如买个新的
+                    } else if (xType[t] * coef[2] * elite[l] * hp2mc > ticketPrice[t + 1][l + 1]) { // 升精英的花费不如买个新的
                         document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
                         document.getElementById('tableArenaValue').rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
                         document.getElementById('tableArenaValue').rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
