@@ -441,7 +441,7 @@ function dailyTaskEventArena() {
             }
             // 创建闹钟
             const currentDate = new Date();
-            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 1) {
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDay() > 3) {
                 chrome.alarms.create('updateEaTask', { when: clock.getTime() });
             }
         }
