@@ -940,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
-});
+}); 
 
 /* 分析活动任务 */
 document.addEventListener('DOMContentLoaded', function () {

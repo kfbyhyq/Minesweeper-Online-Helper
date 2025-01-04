@@ -485,7 +485,7 @@ function dailyTaskFriendQuest() {
             }
         }
     });
-}
+} 
 // 设置首次调度
 dailyTaskFriendQuest();
 // 监听闹钟事件

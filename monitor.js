@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         updateButton.click();
                                         // location.reload();
                                     }, t1);
-
+ 
                                     function playAudio(frequency, volume, time) {
                                         var audioCtx = new (window.AudioContext);
                                     
