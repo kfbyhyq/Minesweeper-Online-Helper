@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 for (let i = 0; i < tickets.length; i++) {
                                     let typeClass = tickets[i].querySelector("i.fa-ticket");
                                     var type = typeClass.className.match(/ticket(\d+)/)[1];
-                                    if (type == 15) { // 如果有活动票
+                                    if (type > 10) { // 如果有活动票
                                         personalData[15][0] = '活动竞技场';
                                         type = 11;
                                     }
@@ -551,6 +551,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                     var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
                                     var n = num.replace(/ /g, "");
                                     personalData[row + +type - 1][level] = n;
+                                }
+                            }
+                            var levelMax = 8; // 最大等级
+                            if (personalData[15]) {
+                                for (let l = 0; l < levelMax; l++) {
+                                    if (!personalData[15][l + 1]) { 
+                                        console.log(personalData[15][l + 1]);
+                                        personalData[15][l + 1] = 0;
+                                    }
                                 }
                             }
                             row += 12;      // 空一行
