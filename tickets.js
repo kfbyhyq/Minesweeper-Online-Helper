@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 selectTicket(type, level);
                                 setTimeout(() => {
                                     var count = 1;
-                                    var countMax = 40;
+                                    var countMax = 50;
                                     checkInterval = setInterval(() => { // 循环调用queryTicket查找是否有数据
                                         let queryResult = queryTicket();
                                         if (queryResult) {
@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                     }
                                                 }
                                             } else {
+                                                count++;
                                                 console.log('匹配错误：L', level + 1, ' type', type + 1, queryResult);
                                             }
                                         } else if (count == countMax) {
@@ -94,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 }
                                             }
                                         } else {
+                                            count++;
                                             console.log('未找到：L', level + 1, ' type', type + 1);
                                         }
                                     }, t0);
