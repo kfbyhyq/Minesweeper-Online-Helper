@@ -105,7 +105,7 @@ body {
 /* 通用表格格式 */
 table {
     border-collapse: collapse; /* 合并边框 */
-    width: 100%;
+    /* width: 100%; */
     max-width: 600px;
 }
 th, td {
@@ -183,6 +183,12 @@ tr:nth-child(even) {
 }
 #atv3 {
     background-color: #e4c79a;
+}
+#atv4 {
+    background-color: #63BE7B;
+}
+#atv5 {
+    background-color: #F8696B;
 }
 
 /* 设置按钮格式 */
@@ -356,10 +362,10 @@ option {
 }
 
 /* 友谊任务相关设置 */
-#fqContent {
+.flexContent {
     display: flex;
 }
-.fqContentSon {
+.flexContentSon {
     padding: 20px;
     /* border: 1px solid #ccc; */
 }
@@ -398,4 +404,9 @@ option {
     width: 10px;
     height: 0;
     display: inline-block;
+}
+
+/* 窄表格 */
+.widthSet {
+    max-width: 400px;
 }

@@ -4,6 +4,7 @@ function displayEventArena() {
     let reward = [10, 25, 50, 100, 150, 200, 300, 400]; // 基础奖励/升精英所需功勋
     var epCoe = 1;
     var hp2mc = 56.6; // 功勋点折算金币
+    var levelMax = 8;
     chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'personalData'], function(result) { // 从存储中读出总数据
         const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
         // chrome.storage.local.set({ eaPriceMap: eapMap }); // 改数据用，正常情况勿启用
@@ -28,6 +29,13 @@ function displayEventArena() {
                 eaRate[1][i + 1] = ((+values[i] + (reward[i] * hp2mc))/reward[i]/epCoe/2).toFixed(2);
             }
             displayMatrix(eaRate, 'eaRateTable');
+            const earTable = document.getElementById('eaRateTable');
+            var rateColor1 = setLevelColor(eaRate[0].slice(1));
+            var rateColor2 = setLevelColor(eaRate[1].slice(1));
+            for (let l = 0; l < levelMax; l++) {
+                earTable.rows[0].cells[l + 1].style.backgroundColor = rateColor1[l];
+                earTable.rows[1].cells[l + 1].style.backgroundColor = rateColor2[l];
+            }
             /* 显示每日数据 */
             var eapDaily = [['日期', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8']];
             for (let i = 0; i < dates.length; i++) {
