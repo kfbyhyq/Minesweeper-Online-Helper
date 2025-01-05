@@ -55,22 +55,26 @@ document.addEventListener('DOMContentLoaded', function () {
                                     checkInterval = setInterval(() => { // 循环调用queryTicket查找是否有数据
                                         let queryResult = queryTicket();
                                         if (queryResult) {
-                                            console.log('找到：L', level + 1, ' type', type + 1, queryResult);
-                                            clearInterval(checkInterval); // 查询成功后停止循环
-                                            priceMap[type + 1][level + 1] = queryResult[1];
-                                            if (type == typeMax - 1) {
-                                                if (level == levelMax - 1) { // 已到达最后一张（噩梦8）
-                                                    console.log(priceMap);
-                                                    chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                                            if (queryResult[0].includes(priceMap[type + 1][0]) && queryResult[0].includes(priceMap[0][level + 1])) {
+                                                console.log('找到：L', level + 1, ' type', type + 1, queryResult);
+                                                clearInterval(checkInterval); // 查询成功后停止循环
+                                                priceMap[type + 1][level + 1] = queryResult[1];
+                                                if (type == typeMax - 1) {
+                                                    if (level == levelMax - 1) { // 已到达最后一张（噩梦8）
+                                                        console.log(priceMap);
+                                                        chrome.runtime.sendMessage({ action: 'sendTicketPrice', ticketPrice: priceMap });
+                                                    } else {
+                                                        queryProgress(type, level + 1); // 其他情况递归进入下一张票
+                                                    }
                                                 } else {
-                                                    queryProgress(type, level + 1); // 其他情况递归进入下一张票
+                                                    if (level == levelMax - 1) {
+                                                        queryProgress(type + 1, 0);
+                                                    } else {
+                                                        queryProgress(type, level + 1);
+                                                    }
                                                 }
                                             } else {
-                                                if (level == levelMax - 1) {
-                                                    queryProgress(type + 1, 0);
-                                                } else {
-                                                    queryProgress(type, level + 1);
-                                                }
+                                                console.log('匹配错误：L', level + 1, ' type', type + 1, queryResult);
                                             }
                                         } else if (count == countMax) {
                                             console.log('暂无L', level + 1, ' type', type + 1, '票价');
