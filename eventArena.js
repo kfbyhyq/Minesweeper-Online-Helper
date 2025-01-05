@@ -1,20 +1,33 @@
 /* 页面显示 */
 function displayEventArena() {
     let values = [0, 0, 0, 0, 0, 0, 0, 0]; // 初始化值
-    let reward = [10, 25, 50, 100, 150, 200, 300, 400];
-    chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
+    let reward = [10, 25, 50, 100, 150, 200, 300, 400]; // 基础奖励/升精英所需功勋
+    var epCoe = 1;
+    var hp2mc = 56.6; // 功勋点折算金币
+    chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'personalData'], function(result) { // 从存储中读出总数据
         const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
         // chrome.storage.local.set({ eaPriceMap: eapMap }); // 改数据用，正常情况勿启用
         console.log('历史活动竞技场门票价格:', eapMap);
         const dates = Object.keys(eapMap);
-        if (dates.length > 0) {
-            dates.sort((a, b) => Number(b) - Number(a));
+        values = result.eaPrice[1];
+        if (values) {
+            dates.sort((a, b) => Number(b) - Number(a)); // 日期按降序排列
             /* 显示最新数据 */
-            values = eapMap[dates[0]];
+            // values = eapMap[dates[0]];
+            var eaRate = [
+                ['mc/p', 0, 0, 0, 0, 0, 0, 0, 0],
+                ['E:mc/p', 0, 0, 0, 0, 0, 0, 0, 0]
+            ];
+            if (result.personalData) {
+                epCoe = 1 + parseFloat(result.personalData[21][9].replace('%', '')) / 100;
+            }
             for (let i = 0; i < 8; i++) {
                 document.getElementById(`value${i}`).innerText = values[i];
-                document.getElementById(`eaRate${i}`).innerText = (values[i]/reward[i]).toFixed(2);
+                // document.getElementById(`eaRate${i}`).innerText = (values[i]/reward[i]).toFixed(2);
+                eaRate[0][i + 1] = (values[i]/reward[i]/epCoe).toFixed(2);
+                eaRate[1][i + 1] = ((+values[i] + (reward[i] * hp2mc))/reward[i]/epCoe/2).toFixed(2);
             }
+            displayMatrix(eaRate, 'eaRateTable');
             /* 显示每日数据 */
             var eapDaily = [['日期', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8']];
             for (let i = 0; i < dates.length; i++) {
@@ -65,21 +78,33 @@ function saveValue(index) {
     const input = document.getElementById(`input${index}`);
     var priceInput = Number(input.value.trim());
     if (!isNaN(priceInput)) {
-        chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
-            const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
+        chrome.storage.local.get(['eaPrice', 'eaPriceMap'], function(result) { // 从存储中读出总数据
+            let eaPrice = result.eaPrice;
+            if (!eaPrice) {
+                eaPrice = [
+                    ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+                    [0, 0, 0, 0, 0, 0, 0, 0]
+                ];
+            }
+            eaPrice[1][index] = priceInput; // 更新对应位置的数据
+            chrome.storage.local.set({ eaPrice: eaPrice });
+            let eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
             const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             if (!eapMap[date]) { // 如果当前日期无条目，先新建
                 eapMap[date] = new Array(8).fill(0);
             }
-            eapMap[date][index] = priceInput; // 更新对应位置的数据
+            eapMap[date] = eaPrice[1];
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
-            console.log(eapMap);
+            console.log('更新活动竞技场门票价格：', eaPrice);
         });
-        values[index] = priceInput;
+        input.value = '';
+        // values[index] = priceInput;
         // document.getElementById(`value${index}`).innerText = priceInput; // 更新显示的值
         // document.getElementById(`eaRate${index}`).innerText = (values[index]/reward[index]).toFixed(2);
-        displayEventArena();
+        setTimeout(() => {
+            displayEventArena();
+        }, 100);
     }
 
     // 隐藏输入框并显示文本
@@ -105,30 +130,39 @@ document.querySelectorAll('.editable').forEach((div, index) => {
 
 // 保存按钮点击事件
 document.getElementById("updateEa2").onclick = function() {
-    chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
+    chrome.storage.local.get(['eaPrice', 'eaPriceMap'], function(result) { // 从存储中读出总数据
         var count = 0;
+        var eaPrice = [
+            ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+        if (result.eaPrice) {
+            eaPrice = result.eaPrice;
+        }
         document.querySelectorAll('.editable').forEach((span, index) => {
             const input = document.getElementById(`input${index}`);
             if (!input.classList.contains('hidden')) { // 确保当前编辑的输入框也是保存状态
                 count++;
                 var priceInput = Number(input.value.trim());
                 if (!isNaN(priceInput)) {
-                    values[index] = priceInput;
-                    document.getElementById(`value${index}`).innerText = priceInput; // 更新显示的值
-                    document.getElementById(`eaRate${index}`).innerText = (values[index]/reward[index]).toFixed(2);
+                    eaPrice[1][index] = priceInput;
+                    // document.getElementById(`value${index}`).innerText = priceInput; // 更新显示的值
+                    // document.getElementById(`eaRate${index}`).innerText = (eaPrice[1][index]/reward[index]).toFixed(2);
                 }
                 // 隐藏输入框并显示文本
                 input.classList.add('hidden');
+                input.value = '';
                 document.querySelector(`.editable[data-index='${index}']`).classList.remove('hidden');
             }
         });
         if (count > 0) {
+            chrome.storage.local.set({ eaPrice: eaPrice });
             const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
             const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
-            eapMap[date] = values;
+            eapMap[date] = eaPrice[1];
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
-            console.log('保存条目：', date, values);
+            console.log('保存条目：', date, eaPrice);
             setTimeout(() => {
                 displayEventArena();
             }, 100);
@@ -138,22 +172,33 @@ document.getElementById("updateEa2").onclick = function() {
 
 /* 接收网页传回的数据 */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    var LMax = 8;       // 最大等级
+    var levelMax = 8;       // 最大等级
     if (request.action === 'sendEventArenaPrice') {
         console.log('收到活动门票价格：', request.eaPrice);
         let eaPrice = request.eaPrice;
-        chrome.storage.local.get(['eaPriceMap'], function(result) { // 从存储中读出总数据
-            const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
-            const currentDate = new Date();
-            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
-            if (!eapMap[date]) { // 如果当前日期无条目，先新建
-                eapMap[date] = new Array(8).fill(0);
-            }
-            for (let i = 0; i < LMax; i++) {
-                if (eaPrice[1][i]) {
-                    eapMap[date][i] = eaPrice[1][i];
+        chrome.storage.local.get(['eaPrice', 'eaPriceMap'], function(result) { // 从存储中读出总数据
+            let eapOld = result.eaPrice || [];
+            if (eapOld) {
+                for (let l = 0; l < levelMax; l++) {
+                    if (eaPrice[1][l] == 0) {
+                        eaPrice[1][l] = eapOld[1][l]; // 票价为0说明没采集到，用原来的
+                    }
                 }
             }
+            let eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
+            const currentDate = new Date();
+            const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            console.log(eaPrice[1]);
+            eapMap[date] = eaPrice[1];
+            // if (!eapMap[date]) { // 如果当前日期无条目，先新建
+            //     eapMap[date] = new Array(8).fill(0);
+            // }
+            // for (let i = 0; i < LMax; i++) {
+            //     if (eaPrice[1][i]) {
+            //         eapMap[date][i] = eaPrice[1][i];
+            //     }
+            // }
+            chrome.storage.local.set({ eaPrice: eaPrice }); 
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
         });
         document.getElementById('flagEa').textContent = 1;   // 设置成功标记

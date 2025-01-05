@@ -215,7 +215,19 @@ button {
     background-color: #E4EEC9;
 }
 .eaRate {
-    background-color: #d4ebf9;
+    font-size: 16px;
+    max-width: 810px;
+}
+.eaRate td {
+    padding: 5px; /* 内边距 */
+    width: 90px;
+    height: 22px;
+}
+.eaRate tr:nth-child(odd) {
+    background-color: #d4ebf9; /* 每隔行背景颜色 */
+}
+.eaRate tr:nth-child(even) {
+    background-color: #a8dfff; /* 每隔行背景颜色 */
 }
 .editable {
     text-align: center;
