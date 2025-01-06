@@ -381,6 +381,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (autoUpdate) {
                         chrome.storage.local.set({ autoUpdate: autoUpdate });
                     }
+                    const effNfCoef = result.effNfCoef;
+                    if (effNfCoef) {
+                        chrome.storage.local.set({ effNfCoef: effNfCoef });
+                    }
                 });
                 // location.reload();
                 console.log('恢复数据成功');
