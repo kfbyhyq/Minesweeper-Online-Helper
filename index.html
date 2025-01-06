@@ -45,23 +45,34 @@
                 <h1>宝石/竞技场币/碎片价格</h1>
                 <button id="marketPage">打开市场页</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
+                <span class="plainText">所有价格均为上一次刷新的市场最低价，完美碎片价格为价格最低的一类。</span><br><br>
                 <table id="table1" class="noempty"></table>
                 <h1>竞技场门票价格</h1>
                 <button id="arenaPage">打开竞技场页</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
                 <table id="table2" class="ticketTable noempty"></table>
-                <h1>竞技场门票使用vs出售</h1>
+                <h1>竞技场门票收益参考</h1>
+                <span class="plainText">门票收益估值不包括对局中的收益，仅为参考值，不代表实际收益。</span><br>
+                <span class="plainText">收益考虑了装备加成，其中场币价格以市场最低价为准，活跃度按1:2转换为功勋，活动物品（精英）按1:1转换为功勋，功勋价值参考值为56.6。</span><br>
+                <span class="plainText">门票开销为市场最低价，精英开销为市场最低价加升级花费的功勋价值。</span><br>
+                <span class="plainText">净收益为收益减开销，时间为竞技场需要完成的平均难度，其中盲扫和效率由系数加权，可在设置页配置。</span><br>
+                <span class="plainText">净收益/时间可以近似理解为：每花费相当于一局初级的时间能获得的金币。</span><br><br>
                 <div class="flexContent">
                     <div class="fqContentSon">
                         <div class="atv" id="atv1">最赚</div>
                         <div class="atv" id="atv2">次赚</div>
                         <div class="atv" id="atv3">卖掉赚</div><br><br>
-                        <table id="tableArenaValue" class="ticketTable2"></table><br><br>
+                        <table id="tableArenaValue" class="ticketTable0"></table><br><br>
                     </div>
                     <div class="fqContentSon">
                         <div class="atv" id="atv4">最赚</div>
                         <div class="atv" id="atv5">最亏</div><br><br>
-                        <table id="tableArenaRate" class="ticketTable2"></table><br><br>
+                        <table id="tableArenaRate" class="ticketTable0"></table><br><br>
+                    </div>
+                    <div class="fqContentSon">
+                        <div class="atv" id="atv4">最赚</div>
+                        <div class="atv" id="atv5">最亏</div><br><br>
+                        <table id="tableArenaTimeRate" class="ticketTable0"></table><br><br>
                     </div>
                 </div>
             </div>
@@ -83,8 +94,8 @@
                 <button id="showPeDaily">展开财产变化</button><br><br>
                 <div id="showPedFlag" style="display:none;">0</div>
                 <table id="tablePe"></table><br>
-                <table id="peDaily" class="ticketTable" style="display:none;"></table><br>
-                <div id="noPeDaily" style="display:none; font-size: 16px;">暂无财产历史数据</div><br>
+                <table id="peDaily" class="ticketTable" style="display:none;"></table>
+                <div id="noPeDaily" style="display:none; font-size: 16px;">暂无财产历史数据</div>
                 <h1>奖杯</h1>
                 <!-- <div class="atv">总奖杯数：</div><div class="atv" id="tropNum"></div><div class="atv">排名：</div><div class="atv" id="tropRank"></div> -->
                 <table id="tableTrophy" class="noempty"></table><br><br>
@@ -99,10 +110,12 @@
             <div id="perfect" class="page">
                 <h1>完美装备制作信息</h1>
                 <button id="equipmentPage">打开装备页</button><br><br>
-                <h2>金币需求：1 000 000</h2>
-                <h2>宝石需求：5 000</h2>
-                <h2>竞技场币需求：1 000</h2>
-                <table id="table4" class="ticketTable noempty"></table>
+                <span class="plainText">金币需求：1 000 000</span><br>
+                <span class="plainText">宝石需求：5 000</span><br>
+                <span class="plainText">竞技场币需求：1 000</span><br><br>
+                <table id="table4" class="ticketTable noempty"></table><br><br>
+                <span class="plainText">推荐升级顺序：活动物品 -> 赛季任务 -> 每日任务 -> 活跃度</span><br><br>
+                <table id="perfectUpgrade" class="ticketTable"></table><br>
             </div>
             <div id="eventArena" class="page">
                 <h1>活动竞技场门票价格</h1>
@@ -110,6 +123,7 @@
                 <button id="updateEa1">自动刷新价格</button>
                 <div id="flagEa" style="display:none;">0</div>
                 <button id="updateEa2">手动刷新价格</button><br><br>
+                <span class="plainText">点击票价可手动修改，按enter或点击“手动刷新价格”保存</span><br><br>
                 <div class="divSet eaSet">
                     <div class="eaText">等级</div>
                     <div class="eaText">L1</div>
@@ -202,6 +216,10 @@
             <div id="setting" class="page">
                 <h1>账号设置</h1>
                 <span class="plainText">当前登录账号ID：</span><input id="personalId" class="inputBox inputBlank"><span id="pIdNow" style="display:none"></span>
+                <h1>参数设置</h1>
+                <span class="plainText">盲扫系数（默认0.75）：</span><input id="nfCoef" class="inputBox inputBlank"><span class="plainText">盲扫平均速度/标旗平均速度</span><br>
+                <span class="plainText">效率系数（默认0.75）：</span><input id="effCoef" class="inputBox inputBlank"><span class="plainText">100%+效率平均速度/标旗平均速度</span><br>
+                <span class="plainText">两系数仅为参考值，用于竞技场门票时间估计，可用高级/中级的对应pb近似计算。</span>
                 <h1>自动刷新</h1>
                 <div class="inRow">
                     <span class="plainText">自动刷新数据</span>

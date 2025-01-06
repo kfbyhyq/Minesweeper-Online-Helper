@@ -40,18 +40,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                         if (!board[row]) {
                                             board[row] = [];
                                         }
-                                        if (cell.classList.value.includes('d_flag')) {
+                                        const classText = cell.classList.value;
+                                        if (classText.includes('d_flag')) {
                                             board[row][col] = 'F';
                                             mineNum++;
-                                        } else if (cell.classList.value.includes('d_type10') || cell.classList.value.includes('d_type11')) {
+                                        } else if (classText.includes('d_type10') || classText.includes('d_type11')) {
                                             board[row][col] = 'F';
-                                        } else if (cell.classList.value.includes('d_closed') || cell.classList.value.includes('d_pressed')) {
+                                        } else if (classText.includes('d_closed') || classText.includes('d_pressed')) {
                                             board[row][col] = 'H';
-                                        } else if (cell.classList.value.includes('d_type12')) {
+                                        } else if (classText.includes('d_type12')) {
                                             board[row][col] = 'H';
                                             mineNum++;
                                         } else {
-                                            board[row][col] = cell.classList.item(cell.classList.length - 1).slice(-1);
+                                            let numType = classText.match(/type(\d+)/)[1];
+                                            if (numType) {
+                                                board[row][col] = numType;
+                                            } else {
+                                                board[row][col] = 'H';
+                                            }
                                         }
                                     }
                                     }

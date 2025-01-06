@@ -167,6 +167,23 @@ tr:nth-child(even) {
 .ticketTable2 tr:hover {
     background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
 }
+
+.ticketTable0 tbody td:nth-child(1) {
+    font-weight: bold;
+}
+.ticketTable0 tbody tr:first-child {
+    background-color: #E4EEC9; /* 第一行背景颜色 */
+    font-weight: bold;
+}
+.ticketTable0 tr:nth-child(odd) {
+    background-color: #a8dfff;
+}
+.ticketTable0 tr:nth-child(even) {
+    background-color: #d4ebf9;
+}
+.ticketTable0 tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+}
 .atv {
     padding: 10px; /* 内边距 */
     text-align: center; /* 文本居中 */

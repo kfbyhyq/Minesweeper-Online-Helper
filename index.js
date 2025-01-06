@@ -128,13 +128,21 @@ document.addEventListener('DOMContentLoaded', function() {
 /* 设置页 */
 document.addEventListener('DOMContentLoaded', function() {
     /* 读当前设置 */
-    chrome.storage.local.get('pId', function (result) {
+    chrome.storage.local.get(['pId', 'effNfCoef'], function (result) {
         const pId = result.pId;
         if (pId) {
             document.getElementById('pIdNow').innerText = pId;
             document.getElementById('personalId').placeholder = pId;
         } else {
             document.getElementById('personalId').placeholder = '请设置账号';
+        }
+        const effNfCoef = result.effNfCoef;
+        if (effNfCoef) {
+            document.getElementById('nfCoef').placeholder = effNfCoef[0];
+            document.getElementById('effCoef').placeholder = effNfCoef[1];
+        } else {
+            document.getElementById('nfCoef').placeholder = 0.75;
+            document.getElementById('effCoef').placeholder = 0.75;
         }
     });
     chrome.storage.local.get('autoUpdate', function (result) {
@@ -250,6 +258,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('saveSucc').innerText = "ID格式错误"
             document.getElementById('saveSucc').style.display = "block";
         }
+        var effNfCoef = [];
+        effNfCoef[0] = document.getElementById('nfCoef').value;
+        effNfCoef[1] = document.getElementById('effCoef').value;
+        chrome.storage.local.set({ effNfCoef: effNfCoef });
     });
     /* 备份数据 */
     document.getElementById('backupButton').addEventListener('click', function () {
