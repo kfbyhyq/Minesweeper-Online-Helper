@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         const currentDate = new Date();
-        if ((currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDay() > 3) { // 如果活动竞技场开启，刷新价格
+        if ((currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDate() > 3) { // 如果活动竞技场开启，刷新价格
             document.getElementById('flagEa').textContent = 0;
             chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tabEa) {
                 const ti0 = tabEa.id;
@@ -886,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        if ((currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDay() > 3) { // 如果友谊任务开启，刷新任务
+        if ((currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDate() > 3) { // 如果友谊任务开启，刷新任务
             document.getElementById('flagFq').textContent = 0;
             chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: false }, function (tabFq) {
                 const ti0 = tabFq.id;
