@@ -263,10 +263,26 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('saveSucc').style.display = "block";
         }
         var configurableCoef = [];
-        configurableCoef[0] = document.getElementById('act2ep').value;
-        configurableCoef[1] = document.getElementById('ep2mc').value;
-        configurableCoef[2] = document.getElementById('nfCoef').value;
-        configurableCoef[3] = document.getElementById('effCoef').value;
+        if (document.getElementById('act2ep').value) {
+            configurableCoef[0] = document.getElementById('act2ep').value;
+        } else {
+            configurableCoef[0] = document.getElementById('act2ep').placeholder;
+        }
+        if (document.getElementById('ep2mc').value) {
+            configurableCoef[1] = document.getElementById('ep2mc').value;
+        } else {
+            configurableCoef[1] = document.getElementById('ep2mc').placeholder;
+        }
+        if (document.getElementById('nfCoef').value) {
+            configurableCoef[2] = document.getElementById('nfCoef').value;
+        } else {
+            configurableCoef[2] = document.getElementById('nfCoef').placeholder;
+        }
+        if (document.getElementById('effCoef').value) {
+            configurableCoef[3] = document.getElementById('effCoef').value;
+        } else {
+            configurableCoef[3] = document.getElementById('effCoef').placeholder;
+        }
         chrome.storage.local.set({ configurableCoef: configurableCoef });
     });
     /* 备份数据 */
