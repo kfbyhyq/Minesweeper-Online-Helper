@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* 设置页 */
 document.addEventListener('DOMContentLoaded', function() {
     /* 读当前设置 */
-    chrome.storage.local.get(['pId', 'effNfCoef'], function (result) {
+    chrome.storage.local.get(['pId', 'configurableCoef'], function (result) {
         const pId = result.pId;
         if (pId) {
             document.getElementById('pIdNow').innerText = pId;
@@ -136,11 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             document.getElementById('personalId').placeholder = '请设置账号';
         }
-        const effNfCoef = result.effNfCoef;
-        if (effNfCoef) {
-            document.getElementById('nfCoef').placeholder = effNfCoef[0];
-            document.getElementById('effCoef').placeholder = effNfCoef[1];
+        const configurableCoef = result.configurableCoef;
+        if (configurableCoef) {
+            document.getElementById('act2ep').placeholder = configurableCoef[0];
+            document.getElementById('ep2mc').placeholder = configurableCoef[1];
+            document.getElementById('nfCoef').placeholder = configurableCoef[2];
+            document.getElementById('effCoef').placeholder = configurableCoef[3];
         } else {
+            document.getElementById('act2ep').placeholder = 2.5;
+            document.getElementById('ep2mc').placeholder = 56.6;
             document.getElementById('nfCoef').placeholder = 0.75;
             document.getElementById('effCoef').placeholder = 0.75;
         }
@@ -258,10 +262,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('saveSucc').innerText = "ID格式错误"
             document.getElementById('saveSucc').style.display = "block";
         }
-        var effNfCoef = [];
-        effNfCoef[0] = document.getElementById('nfCoef').value;
-        effNfCoef[1] = document.getElementById('effCoef').value;
-        chrome.storage.local.set({ effNfCoef: effNfCoef });
+        var configurableCoef = [];
+        configurableCoef[0] = document.getElementById('act2ep').value;
+        configurableCoef[1] = document.getElementById('ep2mc').value;
+        configurableCoef[2] = document.getElementById('nfCoef').value;
+        configurableCoef[3] = document.getElementById('effCoef').value;
+        chrome.storage.local.set({ configurableCoef: configurableCoef });
     });
     /* 备份数据 */
     document.getElementById('backupButton').addEventListener('click', function () {
@@ -381,9 +387,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (autoUpdate) {
                         chrome.storage.local.set({ autoUpdate: autoUpdate });
                     }
-                    const effNfCoef = result.effNfCoef;
-                    if (effNfCoef) {
-                        chrome.storage.local.set({ effNfCoef: effNfCoef });
+                    const configurableCoef = result.configurableCoef;
+                    if (configurableCoef) {
+                        chrome.storage.local.set({ configurableCoef: configurableCoef });
                     }
                 });
                 // location.reload();

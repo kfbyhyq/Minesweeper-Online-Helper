@@ -64,7 +64,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             console.log(board);
                             console.log(mineNum);
-                            saveAsMine(board, mineNum, 'board.mine');
+                            const currentDate = new Date();
+                            const year = currentDate.getFullYear();
+                            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                            const day = String(currentDate.getDate()).padStart(2, '0');
+                            const hours = String(currentDate.getHours()).padStart(2, '0');
+                            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+                            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+                            const name = 'board-' + `${year}${month}${day}${hours}${minutes}${seconds}` + '.mine';
+                            saveAsMine(board, mineNum, name);
                             chrome.runtime.sendMessage({ action: 'captured', capturedFlag: 1 });
                         } catch (e) {
                             console.log(e);

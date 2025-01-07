@@ -186,7 +186,11 @@ function displayTables() {
             console.log('个人数据:', result.personalData);
             displayMatrix(personalData.slice(17, 19), 'table3-1');    // 显示总资源数
             displayMatrix(personalData.slice(0, 4), 'table3-2');    // 显示宝石和场币明细
-            displayMatrix(personalData.slice(4, 16), 'table3-3');    // 显示门票明细
+            if (personalData[15]) {
+                displayMatrix(personalData.slice(4, 16), 'table3-3');    // 显示门票明细（有活动门票）
+            } else {
+                displayMatrix(personalData.slice(4, 15), 'table3-3');    // 显示门票明细
+            }
             equip = personalData.slice(20, 24);
             equip[0][8] = equip[0][9];
             equip[1][8] = equip[1][9];
@@ -400,6 +404,7 @@ function displayTables() {
                 perfect[4][t + 1] = coin + (gems - personalData[1][t]) * gemsPrice[1][t] + (ac - personalData[3][t]) * gemsPrice[3][t];
             }
             displayMatrix(perfect, 'table4');
+            chrome.storage.local.set({ perfectValue: perfect });
             var levelColorPerfect1 = setLevelColor(perfect[1].slice(1));
             var levelColorPerfect2 = setLevelColor(perfect[4].slice(1));
             const tablePerfect = document.getElementById('table4');
@@ -555,13 +560,17 @@ function displayTables() {
                 ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0],
                 ['噩梦', 0, 0, 0, 0, 0, 0, 0, 0]
             ];
+            var act2ep = 2.5; // 活跃度转化活动物品，可配置
+            var ep2mc = 56.6; // 活动物品价值金币，可配置
             var effCoef = 0.75; // 效率相比标旗的速度衰减，可配置
             var nfCoef = 0.75; // 盲扫相比标旗的速度衰减，可配置
             var ratesAv = [];
             var ratesAt = [];
-            if (result.effNfCoef) {
-                nfCoef = result.effNfCoef[0];
-                effCoef = result.effNfCoef[1];
+            if (result.configurableCoef) {
+                act2ep = result.configurableCoef[0];
+                ep2mc = result.configurableCoef[1];
+                nfCoef = result.configurableCoef[2];
+                effCoef = result.configurableCoef[3];
             }
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
@@ -579,7 +588,7 @@ function displayTables() {
                     arenaValue[2 * t + 1][l + 1] = (xType[t] * coef[0] * xL[l] * exCoe / hp2ex * hp2mc // 经验折算为功勋
                                                  + xType[t] * coef[1] * xL[l] * mcCoe // 金币
                                                  + xType[t] * coef[2] * xL[l] * acCoe * gemsPrice[3][acInd[t]] // 场币
-                                                 + 2 * xType[t] * coef[3] * xL[l] * actCoe * hp2mc) | 0; // 活跃1:2折算为功勋
+                                                 + xType[t] * coef[3] * xL[l] * actCoe * act2ep * ep2mc) | 0; // 活跃
                     // var rate = arenaValue[2 * t + 1][2 * l + 2] / ticketPrice[t + 1][l + 1];
                     // arenaValue[2 * t + 1][2 * l + 3] = rate.toFixed(2);
                     var rate = arenaValue[2 * t + 1][l + 1] / ticketPrice[t + 1][l + 1];
@@ -588,7 +597,7 @@ function displayTables() {
                     // arenaValue[2 * t + 2][2 * l + 2] = (arenaValue[2 * t + 1][2 * l + 2] * 2
                     //                                  + xType[t] * coef[4] * xL[l] * epCoe * hp2mc) | 0; // 精英额外给活动点
                     arenaValue[2 * t + 2][l + 1] = (arenaValue[2 * t + 1][l + 1] * 2
-                                                 + xType[t] * coef[4] * xL[l] * epCoe * hp2mc) | 0; // 精英额外给活动点
+                                                 + xType[t] * coef[4] * xL[l] * epCoe * ep2mc) | 0; // 精英额外给活动点
                     // var rateE = arenaValue[2 * t + 2][2 * l + 2] / (+ticketPrice[t + 1][l + 1] + xType[t] * coef[2] * elite[l] * hp2mc);
                     // arenaValue[2 * t + 2][2 * l + 3] = rateE.toFixed(2);
                     var rateE = arenaValue[2 * t + 2][l + 1] / (+ticketPrice[t + 1][l + 1] + xType[t] * coef[2] * elite[l] * hp2mc);
