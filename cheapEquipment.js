@@ -124,7 +124,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         chrome.storage.local.get(['perfectValue', 'gemsPrice'], function(result) {
             const perfectValue = result.perfectValue;
             const gemsPrice = result.gemsPrice;
-            var equipCheap = [['页码', '序号', '名称', '质量', '碎片', '售价']]; // 结果表
+            var equipCheap = [['页码', '序号', '名称', '质量', '碎片', '碎片价', '售价']]; // 结果表
             var ecn = 0;
             for (let i = 1; i < equipmentInfo.length; i++) {
                 var quality = equipmentInfo[i][2].replace(/%/g, ""); // 装备质量 多少个百分点
@@ -132,38 +132,38 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     var disPrice = perfectValue[1][equipmentInfo[i][1] + 1]; // 直接用估价比较
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
-                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], 100, equipmentInfo[i][3]];
+                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], 100, disPrice, equipmentInfo[i][3]];
                     }
                 } else if (quality >= lt && quality < pt) { // 传说
                     var disPrice = legendEquipment[quality - lt] * perfectValue[1][equipmentInfo[i][1] + 1] / 100; // 碎片个数乘以对应碎片估价
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
-                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], legendEquipment[quality - lt], equipmentInfo[i][3]];
+                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], legendEquipment[quality - lt], disPrice, equipmentInfo[i][3]];
                     }
                 } else if (quality >= ut && quality < lt) { // 史诗
                     var disPrice = uniqueEquipment[quality - ut] * gemsPrice[5][2];
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
-                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], uniqueEquipment[quality - ut], equipmentInfo[i][3]];
+                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], uniqueEquipment[quality - ut], disPrice, equipmentInfo[i][3]];
                     }
                 } else if (quality >= rt && quality < ut) { // 稀有
                     var disPrice = rareEquipment[quality - rt] * gemsPrice[5][1];
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
-                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], rareEquipment[quality - rt], equipmentInfo[i][3]];
+                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], rareEquipment[quality - rt], disPrice, equipmentInfo[i][3]];
                     }
                 } else if (quality >= ct && quality < rt) { // 普通
                     var disPrice = commonEquipment[quality - ct] * gemsPrice[5][0];
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
-                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], commonEquipment[quality - ct], equipmentInfo[i][3]];
+                        equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], commonEquipment[quality - ct], disPrice, equipmentInfo[i][3]];
                     }
                 }
             }
             if (ecn > 0) { // 有便宜装备就输出
                 displayTextMatrix(equipCheap, 'equipCheap');
                 document.getElementById('equipCheap').style.display = 'block';
-                document.getElementById('mainBody').style.width = '280px';
+                document.getElementById('mainBody').style.width = '320px';
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
                     const tabId = tab1[0].id;
                     chrome.scripting.executeScript({
