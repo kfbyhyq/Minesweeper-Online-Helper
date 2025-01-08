@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const equipStatsMap = result.equipStatsMap || {};
                     const equipStatsMapIn = dataIn['equipStatsMap'];
                     for (const key in equipStatsMapIn) {
-                        tpequipStatsMapMap[key] = equipStatsMapIn[key];
+                        equipStatsMap[key] = equipStatsMapIn[key];
                     }
                     chrome.storage.local.set({ equipStatsMap: equipStatsMap });
                     /* 游戏数据 */
