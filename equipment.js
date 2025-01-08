@@ -67,14 +67,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         chrome.storage.local.set({ equipStats: equipStats });
         /* 按日期保存 */
         chrome.storage.local.get(['equipStatsMap'], function(result) {
-            const equipStats = result.equipStatsMap || {}; // 确保存在数据，防止为 undefined
+            const equipStatsMap = result.equipStatsMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
             const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             // 更新数据
-            equipStats[newDate] = equipStats;
+            equipStatsMap[newDate] = equipStats;
         
             // 保存更新后的数据
-            chrome.storage.local.set({ equipStatsMap: equipStats });
+            chrome.storage.local.set({ equipStatsMap: equipStatsMap });
         });
 
         document.getElementById('buttonEquip').style.backgroundColor = '#4caf50';

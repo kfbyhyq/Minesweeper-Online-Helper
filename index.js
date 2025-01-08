@@ -346,6 +346,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         tpMap[key] = tpMapIn[key];
                     }
                     chrome.storage.local.set({ ticketPriceMap: tpMap });
+                    /* 装备加成 */
+                    const equipStatsMap = result.equipStatsMap || {};
+                    const equipStatsMapIn = dataIn['equipStatsMap'];
+                    for (const key in equipStatsMapIn) {
+                        tpequipStatsMapMap[key] = equipStatsMapIn[key];
+                    }
+                    chrome.storage.local.set({ equipStatsMap: equipStatsMap });
                     /* 游戏数据 */
                     const stMap = result.statisticsMap || {};
                     const stMapIn = dataIn['statisticsMap'];
