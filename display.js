@@ -60,7 +60,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         setTimeout(() => {
             displayTables();
         }, 100);
-    } else if (request.action === 'sendStatistics') {
+    } else if (request.action === 'sendEquipStats') {
+        let equipStats = request.equipStats;
+        console.log('收到装备加成：', equipStats);
+        chrome.storage.local.set({ equipStats: equipStats });
+        /* 按日期保存 */
+        chrome.storage.local.get(['equipStatsMap'], function(result) {
+            const equipStats = result.equipStatsMap || {}; // 确保存在数据，防止为 undefined
+            const currentDate = new Date();
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            // 更新数据
+            equipStats[newDate] = equipStats;
+        
+            // 保存更新后的数据
+            chrome.storage.local.set({ equipStatsMap: equipStats });
+        });
+        document.getElementById('flagEquip').textContent = 1;   // 设置成功标记
+        setTimeout(() => {
+            displayTables();
+        }, 100);
+    } else if (request.action === 'sendStatistics') { // 游戏数据
         let statistics = request.statistics;
         console.log('收到游戏数据更新：', statistics);
         chrome.storage.local.set({ statistics: statistics });
@@ -80,7 +99,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         setTimeout(() => {
             displayTables();
         }, 100);
-    } else if (request.action === 'sendPersonalData') {
+    } else if (request.action === 'sendPersonalData') { // 个人数据
         let personalData = request.personalData;
         console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
         chrome.storage.local.set({ personalData: personalData });     // 保存数据
@@ -100,7 +119,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         setTimeout(() => {
             displayTables();
         }, 100);
-    } else if (request.action === 'personalEconomy') {
+    } else if (request.action === 'personalEconomy') { // 游戏经济
         let personalEco = request.personalEco;
         console.log('收到财产估值更新：', personalEco);   // 在控制台打出结果
         chrome.storage.local.set({ personalEco: personalEco });     // 保存数据
@@ -134,6 +153,7 @@ function displayTables() {
     var statistics;
     var personalData;
     var equip; // 装备数据
+    var equipNew; // 使用装备也的装备加成情况
     var lm = 8; // 最大等级
     var tm = 10; // 多少种竞技场
     var hp2mc = 56.6; // 功勋点折算金币
@@ -198,7 +218,14 @@ function displayTables() {
             equip[1][9] = equip[1][10];
             equip[0].splice(10, 1);
             equip[1].splice(10, 1);
-            displayMatrix(equip, 'table3-4');    // 显示装备加成
+            if (result.equipStats) {
+                equipNew = result.equipStats;
+                var rank = personalData[24][1] / 100 | 0; // 军衔
+                var questLevelMax = rank + 1 + +equip[1][6];
+                equipNew[1][5] = (questLevelMax / 2 | 0) + '-' + questLevelMax;
+                displayTextMatrix(equipNew, 'table3-4'); 
+            }
+            // displayMatrix(equip, 'table3-4');    // 显示装备加成
             // document.getElementById('tropNum').textContent = personalData[24][1];
             // document.getElementById('tropRank').textContent = personalData[24][3] || '暂无';
             let tableTrophy = personalData.slice(24, 28);
@@ -575,11 +602,11 @@ function displayTables() {
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
                     // arenaValue[3 * t + 1][l + 2] = xType[t] * coef[0] * xL[l] / hp2ex * hp2mc + xType[t] * coef[1] * xL[l] + xType[t] * coef[2] * xL[l] * gemsPrice[3][acInd[t]];
-                    var exCoe = 1 + parseFloat(equip[1][0].replace('%', '')) / 100; // 经验加成
-                    var mcCoe = 1 + parseFloat(equip[1][1].replace('%', '')) / 100; // 金币加成
-                    var acCoe = 1 + parseFloat(equip[1][7].replace('%', '')) / 100; // 场币加成
-                    var actCoe = 1 + parseFloat(equip[1][8].replace('%', '')) / 100; // 活跃加成
-                    var epCoe = 1 + parseFloat(equip[1][9].replace('%', '')) / 100; // 活动点加成
+                    var exCoe = parseFloat(equipNew[1][0].replace('x', '')); // 经验加成
+                    var mcCoe = parseFloat(equipNew[1][1].replace('x', '')); // 金币加成
+                    var acCoe = parseFloat(equipNew[1][6].replace('x', '')); // 场币加成
+                    var actCoe = parseFloat(equipNew[1][7].replace('x', '')); // 活跃加成
+                    var epCoe = parseFloat(equipNew[1][8].replace('x', '')); // 活动点加成
                     // 打竞技场的期望收益
                     // arenaValue[2 * t + 1][2 * l + 2] = (xType[t] * coef[0] * xL[l] * exCoe / hp2ex * hp2mc // 经验折算为功勋
                     //                                  + xType[t] * coef[1] * xL[l] * mcCoe // 金币
@@ -625,7 +652,7 @@ function displayTables() {
             displayMatrix(arenaValue, 'tableArenaValue');
             displayMatrix(arenaRate, 'tableArenaRate');
             displayMatrix(arenaTimeRate, 'tableArenaTimeRate');
-            var levelColorAr = setLevelColor(ratesAv, 1, 3, 4);
+            var levelColorAr = setLevelColor(ratesAv, 1, 3);
             var levelColorAtr = setLevelColor(ratesAt, 1, 3, 100, 0);
             const tableAv = document.getElementById('tableArenaValue');
             const tableAr = document.getElementById('tableArenaRate');

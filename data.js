@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     const button = document.getElementById('button3');
     button.style.backgroundColor = '#9b9b9b'; // 默认灰色
     chrome.storage.local.get('pId', function (result) {

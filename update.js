@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateStatistics();
         updatePersonalData();
         updateEconomy();
+        updateEquipmentStats();
         const currentDate = new Date();
         if ((currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDate() > 3) { // 如果活动竞技场开启，刷新价格
             updateEventArenaTickets();
@@ -367,6 +368,76 @@ function updateArenaTickets() {
             }
         });
     });
+}
+/* 刷新装备加成 */
+function updateEquipmentStats() {
+    document.getElementById('flagEquip').textContent = 0;
+    chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: false }, function (tabEquip) {
+        const tiEquip = tabEquip.id;
+        var t0 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 20;
+        intervalEquip = setInterval(() => {
+            flag = document.getElementById('flagEquip').textContent;
+            if (flag == 1 || count == countMax) {
+                clearInterval(intervalEquip);
+                chrome.tabs.remove(tiEquip, function() {});
+            } else {
+                extract(tiEquip);
+                count++;
+            }
+        }, t0);
+
+        function extract(tabId) {
+            chrome.scripting.executeScript({
+                target: { tabId },
+                function: function () {
+                    var equipStats = [
+                        ['经验', '金币', '竞技场门票', '每日任务', '赛季任务', '任务等级', '竞技场币', '活跃度', '活动物品'],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉'],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    ]
+                    var bonusIndex = [0, 1, '', 2, '', '', '', '', '', '', '', 
+                                      3, 4, 5, '', '', '', '', 6, '', 7, 
+                                      8, '', '', '', '', '', '', '', '', '', 
+                                      10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+                    try {
+                        let allStats = document.querySelector("#EquipmentBlock > div:nth-child(1) > div.pull-right > span:nth-child(3) > img");
+                        hoverBox(allStats);      // 鼠标悬浮展开宝石数量
+                        let list = document.querySelector("body > div.popover.fade.bottom.in > div.popover-content > div > div");
+
+                        for (const item of list.children) {
+                            const classText = item.classList.value;
+                            if (classText.includes('bonus-')) {
+                                var bonusType = classText.match(/(\d+)/g)[0];
+                                var value = item.textContent.match(/[:：](.*)/)[1];
+                                equipStats[1 + 2 * (bonusIndex[bonusType] / 10 | 0)][bonusIndex[bonusType] % 10] = value;
+                            }
+                        }
+                        console.log(equipStats);
+                        chrome.runtime.sendMessage({ action: 'sendEquipStats', equipStats: equipStats });
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                    /* 模拟鼠标悬浮在button */
+                    function hoverBox(button) {
+                        let event = new MouseEvent("mouseover", {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window,
+                            clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                            clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                        });
+                        button.dispatchEvent(event);
+                    }
+                }
+            });
+        }
+    });
+
 }
 /* 刷新游戏数据 */
 function updateStatistics() {

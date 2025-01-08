@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const button = document.getElementById('buttonEquip');
+    const button = document.getElementById('buttonCheapEquip');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
         if (tab1[0].url == 'https://minesweeper.online/cn/marketplace' || tab1[0].url == 'https://minesweeper.online/marketplace') {
             button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
@@ -119,7 +119,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'sendEquipmentInfo') {
         let equipmentInfo = request.equipmentInfo;
         console.log('收到装备出售信息：', equipmentInfo);   // 在控制台打出结果
-        document.getElementById('buttonEquip').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        document.getElementById('buttonCheapEquip').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
 
         chrome.storage.local.get(['perfectValue', 'gemsPrice'], function(result) {
             const perfectValue = result.perfectValue;
