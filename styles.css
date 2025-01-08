@@ -37,6 +37,8 @@ body {
     position: fixed; /* 固定位置 */
     top: 76px; /* 到页面顶部 */
     left: 0; /* 到页面左侧 */
+    display: flex; /* 添加 Flexbox 布局 */
+    flex-direction: column; /* 子元素垂直排列 */
 }
 #navbar0 {
     width: 160px; /* 设置导航栏的宽度 */
@@ -101,7 +103,16 @@ body {
 #navbar #update:hover {
     background-color: #fce27c;
 }
-
+/* GitHub主页 */
+#navbar #github {
+    background-color: #fdda4f;
+    margin-top: auto;
+    font-size: 14px; /* 字体大小 */
+    padding: 10px 40px; /* 内边距 */
+}
+#navbar #github:hover {
+    background-color: #fce27c;
+}
 /* 通用表格格式 */
 table {
     border-collapse: collapse; /* 合并边框 */

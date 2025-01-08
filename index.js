@@ -67,6 +67,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+/* 固定左侧导航栏高度 */
+window.addEventListener('resize', function() {
+    // 获取视口高度
+    var viewportHeight = window.innerHeight;
+    // 设置#navbar的最大高度
+    var navbarMaxHeight = viewportHeight - 76; // 减去top偏移量76px
+    // 获取#navbar元素
+    var navbarElement = document.getElementById('navbar');
+    // 应用最大高度（使用px单位）
+    navbarElement.style.maxHeight = navbarMaxHeight + 'px';
+});
+// 初始加载时也应设置最大高度
+window.dispatchEvent(new Event('resize'));
+
 /* 打开页面功能 */
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('statisticPage').addEventListener('click', function () {
@@ -107,6 +121,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById('personEcoPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: true });
+    });
+    document.getElementById('github').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://github.com/kfbyhyq/Minesweeper-Online-Helper', active: true });
     });
 });
 
