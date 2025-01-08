@@ -113,3 +113,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('buttonSave').style.backgroundColor = '#4caf50';
     }
 });
+
+/* 初始化 */
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.get(['advancedMode'], function(result) {
+        if (!result.advancedMode) {
+            document.getElementById('advMode').innerHTML = '';
+        }
+    });
+});
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     var advancedMode = 1;
+//     chrome.storage.local.set({ advancedMode: advancedMode });
+// });
