@@ -451,7 +451,12 @@ dailyTaskUpdate();
 // 监听闹钟事件
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'updateData') {
-        document.getElementById('update').click();
+        // document.getElementById('update').click();
+        updateGems();
+        updateArenaTickets();
+        updateStatistics();
+        updatePersonalData();
+        updateEconomy();
         // 重新调度下一天的任务
         dailyTaskUpdate();
     }
@@ -490,7 +495,8 @@ dailyTaskEventArena();
 // 监听闹钟事件
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'updateEaTask') {
-        document.getElementById('updateEa1').click();
+        // document.getElementById('updateEa1').click();
+        updateEventArenaTickets();
         // 重新调度下一天的任务
         dailyTaskEventArena();
     }
@@ -529,7 +535,8 @@ dailyTaskFriendQuest();
 // 监听闹钟事件
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'updateFqTask') {
-        document.getElementById('updateFq').click();
+        // document.getElementById('updateFq').click();
+        updateFriendQuest();
         // 重新调度下一天的任务
         dailyTaskFriendQuest();
     }

@@ -318,12 +318,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-
-/* 刷新任务（第一页） */
-document.getElementById('updateFq').addEventListener('click', function () {
+/* 刷新友谊任务（第一页） */
+function updateFriendQuest() {
     document.getElementById('flagFq').textContent = 0;
-    chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true }, function (tab0) {
-        const ti0 = tab0.id;
+    chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: false }, function (tabFq) {
+        const ti0 = tabFq.id;
         recur(ti0, 1);
 
         function recur(tabId, i) {
@@ -410,4 +409,9 @@ document.getElementById('updateFq').addEventListener('click', function () {
             });
         }
     });
+}
+
+/* 刷新任务 */
+document.getElementById('updateFq').addEventListener('click', function () {
+    updateFriendQuest();
 });

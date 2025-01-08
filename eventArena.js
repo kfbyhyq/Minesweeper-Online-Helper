@@ -196,7 +196,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             let eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
             const currentDate = new Date();
             const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
-            console.log(eaPrice[1]);
             eapMap[date] = eaPrice[1];
             // if (!eapMap[date]) { // 如果当前日期无条目，先新建
             //     eapMap[date] = new Array(8).fill(0);
@@ -217,11 +216,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-/* 自动刷新 */
-document.getElementById('updateEa1').addEventListener('click', function () {
+/* 刷新活动竞技场门票 */
+function updateEventArenaTickets() {
     document.getElementById('flagEa').textContent = 0;
-    chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tab0) {
-        const ti0 = tab0.id;
+    chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tabEa) {
+        const ti0 = tabEa.id;
         recur(ti0);
 
         function recur(tabId) {
@@ -236,15 +235,15 @@ document.getElementById('updateEa1').addEventListener('click', function () {
             var flag;
             var count = 1;
             var countMax = 60;
-            checkInterval = setInterval(() => {
+            checkIntervalEat = setInterval(() => {
                 flag = document.getElementById('flagEa').textContent;
                 if (flag == 1 || count == countMax) {
-                    clearInterval(checkInterval);
+                    clearInterval(checkIntervalEat);
                     chrome.tabs.remove(tabId, function() {});
                 } else {
                     count++;
                 }
-            }, t1);
+            }, 2 * t1);
 
             // var maxI = 10;
             // var t0 = 10000;
@@ -370,4 +369,8 @@ document.getElementById('updateEa1').addEventListener('click', function () {
             });
         }
     });
+}
+/* 自动刷新 */
+document.getElementById('updateEa1').addEventListener('click', function () {
+    updateEventArenaTickets();
 });
