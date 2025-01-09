@@ -388,6 +388,13 @@ select {
 option {
     background-color: #eefff8; /* 背景色 */
 }
+/* 宽下拉菜单 */
+.wideInputBox1 {
+    width: 100px;
+}
+.wideInputBox2 {
+    width: auto;
+}
 
 /* 友谊任务相关设置 */
 .flexContent {

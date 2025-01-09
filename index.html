@@ -18,6 +18,7 @@
         <div id="navbar">
             <a href="#" id="nav-statistic">游戏数据</a>
             <a href="#" id="nav-price">当前市价</a>
+            <a href="#" id="nav-priceDaily">历史价格</a>
             <a href="#" id="nav-resource">个人数据</a>
             <a href="#" id="nav-eventShop">活动商店</a>
             <a href="#" id="nav-perfect">完美装备</a>
@@ -63,19 +64,41 @@
                         <div class="atv" id="atv1">最赚</div>
                         <div class="atv" id="atv2">次赚</div>
                         <div class="atv" id="atv3">卖掉赚</div><br><br>
-                        <table id="tableArenaValue" class="ticketTable0"></table><br><br>
+                        <table id="tableArenaValue" class="ticketTable0"></table><br>
                     </div>
                     <div class="fqContentSon">
                         <div class="atv" id="atv4">最赚</div>
                         <div class="atv" id="atv5">最亏</div><br><br>
-                        <table id="tableArenaRate" class="ticketTable0"></table><br><br>
+                        <table id="tableArenaRate" class="ticketTable0"></table><br>
                     </div>
                     <div class="fqContentSon">
                         <div class="atv" id="atv4">最赚</div>
                         <div class="atv" id="atv5">最亏</div><br><br>
-                        <table id="tableArenaTimeRate" class="ticketTable0"></table><br><br>
+                        <table id="tableArenaTimeRate" class="ticketTable0"></table><br>
                     </div>
                 </div>
+            </div>
+            <div id="priceDaily" class="page active">
+                <h1>历史市场最低价比较</h1>
+                <span class="plainText">查看类别：</span>
+                <select id="priceDailySelect" class="inputBox wideInputBox2"></select><br><br>
+                <span class="plainText">手动修改数据：</span>
+                <input type="date" id="editPriceDate" class="wideInputBox2 inputBlank">
+                <span class="blank"></span>
+                <select id="editGems" class="inputBox wideInputBox1" style="display:none;"></select>
+                <select id="editAcs" class="inputBox wideInputBox1" style="display:none;"></select>
+                <select id="editAt" class="inputBox wideInputBox1" style="display:none;"></select>
+                <select id="editAl" class="inputBox wideInputBox1" style="display:none;"></select>
+                <span class="blank"></span>
+                <div id="confirmEdit" style="display:none;">
+                    <span class="plainText">将价格修改为：</span>
+                    <input type="number" id="editNewPrice" class="wideInputBox1 inputBlank">
+                    <span class="blank"></span>
+                    <button id="saveEditPrice">确认</button>
+                </div>
+                <br><br>
+                <table id="priceDailyTable" class="ticketTable"></table>
+                <div id="noPriceDaily" style="display:none; font-size: 16px;">暂无历史数据</div>
             </div>
             <div id="resource" class="page">
                 <div id="flag3" style="display:none;">0</div>
@@ -220,7 +243,8 @@
             </div>
             <div id="setting" class="page">
                 <h1>账号设置</h1>
-                <span class="plainText">当前登录账号uID（个人主页网址中的数字）：</span><input id="personalId" class="inputBox inputBlank"><span id="pIdNow" style="display:none"></span>
+                <span class="plainText">当前登录账号uID（个人主页网址中的数字）：</span>
+                <input id="personalId" class="inputBox inputBlank"><span id="pIdNow" style="display:none"></span>
                 <h1>参数设置</h1>
                 <span class="plainText">活跃度转化率（默认2.5）：</span><input id="act2ep" class="inputBox inputBlank"><span class="plainText">活动物品/活跃度</span><br>
                 <span class="plainText">活动物品估价（默认56.6）：</span><input id="ep2mc" class="inputBox inputBlank"><span class="plainText">金币/活动物品</span><br>

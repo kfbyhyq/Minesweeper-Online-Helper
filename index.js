@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav-price').addEventListener('click', function(event) {
         showPage('price');
     });
+    document.getElementById('nav-priceDaily').addEventListener('click', function(event) {
+        showPage('priceDaily');
+    });
     document.getElementById('nav-resource').addEventListener('click', function(event) {
         showPage('resource');
     });
@@ -138,6 +141,116 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showPeDaily').textContent = '收起财产变化';
             document.getElementById('peDaily').style.display = "block";
             document.getElementById('showPedFlag').textContent = 1;
+        }
+    });
+});
+
+/* 历史价格 */
+document.addEventListener('DOMContentLoaded', function() {
+    var pdCategory = ['宝石', '竞技场币', 
+        '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
+        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
+    var gemsCategory = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
+    var acCategory = ['金竞技场币', '铜竞技场币', '银竞技场币', '镍竞技场币', '钢竞技场币', '铁竞技场币', '钯竞技场币', '钛竞技场币', '锌竞技场币', '铂竞技场币'];
+    var atCategory = ['速度', '速度NG', '盲扫', '效率', '高难度', '随机难度', '硬核', '硬核NG', '耐力', '噩梦'];
+    var alCategory = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
+    const pds = document.getElementById("priceDailySelect");
+    const eDate = document.getElementById('editPriceDate');
+    const eg = document.getElementById("editGems");
+    const eac = document.getElementById("editAcs");
+    const eat = document.getElementById("editAt");
+    const eal = document.getElementById("editAl");
+    for (let i = 0; i < pdCategory.length; i++) {
+        let op = document.createElement("option");
+        op.value = i;
+        op.textContent = pdCategory[i];
+        pds.appendChild(op);
+    }
+    for (let i = 0; i < gemsCategory.length; i++) {
+        let opg = document.createElement("option");
+        opg.value = i;
+        opg.textContent = gemsCategory[i];
+        eg.appendChild(opg);
+        let opac = document.createElement("option");
+        opac.value = i;
+        opac.textContent = acCategory[i];
+        eac.appendChild(opac);
+        let opat = document.createElement("option");
+        opat.value = i;
+        opat.textContent = atCategory[i];
+        eat.appendChild(opat);
+    }
+    for (let i = 0; i < alCategory.length; i++) {
+        let opal = document.createElement("option");
+        opal.value = i;
+        opal.textContent = alCategory[i];
+        eal.appendChild(opal);
+    }
+    displayPriceDaily();
+    const currentDate = new Date();
+    const newDate = currentDate.getUTCFullYear() + '-' + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getUTCDate()).padStart(2, '0');
+    eDate.value = newDate;
+    /* 选择条目刷新显示 */
+    pds.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    eg.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    eac.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    eat.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    eal.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    eDate.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    /* 修改单条数据 */
+    document.getElementById('saveEditPrice').addEventListener('click', function () {
+        const newPrice = document.getElementById('editNewPrice').value;
+        if (newPrice > 0) {
+            const pdc = document.getElementById("priceDailySelect").value;
+            const date = document.getElementById('editPriceDate').value;
+            const egv = document.getElementById("editGems").value;
+            const eacv = document.getElementById("editAcs").value;
+            const eatv = document.getElementById("editAt").value;
+            const ealv = document.getElementById("editAl").value;
+            chrome.storage.local.get(['gemsPriceMap', 'ticketPriceMap'], function (result) {
+                const gpMap = result.gemsPriceMap || {};
+                const tpMap = result.ticketPriceMap || {};
+                try {
+                    if (pdc == 0) {
+                        const dateKey = date.replace(/-/g, '');
+                        gpMap[dateKey][1][egv] = newPrice;
+                        chrome.storage.local.set({ gemsPriceMap: gpMap });
+                        displayPriceDaily();
+                    } else if (pdc == 1) {
+                        const dateKey = date.replace(/-/g, '');
+                        gpMap[dateKey][3][eacv] = newPrice;
+                        chrome.storage.local.set({ gemsPriceMap: gpMap });
+                        displayPriceDaily();
+                    } else if (pdc < 12) {
+                        const dateKey = date.replace(/-/g, '');
+                        tpMap[dateKey][pdc - 1][+ealv + 1] = newPrice;
+                        chrome.storage.local.set({ ticketPriceMap: tpMap });
+                        displayPriceDaily();
+                    } else if (pdc < 20) {
+                        const dateKey = date.replace(/-/g, '');
+                        tpMap[dateKey][+eatv + 1][pdc - 11] = newPrice;
+                        chrome.storage.local.set({ ticketPriceMap: tpMap });
+                        displayPriceDaily();
+                    }
+                } catch (e) {
+                    console.log(e);
+                    window.alert('修改失败');
+                }
+            });
+        } else {
+            window.alert('请输入价格');
         }
     });
 });

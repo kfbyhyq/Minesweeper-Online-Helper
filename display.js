@@ -694,6 +694,136 @@ function displayTables() {
     });
 }
 
+/* 显示历史价格变化 */
+function displayPriceDaily() {
+    var pdCategory = ['宝石', '竞技场币', 
+        '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
+        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
+    const pdc = document.getElementById("priceDailySelect").value;
+    const eg = document.getElementById("editGems");
+    const eac = document.getElementById("editAcs");
+    const eat = document.getElementById("editAt");
+    const eal = document.getElementById("editAl");
+    const confirm = document.getElementById("confirmEdit");
+    eg.style.display = 'none';
+    eac.style.display = 'none';
+    eat.style.display = 'none';
+    eal.style.display = 'none';
+    confirm.style.display = 'none';
+    chrome.storage.local.get(['gemsPriceMap', 'ticketPriceMap'], function (result) {
+        const gpMap = result.gemsPriceMap || {};
+        const tpMap = result.ticketPriceMap || {};
+        var dataMap = {};
+        if (pdc == 0) {
+            if (gpMap) {
+                eg.style.display = 'inline-block';
+                eac.style.display = 'none';
+                eat.style.display = 'none';
+                eal.style.display = 'none';
+                confirm.style.display = 'inline-block';
+                document.getElementById('noPriceDaily').style.display = 'none';
+                const title = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
+                for (const date in gpMap) {
+                    dataMap[date] = gpMap[date][1];
+                }
+                priceDailyOutput(dataMap, title, 'priceDailyTable', eg.value);
+            } else {
+                document.getElementById('noPriceDaily').style.display = 'block';
+            }
+        } else if (pdc == 1) {
+            if (gpMap) {
+                eg.style.display = 'none';
+                eac.style.display = 'inline-block';
+                eat.style.display = 'none';
+                eal.style.display = 'none';
+                confirm.style.display = 'inline-block';
+                document.getElementById('noPriceDaily').style.display = 'none';
+                const title = ['金竞技场币', '铜竞技场币', '银竞技场币', '镍竞技场币', '钢竞技场币', '铁竞技场币', '钯竞技场币', '钛竞技场币', '锌竞技场币', '铂竞技场币'];
+                for (const date in gpMap) {
+                    dataMap[date] = gpMap[date][3];
+                }
+                priceDailyOutput(dataMap, title, 'priceDailyTable', eac.value);
+            } else {
+                document.getElementById('noPriceDaily').style.display = 'block';
+            }
+        } else if (pdc < 12) {
+            if (tpMap) {
+                eg.style.display = 'none';
+                eac.style.display = 'none';
+                eat.style.display = 'none';
+                eal.style.display = 'inline-block';
+                confirm.style.display = 'inline-block';
+                document.getElementById('noPriceDaily').style.display = 'none';
+                const title = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
+                for (const date in tpMap) {
+                    var item = []
+                    for (let i = 0; i < title.length; i++) {
+                        item[i] = tpMap[date][pdc - 1][i + 1];
+                    }
+                    if (Math.min(...item) > 0) {
+                        dataMap[date] = item;
+                    }
+                }
+                priceDailyOutput(dataMap, title, 'priceDailyTable', eal.value);
+            } else {
+                document.getElementById('noPriceDaily').style.display = 'block';
+            }
+        } else if (pdc < 20) {
+            if (tpMap) {
+                eg.style.display = 'none';
+                eac.style.display = 'none';
+                eat.style.display = 'inline-block';
+                eal.style.display = 'none';
+                confirm.style.display = 'inline-block';
+                document.getElementById('noPriceDaily').style.display = 'none';
+                const title = ['速度', '速度NG', '盲扫', '效率', '高难度', '随机难度', '硬核', '硬核NG', '耐力', '噩梦'];
+                for (const date in tpMap) {
+                    var item = []
+                    for (let i = 0; i < title.length; i++) {
+                        item[i] = tpMap[date][i + 1][pdc - 11];
+                    }
+                    if (Math.min(...item) > 0) {
+                        dataMap[date] = item;
+                    }
+                }
+                priceDailyOutput(dataMap, title, 'priceDailyTable', eat.value);
+            } else {
+                document.getElementById('noPriceDaily').style.display = 'block';
+            }
+        }
+    });
+}
+function priceDailyOutput(dataMap, title, tableId, highlightRow = -1) {
+    const choosenDate = document.getElementById('editPriceDate').value;
+    var matchDate = -1;
+    const dates = Object.keys(dataMap);
+    dates.sort((a, b) => Number(b) - Number(a));
+    var dataOutput = [['日期', ...title]];
+    var levelValue = Array.from({ length: title.length }, () => Array(dates.length).fill(0));
+    for (let i = 0; i < dates.length; i++) {
+        var row = dataMap[dates[i]]
+        for (let j = 0; j < title.length; j++) {
+            levelValue[j][i] = row[j];
+        }
+        row.unshift([dates[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")]);
+        if (row[0] == choosenDate) {
+            matchDate = i;
+        }
+        dataOutput.push(row);
+    }
+    displayMatrix(dataOutput, tableId);
+    const outputTable = document.getElementById(tableId);
+    for (let j = 0; j < title.length; j++) {
+        const levelColor = setLevelColor(levelValue[j], 0, 3);
+        for (let i = 0; i < dates.length; i++) {
+            outputTable.rows[i + 1].cells[j + 1].style.backgroundColor = levelColor[i];
+        }
+    }
+    if (matchDate >= 0 && highlightRow >= 0) {
+        outputTable.rows[+matchDate + 1].cells[+highlightRow + 1].style.borderWidth = "2px";
+    }
+}
+
 /* 处理矩阵并显示为表格 */
 function displayMatrix(matrix, tableId, width = 0) {
     
