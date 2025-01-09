@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         document.getElementById('flag1').textContent = 1;
         setTimeout(() => {
+            displayPriceDaily();
             displayTables();
         }, 100);
     } else if (request.action === 'sendTicketPrice') { // 竞技场门票
@@ -58,6 +59,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         });
         document.getElementById('flag2').textContent = 1;   // 设置成功标记
         setTimeout(() => {
+            displayPriceDaily();
             displayTables();
         }, 100);
     } else if (request.action === 'sendEquipStats') {
