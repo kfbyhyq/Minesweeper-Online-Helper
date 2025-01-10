@@ -185,6 +185,18 @@
                 <table class="eaRate eaSet" id="eaRateTable"></table>
                 <h1>历史价格</h1>
                 <div id="flagEa" style="display:none;">0</div>
+                <span class="plainText">手动修改数据：</span>
+                <input type="date" id="editEaPriceDate" class="wideInputBox2 inputBlank">
+                <span class="blank"></span>
+                <select id="editEal" class="inputBox wideInputBox1"></select>
+                <span class="blank"></span>
+                <div id="confirmEditEa" style="display:inline-block;">
+                    <span class="plainText">将价格修改为：</span>
+                    <input type="number" id="editEaNewPrice" class="wideInputBox1 inputBlank">
+                    <span class="blank"></span>
+                    <button id="saveEaEditPrice">确认</button>
+                </div>
+                <br><br>
                 <table id="tableEa" class="ticketTable"></table>
                 <div id="noEapDaily" style="display:none; font-size: 16px;">暂无历史价格数据</div>
             </div>

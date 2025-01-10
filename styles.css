@@ -218,6 +218,10 @@ tr:nth-child(even) {
 #atv5 {
     background-color: #F8696B;
 }
+.highlight {
+    /* border-width: 2px; */
+    outline: 2px solid #000;
+}
 
 /* 设置按钮格式 */
 button {

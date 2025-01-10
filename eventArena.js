@@ -38,12 +38,40 @@ function displayEventArena() {
             }
             /* 显示每日数据 */
             var eapDaily = [['日期', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8']];
+            var levelValue = [];
+            var zeroNum = 0;
+            const choosenDate = document.getElementById('editEaPriceDate').value;
+            var matchDate = -1;
+            const eealv = document.getElementById("editEal").value;
+            for (let i = 0; i < levelMax; i++) {
+                levelValue[i] = [];
+            }
             for (let i = 0; i < dates.length; i++) {
                 var row = eapMap[dates[i]]
-                row.unshift([dates[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")]);
-                eapDaily.push(row);
+                if (Math.min(...row) > 0) {
+                    for (let j = 0; j < levelMax; j++) {
+                        levelValue[j][i - zeroNum] = row[j];
+                    }
+                    row.unshift([dates[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")]);
+                    if (row[0] == choosenDate) {
+                        matchDate = i - zeroNum;
+                    }
+                    eapDaily.push(row);
+                } else {
+                    zeroNum++;
+                }
             }
             displayMatrix(eapDaily, 'tableEa');    // 显示表格
+            const eaDailyTable = document.getElementById('tableEa');
+            for (let j = 0; j < levelMax; j++) {
+                const levelColor = setLevelColor(levelValue[j], 0, 3);
+                for (let i = 0; i < dates.length - zeroNum; i++) {
+                    eaDailyTable.rows[i + 1].cells[j + 1].style.backgroundColor = levelColor[i];
+                }
+                if (matchDate >= 0 && eealv >= 0) {
+                    eaDailyTable.rows[+matchDate + 1].cells[+eealv + 1].classList.add('highlight');
+                }
+            }
         } else {
             const elements = document.querySelectorAll('.eaSet');
             // 将每个元素设置为不可见
@@ -57,7 +85,48 @@ function displayEventArena() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    /* 初始化界面 */
+    var ealCategory = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
+    const eeal = document.getElementById("editEal");
+    for (let i = 0; i < ealCategory.length; i++) {
+        let opeal = document.createElement("option");
+        opeal.value = i;
+        opeal.textContent = ealCategory[i];
+        eeal.appendChild(opeal);
+    }
+    const eEaDate = document.getElementById('editEaPriceDate');
+    const currentDate = new Date();
+    const newDate = currentDate.getUTCFullYear() + '-' + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getUTCDate()).padStart(2, '0');
+    eEaDate.value = newDate;
+    /* 显示 */
     displayEventArena();
+    eEaDate.addEventListener('change', function() {
+        displayEventArena();
+    });
+    eeal.addEventListener('change', function() {
+        displayEventArena();
+    });
+    /* 修改单条数据 */
+    document.getElementById('saveEaEditPrice').addEventListener('click', function () {
+        const newPrice = document.getElementById('editEaNewPrice').value;
+        if (newPrice > 0) {
+            const eealv = document.getElementById("editEal").value;
+            chrome.storage.local.get('eaPriceMap', function (result) {
+                const eaPriceMap = result.eaPriceMap || {};
+                try {
+                    const dateKey = eEaDate.value.replace(/-/g, '');
+                    eaPriceMap[dateKey][eealv] = newPrice;
+                    chrome.storage.local.set({ eaPriceMap: eaPriceMap });
+                    displayEventArena();
+                } catch (e) {
+                    console.log(e);
+                    window.alert('修改失败');
+                }
+            });
+        } else {
+            window.alert('请输入价格');
+        }
+    });
 });
 
 function editText(index) {

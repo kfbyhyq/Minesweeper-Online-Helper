@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const eac = document.getElementById("editAcs");
     const eat = document.getElementById("editAt");
     const eal = document.getElementById("editAl");
+    /* 初始化界面 */
     for (let i = 0; i < pdCategory.length; i++) {
         let op = document.createElement("option");
         op.value = i;
@@ -186,10 +187,11 @@ document.addEventListener('DOMContentLoaded', function() {
         opal.textContent = alCategory[i];
         eal.appendChild(opal);
     }
-    displayPriceDaily();
     const currentDate = new Date();
     const newDate = currentDate.getUTCFullYear() + '-' + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getUTCDate()).padStart(2, '0');
     eDate.value = newDate;
+    /* 显示 */
+    displayPriceDaily();
     /* 选择条目刷新显示 */
     pds.addEventListener('change', function() {
         displayPriceDaily();

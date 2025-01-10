@@ -822,7 +822,7 @@ function priceDailyOutput(dataMap, title, tableId, highlightRow = -1) {
         }
     }
     if (matchDate >= 0 && highlightRow >= 0) {
-        outputTable.rows[+matchDate + 1].cells[+highlightRow + 1].style.borderWidth = "2px";
+        outputTable.rows[+matchDate + 1].cells[+highlightRow + 1].classList.add('highlight');
     }
 }
 
