@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                     }
                             }
-                            console.log(board);
-                            console.log(mineNum);
+                            console.log('当前版面：', board);
+                            console.log('总雷数：', mineNum);
                             const currentDate = new Date();
                             const year = currentDate.getFullYear();
                             const month = String(currentDate.getMonth() + 1).padStart(2, '0');
