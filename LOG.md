@@ -325,3 +325,7 @@ https://minesweeper.online/
 - 新增
 
    估计3BV功能
+
+- 改动
+
+   优化控制台输出，添加收到数据时间

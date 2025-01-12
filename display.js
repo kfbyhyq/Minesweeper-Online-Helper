@@ -1,8 +1,16 @@
 /* 接收网页传回的数据 */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     if (request.action === 'eventQuest') { // 活动任务
         let eqInfo = request.eqInfo;
-        console.log('活动任务信息:', eqInfo);   // 在控制台打出结果
+        console.log(timeStr, '活动任务信息:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
         document.getElementById('updateEq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag4').textContent = 1;   // 设置成功标记
@@ -11,7 +19,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('eqInfo').innerHTML = output;
     } else if (request.action === 'sendGemsPrice') { // 宝石场币
         let gemsPrice = request.gemsPrice;
-        console.log('收到价格更新:', gemsPrice);
+        console.log(timeStr, '收到价格更新:', gemsPrice);
         chrome.storage.local.set({ gemsPrice: gemsPrice });
         /* 按日期保存 */
         chrome.storage.local.get(['gemsPriceMap'], function(result) {
@@ -33,7 +41,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } else if (request.action === 'sendTicketPrice') { // 竞技场门票
         let tpNew = request.ticketPrice;
         let ticketPrice = request.ticketPrice;
-        console.log('收到门票价格更新:', tpNew);
+        console.log(timeStr, '收到门票价格更新:', tpNew);
         /* 按日期保存 */
         chrome.storage.local.get(['ticketPrice', 'ticketPriceMap'], function(result) {
             let tpOld = result.ticketPrice;
@@ -64,7 +72,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }, 100);
     } else if (request.action === 'sendEquipStats') {
         let equipStats = request.equipStats;
-        console.log('收到装备加成：', equipStats);
+        console.log(timeStr, '收到装备加成：', equipStats);
         chrome.storage.local.set({ equipStats: equipStats });
         /* 按日期保存 */
         chrome.storage.local.get(['equipStatsMap'], function(result) {
@@ -83,7 +91,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }, 100);
     } else if (request.action === 'sendStatistics') { // 游戏数据
         let statistics = request.statistics;
-        console.log('收到游戏数据更新：', statistics);
+        console.log(timeStr, '收到游戏数据更新：', statistics);
         chrome.storage.local.set({ statistics: statistics });
         /* 按日期保存 */
         chrome.storage.local.get(['statisticsMap'], function(result) {
@@ -103,7 +111,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }, 100);
     } else if (request.action === 'sendPersonalData') { // 个人数据
         let personalData = request.personalData;
-        console.log('收到个人数据更新:', personalData);   // 在控制台打出结果
+        console.log(timeStr, '收到个人数据更新:', personalData);   // 在控制台打出结果
         chrome.storage.local.set({ personalData: personalData });     // 保存数据
         /* 按日期保存 */
         chrome.storage.local.get(['personalDataMap'], function(result) {
@@ -123,7 +131,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }, 100);
     } else if (request.action === 'personalEconomy') { // 游戏经济
         let personalEco = request.personalEco;
-        console.log('收到财产估值更新：', personalEco);   // 在控制台打出结果
+        console.log(timeStr, '收到财产估值更新：', personalEco);   // 在控制台打出结果
         chrome.storage.local.set({ personalEco: personalEco });     // 保存数据
         /* 按日期保存 */
         chrome.storage.local.get(['personalEcoMap'], function(result) {
@@ -182,7 +190,7 @@ function displayTables() {
         /* 每日游戏数据 */
         if (result.statisticsMap) {
             const stMap = result.statisticsMap;
-            console.log('历史游戏数据:', stMap);
+            // console.log('历史游戏数据:', stMap);
             const dates = Object.keys(stMap);
             if (dates.length > 1) {
                 dates.sort((a, b) => Number(b) - Number(a));
@@ -264,7 +272,7 @@ function displayTables() {
         /* 每日财产估值 */
         if (result.personalEcoMap) {
             const peMap = result.personalEcoMap;
-            console.log('历史财产估值:', peMap);
+            // console.log('历史财产估值:', peMap);
             const dates = Object.keys(peMap);
             if (dates.length > 1) {
                 dates.sort((a, b) => Number(b) - Number(a));

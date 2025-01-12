@@ -8,7 +8,7 @@ function displayEventArena() {
     chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'personalData'], function(result) { // 从存储中读出总数据
         const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
         // chrome.storage.local.set({ eaPriceMap: eapMap }); // 改数据用，正常情况勿启用
-        console.log('历史活动竞技场门票价格:', eapMap);
+        // console.log('历史活动竞技场门票价格:', eapMap);
         const dates = Object.keys(eapMap);
         values = result.eaPrice[1];
         if (values) {
@@ -251,7 +251,15 @@ document.getElementById("updateEa2").onclick = function() {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var levelMax = 8;       // 最大等级
     if (request.action === 'sendEventArenaPrice') {
-        console.log('收到活动门票价格：', request.eaPrice);
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+        const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        console.log(timeStr, '收到活动门票价格：', request.eaPrice);
         let eaPrice = request.eaPrice;
         chrome.storage.local.get(['eaPrice', 'eaPriceMap'], function(result) { // 从存储中读出总数据
             let eapOld = result.eaPrice || [];
@@ -263,7 +271,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 }
             }
             let eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
-            const currentDate = new Date();
             const date = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             eapMap[date] = eaPrice[1];
             // if (!eapMap[date]) { // 如果当前日期无条目，先新建
@@ -274,6 +281,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             //         eapMap[date][i] = eaPrice[1][i];
             //     }
             // }
+            console.log('历史活动竞技场门票价格:', eapMap);
             chrome.storage.local.set({ eaPrice: eaPrice }); 
             chrome.storage.local.set({ eaPriceMap: eapMap }); // 保存更新后的数据
         });
