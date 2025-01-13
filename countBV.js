@@ -18,13 +18,26 @@ document.addEventListener('DOMContentLoaded', function() {
                             var rows;
                             var cols;
     
-                            countBV();
+                            var bvMap = {};
+                            var clickNum = 0;
+                            var bvResult = countBV();
+                            bvMap[bvResult.join('')] = 1;
+                            console.log('已完成3BV上限：', bvResult[0], ' 总3BV估计：', bvResult[1]);
+                            chrome.runtime.sendMessage({ action: 'count3BVResult', bvResult: bvResult });
                             const area = document.querySelector("#AreaBlock");
                             // 配置观察选项:
                             const config = { attributes: true, childList: true, subtree: true };
                             // 创建一个观察器实例并传入回调函数
                             const callback = function(mutationsList, observer) {
-                                countBV();
+                                bvResult = countBV();
+                                if (bvResult[0] == 0) {
+                                    bvMap = {};
+                                }
+                                bvMap[bvResult.join('')] = 1;
+                                clickNum = Object.keys(bvMap).length - 1;
+                                console.log('已完成3BV上限：', bvResult[0], ' 总3BV估计：', bvResult[1]);
+                                console.log('点击次数：', clickNum, ' 效率上限：', (bvResult[0] / clickNum * 100).toFixed(2), '%');
+                                chrome.runtime.sendMessage({ action: 'count3BVResult', bvResult: bvResult, clickNum: clickNum });
                             };
                             const observer = new MutationObserver(callback);
                             // 以上述配置开始观察目标节点
@@ -64,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         }
                                         const classText = cell.classList.value;
                                         if (classText.includes('d_flag')) {
-                                            board[row][col] = -1;
+                                            board[row][col] = -2;
                                             mineNum++;
                                         } else if (classText.includes('d_type10') || classText.includes('d_type11')) {
                                             board[row][col] = -1;
@@ -105,20 +118,30 @@ document.addEventListener('DOMContentLoaded', function() {
                             // console.log('3BV划分：', countBoard);
                             var BVNow = ops;
                             var closeNum = 0;
+                            var opCellNum = 0;
+                            var flagNum = 0;
                             for (let i = 0; i < rows; i++) {
                                 for (let j = 0; j < cols; j++) {
                                     if (countBoard[i][j] == -1) {
                                         BVNow++;
+                                    } else if (countBoard[i][j] > 0) {
+                                        opCellNum++;
                                     }
                                     if (board[i][j] == -1) {
                                         closeNum++;
+                                    } else if (board[i][j] == -2) {
+                                        closeNum++;
+                                        flagNum++;
                                     }
                                 }
                             }
                             var BVPred = Math.round(BVNow / (1 - (closeNum - mineNum) / (rows * cols - mineNum)));
-                            console.log('已完成3BV上限：', BVNow, ' 总3BV估计：', BVPred);
-                            chrome.runtime.sendMessage({ action: 'count3BVResult', BVNow: BVNow, BVPred: BVPred });
-
+                            // var BVPred = Math.round(BVNow / (1 - (closeNum - mineNum) / (rows * cols - mineNum - opCellNum + ops)));
+                            // const avgBVExp = 173.56;
+                            // var BVPred = Math.round(BVNow + avgBVExp * (closeNum - mineNum) / (rows * cols - mineNum));
+                            // var BVPred = Math.round(BVNow + avgBVExp * (closeNum - mineNum) / (rows * cols - mineNum - opCellNum + ops));
+                            // var BVPred = Math.round(rows * cols - mineNum - (opCellNum - ops) / (rows * cols - closeNum) * (rows * cols - mineNum));
+                            return [BVNow, BVPred, flagNum];
                         }
                         function judgeCell(i, j, recur) {
                             if (board[i][j] < 0) { // 未打开的格子不管
@@ -163,7 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'count3BVResult') {
-        document.getElementById('countBVResult').innerHTML = '已完成3BV上限：' + request.BVNow + '<br>总3BV估计：' + request.BVPred;
+        var outputHtml = '已完成3BV上限：' + request.bvResult[0] + '<br>总3BV估计：' + request.bvResult[1];
+        if (request.clickNum) {
+            outputHtml += '<br>效率上限：' + (request.bvResult[0] / request.clickNum * 100).toFixed(2) + '%';
+        }
+        document.getElementById('countBVResult').innerHTML = outputHtml;
         document.getElementById('countBVResult').style.display = 'block';
         document.getElementById('buttonCountBV').style.backgroundColor = '#4caf50';
     }
