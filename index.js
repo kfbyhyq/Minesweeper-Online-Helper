@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav-perfect').addEventListener('click', function(event) {
         showPage('perfect');
     });
+    document.getElementById('nav-contacts').addEventListener('click', function(event) {
+        showPage('contacts');
+    });
     document.getElementById('nav-eventArena').addEventListener('click', function(event) {
         showPage('eventArena');
     });
@@ -623,7 +626,7 @@ function dailyTaskEventArena() {
             }
             // 创建闹钟
             const currentDate = new Date();
-            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDay() > 3) {
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 1 && currentDate.getUTCDate() > 3) {
                 chrome.alarms.create('updateEaTask', { when: clock.getTime() });
             }
         }
@@ -663,7 +666,7 @@ function dailyTaskFriendQuest() {
             }
             // 创建闹钟
             const currentDate = new Date();
-            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDay() > 3) {
+            if (tw && (currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDate() > 3) {
                 chrome.alarms.create('updateFqTask', { when: clock.getTime() });
             }
         }
