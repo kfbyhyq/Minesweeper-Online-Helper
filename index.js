@@ -491,7 +491,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     for (const key in peMapIn) {
                         peMap[key] = peMapIn[key];
                     }
-                    chrome.storage.local.set({ personalEcoMap: peMap });
+                    /* 好友 */
+                    const contactsList = result.contactsList || {};
+                    const contactsListIn = dataIn['contactsList'];
+                    for (const uid in contactsListIn) {
+                        if (!contactsList[uid]) {
+                            contactsList[uid] = [contactsListIn[uid][0], Object.keys(contactsList).length];
+                        }
+                    }
+                    chrome.storage.local.set({ contactsList: contactsList });
                     /* 活动竞技场 */
                     const eapMap = result.eaPriceMap || {};
                     const eapMapIn = dataIn['eaPriceMap'];

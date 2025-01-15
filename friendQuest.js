@@ -197,10 +197,10 @@ function sortTable(colIndex) {
     // 切换当前列的排序顺序
     if (currentSortOrder[colIndex]) {
         currentSortOrder[colIndex] = false; // false为降序
-        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '↓';
+        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '▼';
     } else {
         currentSortOrder[colIndex] = true; // true为升序
-        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '↑';
+        titleFqStats[colIndex].textContent = defaltTitleFqStats[colIndex] + '▲';
     }
     for (let i = 0; i < titleFqStats.length; i++) {
         if (i != colIndex) {
@@ -314,7 +314,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('flagFq').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayFriendQuest();
-        }, 100);
+        }, 10);
     }
 });
 

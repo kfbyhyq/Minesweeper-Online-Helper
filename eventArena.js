@@ -181,7 +181,7 @@ function saveValue(index) {
         // document.getElementById(`eaRate${index}`).innerText = (values[index]/reward[index]).toFixed(2);
         setTimeout(() => {
             displayEventArena();
-        }, 100);
+        }, 10);
     }
 
     // 隐藏输入框并显示文本
@@ -242,7 +242,7 @@ document.getElementById("updateEa2").onclick = function() {
             console.log('保存条目：', date, eaPrice);
             setTimeout(() => {
                 displayEventArena();
-            }, 100);
+            }, 10);
         }
     });
 };
@@ -289,7 +289,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         // document.getElementById('buttonEa').style.backgroundColor = '#4caf50';
         setTimeout(() => {
             displayEventArena();
-        }, 100);
+        }, 10);
     }
 });
 

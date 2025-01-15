@@ -13,10 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     target: { tabId },
                     args: [uid],
                     function: function (uid) {
-                        const name = document.querySelector("#PlayerBlock > h2 > div.pull-left > span").textContent;
-                        var friendInfo = [uid, name];
-                        console.log(friendInfo);
-                        chrome.runtime.sendMessage({ action: 'sendFriendInfo', friendInfo: friendInfo });
+                        try {
+                            const name = document.querySelector("#PlayerBlock > h2 > div.pull-left > span").textContent;
+                            var friendInfo = [uid, name];
+                            console.log(friendInfo);
+                            chrome.runtime.sendMessage({ action: 'sendFriendInfo', friendInfo: friendInfo });
+                        } catch (e) {
+                            console.log(e);
+                            window.alert('错误页面', e);
+                        }
                     }
                 });
             });
@@ -32,7 +37,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         console.log('收到好友信息：', friendInfo);
         chrome.storage.local.get(['contactsList'], function(result) {
             const contactsList = result.contactsList || {}; // 确保存在数据，防止为 undefined
-            contactsList[friendInfo[0]] = friendInfo[1];
+            var index = Object.keys(contactsList).length;
+            if (contactsList[friendInfo[0]]) {
+                contactsList[friendInfo[0]][0] = friendInfo[1];
+            } else {
+                contactsList[friendInfo[0]] = [friendInfo[1], index];
+            }
         
             // 保存更新后的数据
             chrome.storage.local.set({ contactsList: contactsList });

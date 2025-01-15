@@ -310,11 +310,15 @@ input {
 .plainText {
     font-size: 16px;
 }
-#personalId {
-    width: 120px;
-}
 .inputBlank {  
     width: 60px;
+    padding: 6px; /* 内边距 */
+    border-radius: 5px; /* 圆角边框 */
+    border: 1px solid #ccc; /* 边框颜色 */
+    background-color: #eefff8;
+}
+.wideInput {
+    width: 120px;
     padding: 6px; /* 内边距 */
     border-radius: 5px; /* 圆角边框 */
     border: 1px solid #ccc; /* 边框颜色 */
@@ -448,4 +452,20 @@ option {
 /* 窄表格 */
 .widthSet {
     max-width: 400px;
+}
+
+/* 好友列表 */
+#contactsTable {
+    font-size: 16px;
+    font-weight: bold;
+}
+#contactsTable tr {
+    background-color: transparent;
+}
+.changeRankButton {
+    margin: 2px;
+    padding: 1px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: block;
 }

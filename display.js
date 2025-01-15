@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         setTimeout(() => {
             displayPriceDaily();
             displayTables();
-        }, 100);
+        }, 10);
     } else if (request.action === 'sendTicketPrice') { // 竞技场门票
         let tpNew = request.ticketPrice;
         let ticketPrice = request.ticketPrice;
@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         setTimeout(() => {
             displayPriceDaily();
             displayTables();
-        }, 100);
+        }, 10);
     } else if (request.action === 'sendEquipStats') {
         let equipStats = request.equipStats;
         console.log(timeStr, '收到装备加成：', equipStats);
@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('flagEquip').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayTables();
-        }, 100);
+        }, 10);
     } else if (request.action === 'sendStatistics') { // 游戏数据
         let statistics = request.statistics;
         console.log(timeStr, '收到游戏数据更新：', statistics);
@@ -108,7 +108,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('flag5').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayTables();
-        }, 100);
+        }, 10);
     } else if (request.action === 'sendPersonalData') { // 个人数据
         let personalData = request.personalData;
         console.log(timeStr, '收到个人数据更新:', personalData);   // 在控制台打出结果
@@ -128,7 +128,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('flag3').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayTables();
-        }, 100);
+        }, 10);
     } else if (request.action === 'personalEconomy') { // 游戏经济
         let personalEco = request.personalEco;
         console.log(timeStr, '收到财产估值更新：', personalEco);   // 在控制台打出结果
@@ -148,7 +148,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.getElementById('flagPe').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayTables();
-        }, 100);
+        }, 10);
     }
 });
 
