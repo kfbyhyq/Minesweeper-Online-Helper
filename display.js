@@ -667,6 +667,11 @@ function displayTables() {
             const tableAv = document.getElementById('tableArenaValue');
             const tableAr = document.getElementById('tableArenaRate');
             const tableAtr = document.getElementById('tableArenaTimeRate');
+            var vw = window.innerWidth; // 视口宽度
+            var cellFontSize = Math.max(10, 0.0069 * vw); // 字体大小随视口改变，不得小于10px
+            tableAv.style.fontSize = cellFontSize + 'px';
+            tableAr.style.fontSize = cellFontSize + 'px';
+            tableAtr.style.fontSize = cellFontSize + 'px';
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
                     /* 比较大小 设置颜色 */
@@ -940,43 +945,55 @@ function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, 
     var med = (min + max) / 2;
     var levelColor = array;
     if (colorNum == 2) {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i] > max) {
-                array[i] = max;
-            } else if (array[i] < min) {
-                array[i] = min;
+        if (min == max) {
+            for (let i = 0; i < array.length; i++) {
+                levelColor[i] = minColor;
             }
-            var iR = Math.round(minR + (maxR - minR) * (array[i] - min) / (max - min));
-            var iG = Math.round(minG + (maxG - minG) * (array[i] - min) / (max - min));
-            var iB = Math.round(minB + (maxB - minB) * (array[i] - min) / (max - min));
-            var iRHex = iR.toString(16).padStart(2, '0');
-            var iGHex = iG.toString(16).padStart(2, '0');
-            var iBHex = iB.toString(16).padStart(2, '0');
-            levelColor[i] = '#' + iRHex + iGHex + iBHex;
+        } else {
+            for (let i = 0; i < array.length; i++) {
+                if (array[i] > max) {
+                    array[i] = max;
+                } else if (array[i] < min) {
+                    array[i] = min;
+                }
+                var iR = Math.round(minR + (maxR - minR) * (array[i] - min) / (max - min));
+                var iG = Math.round(minG + (maxG - minG) * (array[i] - min) / (max - min));
+                var iB = Math.round(minB + (maxB - minB) * (array[i] - min) / (max - min));
+                var iRHex = iR.toString(16).padStart(2, '0');
+                var iGHex = iG.toString(16).padStart(2, '0');
+                var iBHex = iB.toString(16).padStart(2, '0');
+                levelColor[i] = '#' + iRHex + iGHex + iBHex;
+            }
         }
     } else if (colorNum == 3) {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i] > max) {
-                array[i] = max;
-            } else if (array[i] < min) {
-                array[i] = min;
+        if (min == max) {
+            for (let i = 0; i < array.length; i++) {
+                levelColor[i] = medColor;
             }
-            if (array[i] > med) {
-                var iR = Math.round(medR + (maxR - medR) * (array[i] - med) / (max - med));
-                var iG = Math.round(medG + (maxG - medG) * (array[i] - med) / (max - med));
-                var iB = Math.round(medB + (maxB - medB) * (array[i] - med) / (max - med));
-                var iRHex = iR.toString(16).padStart(2, '0');
-                var iGHex = iG.toString(16).padStart(2, '0');
-                var iBHex = iB.toString(16).padStart(2, '0');
-                levelColor[i] = '#' + iRHex + iGHex + iBHex;
-            } else {
-                var iR = Math.round(minR + (medR - minR) * (array[i] - min) / (med - min));
-                var iG = Math.round(minG + (medG - minG) * (array[i] - min) / (med - min));
-                var iB = Math.round(minB + (medB - minB) * (array[i] - min) / (med - min));
-                var iRHex = iR.toString(16).padStart(2, '0');
-                var iGHex = iG.toString(16).padStart(2, '0');
-                var iBHex = iB.toString(16).padStart(2, '0');
-                levelColor[i] = '#' + iRHex + iGHex + iBHex;
+        } else {
+            for (let i = 0; i < array.length; i++) {
+                if (array[i] > max) {
+                    array[i] = max;
+                } else if (array[i] < min) {
+                    array[i] = min;
+                }
+                if (array[i] > med) {
+                    var iR = Math.round(medR + (maxR - medR) * (array[i] - med) / (max - med));
+                    var iG = Math.round(medG + (maxG - medG) * (array[i] - med) / (max - med));
+                    var iB = Math.round(medB + (maxB - medB) * (array[i] - med) / (max - med));
+                    var iRHex = iR.toString(16).padStart(2, '0');
+                    var iGHex = iG.toString(16).padStart(2, '0');
+                    var iBHex = iB.toString(16).padStart(2, '0');
+                    levelColor[i] = '#' + iRHex + iGHex + iBHex;
+                } else {
+                    var iR = Math.round(minR + (medR - minR) * (array[i] - min) / (med - min));
+                    var iG = Math.round(minG + (medG - minG) * (array[i] - min) / (med - min));
+                    var iB = Math.round(minB + (medB - minB) * (array[i] - min) / (med - min));
+                    var iRHex = iR.toString(16).padStart(2, '0');
+                    var iGHex = iG.toString(16).padStart(2, '0');
+                    var iBHex = iB.toString(16).padStart(2, '0');
+                    levelColor[i] = '#' + iRHex + iGHex + iBHex;
+                }
             }
         }
     }

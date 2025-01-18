@@ -41,14 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                             board[row] = [];
                                         }
                                         const classText = cell.classList.value;
-                                        if (classText.includes('d_flag')) {
+                                        if (classText.includes('_flag')) {
                                             board[row][col] = 'F';
                                             mineNum++;
-                                        } else if (classText.includes('d_type10') || classText.includes('d_type11')) {
+                                        } else if (classText.includes('_type10') || classText.includes('_type11')) {
                                             board[row][col] = 'F';
-                                        } else if (classText.includes('d_closed') || classText.includes('d_pressed')) {
+                                        } else if (classText.includes('_closed') || classText.includes('_pressed')) {
                                             board[row][col] = 'H';
-                                        } else if (classText.includes('d_type12')) {
+                                        } else if (classText.includes('_type12')) {
                                             board[row][col] = 'H';
                                             mineNum++;
                                         } else {

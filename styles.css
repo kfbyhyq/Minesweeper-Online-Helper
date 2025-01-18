@@ -27,9 +27,9 @@ body {
 
 /* 设置导航栏的样式 */
 #navbar {
-    width: 160px; /* 设置导航栏的宽度 */
     height: 100%;
-    min-width: 160px; /* 最小宽度 */
+    width: 10vw;
+    min-width: 120px; /* 最小宽度 */
     font-size: 16px; /* 字体大小 */
     background-color: #ADDFBA; /* 背景颜色 */
     padding: 0px; /* 内边距 */
@@ -41,9 +41,9 @@ body {
     flex-direction: column; /* 子元素垂直排列 */
 }
 #navbar0 {
-    width: 160px; /* 设置导航栏的宽度 */
     height: 100%;
-    min-width: 160px; /* 最小宽度 */
+    width: 10vw;
+    min-width: 120px; /* 最小宽度 */
     font-size: 16px; /* 字体大小 */
     padding: 0px; /* 内边距 */
     border-top: 1px solid #ddd; /* 顶部边框 */
@@ -52,7 +52,8 @@ body {
 /* 设置导航栏链接的样式 */
 #navbar a {
     display: block; /* 使每个链接占据一整行 */
-    padding: 20px 40px; /* 内边距 */
+    padding: 1.6vh 0vh; /* 内边距 */
+    text-align: center; /* 居中对齐文本 */
     text-decoration: none; /* 去掉下划线 */
     color: #333; /* 字体颜色 */
 }
@@ -71,8 +72,9 @@ body {
 /* 设置内容区域的样式 */
 #content {
     flex: 1; /* 使内容区域占据剩余的空间 */
-    padding: 20px; /* 内边距 */
+    padding: 10px 20px; /* 内边距 */
     background-color: #fff; /* 背景颜色 */
+    overflow-x: auto; /* 仅在需要时添加水平滚动条 */
 }
 
 /* 隐藏所有页面内容 */
@@ -108,7 +110,7 @@ body {
     background-color: #fdda4f;
     margin-top: auto;
     font-size: 14px; /* 字体大小 */
-    padding: 10px 40px; /* 内边距 */
+    padding: 1.6vh 0vh; /* 内边距 */
 }
 #navbar #github:hover {
     background-color: #fce27c;
@@ -117,7 +119,7 @@ body {
 table {
     border-collapse: collapse; /* 合并边框 */
     /* width: 100%; */
-    max-width: 600px;
+    max-width: 90vw;
 }
 th, td {
     border: 0px solid #474747; /* 边框颜色 */
@@ -239,6 +241,7 @@ button {
 /* 活动竞技场输入框格式 */
 .divSet {
     font-size: 0px;
+    display: flex;
 }
 .eaText {
     text-align: center;
@@ -249,6 +252,7 @@ button {
     border: 0px solid #ccc;
     gap: 0px;
     width: 80px;
+    min-width: 50px;
     height: 22px;
     background-color: #E4EEC9;
 }
@@ -258,7 +262,8 @@ button {
 }
 .eaRate td {
     padding: 5px; /* 内边距 */
-    width: 90px;
+    width: 80px;
+    min-width: 50px;
     height: 22px;
 }
 .eaRate tr:nth-child(odd) {
@@ -277,6 +282,7 @@ button {
     cursor: pointer;
     gap: 0px;
     width: 80px;
+    min-width: 50px;
     background-color: #6bc1f3;
 }
 .nonedit {
@@ -288,6 +294,7 @@ button {
     border: 0px solid #ccc;
     gap: 0px;
     width: 80px;
+    min-width: 50px;
     background-color: #a8dfff;
 }
 input {
