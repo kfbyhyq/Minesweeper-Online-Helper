@@ -28,7 +28,7 @@ body {
 /* 设置导航栏的样式 */
 #navbar {
     height: 100%;
-    width: 10vw;
+    width: 9vw;
     min-width: 120px; /* 最小宽度 */
     font-size: 16px; /* 字体大小 */
     background-color: #ADDFBA; /* 背景颜色 */
@@ -42,7 +42,7 @@ body {
 }
 #navbar0 {
     height: 100%;
-    width: 10vw;
+    width: 9vw;
     min-width: 120px; /* 最小宽度 */
     font-size: 16px; /* 字体大小 */
     padding: 0px; /* 内边距 */
