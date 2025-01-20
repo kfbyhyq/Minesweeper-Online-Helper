@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-last-child(1) > span > span");
                                 hoverBox(equipment);   // 鼠标悬浮展开装备信息
                                 let trophy = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span");
-                                hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
+                                // hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
+                                trophy.click(); // 20250120更新改为点击弹出
         
                                 let popoverList = document.querySelectorAll("div.popover.fade.top.in, div.popover.fade.left.in");
         
@@ -139,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (personalData[15]) {
                                     for (let l = 0; l < levelMax; l++) {
                                         if (!personalData[15][l + 1]) { 
-                                            console.log(personalData[15][l + 1]);
                                             personalData[15][l + 1] = 0;
                                         }
                                     }
