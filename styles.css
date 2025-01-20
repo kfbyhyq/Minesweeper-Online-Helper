@@ -30,6 +30,7 @@ body {
     height: 100%;
     width: 9vw;
     min-width: 120px; /* 最小宽度 */
+    max-width: 160px;
     font-size: 16px; /* 字体大小 */
     background-color: #ADDFBA; /* 背景颜色 */
     padding: 0px; /* 内边距 */
@@ -44,6 +45,7 @@ body {
     height: 100%;
     width: 9vw;
     min-width: 120px; /* 最小宽度 */
+    max-width: 160px;
     font-size: 16px; /* 字体大小 */
     padding: 0px; /* 内边距 */
     border-top: 1px solid #ddd; /* 顶部边框 */
