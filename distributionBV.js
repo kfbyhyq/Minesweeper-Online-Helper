@@ -35,7 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         BVDistribution[ind][0] = ind;
                                                         BVDistribution[ind][1] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2)`).textContent;
                                                         BVDistribution[ind][2] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
-                                                        BVDistribution[ind][3] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
+                                                        let bv = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
+                                                        if (bv.includes(' / ')) {
+                                                            BVDistribution[ind][3] = bv.match(/ \/ (\d+)/)[1];
+                                                        } else {
+                                                            BVDistribution[ind][3] = bv;
+                                                        }
                                                         BVDistribution[ind][4] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5)`).textContent;
                                                         BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
                                                         const date = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(7)`).textContent;
@@ -108,7 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 BVDistribution[ind][0] = ind;
                                                 BVDistribution[ind][1] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2)`).textContent;
                                                 BVDistribution[ind][2] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
-                                                BVDistribution[ind][3] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
+                                                let bv = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
+                                                if (bv.includes(' / ')) {
+                                                    BVDistribution[ind][3] = bv.match(/ \/ (\d+)/)[1];
+                                                } else {
+                                                    BVDistribution[ind][3] = bv;
+                                                }
                                                 BVDistribution[ind][4] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5)`).textContent;
                                                 BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
                                                 const date = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(7)`).textContent;
