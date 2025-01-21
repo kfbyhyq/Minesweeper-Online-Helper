@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             var maxI = 10; // 一页最多十条
                             const dateFormatChs = /(\d{4})年\s+(\d{1,2})月\s+(\d{1,2})日,\s+(\d{2}):(\d{2})/; // 匹配 "2025年 1月 1日, 00:00"
                             const dateFormatEn = /(\d{1,2})\s+(\w+)\s+(\d{4}),\s+(\d{2}):(\d{2})/; // 匹配 "1 January 2025, 00:00"
+                            const todayChs = /今天,\s+(\d{2}):(\d{2})/i; // 匹配 "今天, 01:01"
+                            const todayEn = /Today,\s+(\d{2}):(\d{2})/i; // 匹配 "Today, 01:01"
+ 
                             var pageNum = 1; // 录入页码
                             var t0 = 50;
                             var t1 = 10;
@@ -37,6 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
                                                         const date = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(7)`).textContent;
                                                         let match; // 统一日期格式
+                                                        const currentDate = new Date();
+                                                        const year = currentDate.getFullYear();
+                                                        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                                                        const day = String(currentDate.getDate()).padStart(2, '0');
+                                                        let formattedToday = `${year}/${month}/${day}`;
                                                         if ((match = date.match(dateFormatEn))) {
                                                             const [, day, month, year, hours, minutes] = match;
                                                             const monthMap = {
@@ -48,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         } else if ((match = date.match(dateFormatChs))) {
                                                             const [, year, month, day, hours, minutes] = match;
                                                             BVDistribution[ind][6] = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')} ${hours}:${minutes}`;
+                                                        } else if ((match = date.match(todayEn))) {
+                                                            const [, hours, minutes] = match;
+                                                            BVDistribution[ind][6] = `${formattedToday} ${hours}:${minutes}`;
+                                                        } else if ((match = date.match(todayChs))) {
+                                                            const [, hours, minutes] = match;
+                                                            BVDistribution[ind][6] = `${formattedToday} ${hours}:${minutes}`;
                                                         } else { // 中英文匹配失败用原文
                                                             BVDistribution[ind][6] = date;
                                                         }
@@ -99,6 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
                                                 const date = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(7)`).textContent;
                                                 let match;
+                                                const currentDate = new Date();
+                                                const year = currentDate.getFullYear();
+                                                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                                                const day = String(currentDate.getDate()).padStart(2, '0');
+                                                let formattedToday = `${year}/${month}/${day}`;
                                                 if ((match = date.match(dateFormatEn))) {
                                                     const [, day, month, year, hours, minutes] = match;
                                                     const monthMap = {
@@ -110,6 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 } else if ((match = date.match(dateFormatChs))) {
                                                     const [, year, month, day, hours, minutes] = match;
                                                     BVDistribution[ind][6] = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')} ${hours}:${minutes}`;
+                                                } else if ((match = date.match(todayEn))) {
+                                                    const [, hours, minutes] = match;
+                                                    BVDistribution[ind][6] = `${formattedToday} ${hours}:${minutes}`;
+                                                } else if ((match = date.match(todayChs))) {
+                                                    const [, hours, minutes] = match;
+                                                    BVDistribution[ind][6] = `${formattedToday} ${hours}:${minutes}`;
                                                 } else {
                                                     BVDistribution[ind][6] = date;
                                                 }
