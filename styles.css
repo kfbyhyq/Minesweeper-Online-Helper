@@ -465,11 +465,15 @@ option {
 
 /* 好友列表 */
 #contactsTable {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
 }
 #contactsTable tr {
     background-color: transparent;
+}
+#contactsTable th, #contactsTable td {
+    background-color: transparent;
+    padding: 2px 10px; /* 内边距 */
 }
 .changeRankButton {
     margin: 2px;

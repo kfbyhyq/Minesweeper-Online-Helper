@@ -243,6 +243,7 @@ function contactsLinks(uid) {
             chrome.storage.local.set({ contactsList: contactsList });
         });
         setTimeout(() => {
+            document.getElementById('addFriendNotice').textContent = '';
             displayContacts();
         }, 10);
         setTimeout(() => {
@@ -265,6 +266,7 @@ function contactsLinks(uid) {
             chrome.storage.local.set({ contactsList: contactsList });
         });
         setTimeout(() => {
+            document.getElementById('addFriendNotice').textContent = '';
             displayContacts();
         }, 10);
         setTimeout(() => {
@@ -287,6 +289,7 @@ function contactsLinks(uid) {
             chrome.storage.local.set({ contactsList: contactsList });
         });
         setTimeout(() => {
+            document.getElementById('addFriendNotice').textContent = '';
             displayContacts();
         }, 10);
         setTimeout(() => {
