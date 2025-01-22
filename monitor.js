@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         playAudio(523.2, 0.5, 0.5);
                                         window.alert('发现低价！');
                                         chrome.runtime.sendMessage({ action: 'monitorSuccess', monitorPrice: price });
+                                        clearInterval(checkInterval);
                                     } else {
                                         console.log('当前最低价：', price, ' 阈值：', pt);
                                     }
