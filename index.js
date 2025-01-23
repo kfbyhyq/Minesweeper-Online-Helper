@@ -305,8 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('ep2mc').placeholder = 56.6;
             document.getElementById('spArenaCoef').placeholder = 1;
             document.getElementById('spngArenaCoef').placeholder = 1;
-            document.getElementById('nfArenaCoef').placeholder = 1.33;
-            document.getElementById('effArenaCoef').placeholder = 1.33;
+            document.getElementById('nfArenaCoef').placeholder = 1;
+            document.getElementById('effArenaCoef').placeholder = 1;
             document.getElementById('hdArenaCoef').placeholder = 1;
             document.getElementById('rdArenaCoef').placeholder = 1;
             document.getElementById('hcArenaCoef').placeholder = 1;

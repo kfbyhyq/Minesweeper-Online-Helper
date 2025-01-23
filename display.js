@@ -615,7 +615,7 @@ function displayTables() {
             var ep2mc = 56.6; // 活动物品价值金币，可配置
             // var effCoef = 0.75; // 效率相比标旗的速度衰减，可配置
             // var nfCoef = 0.75; // 盲扫相比标旗的速度衰减，可配置
-            var arenaCoef = [1, 1, 1.33, 1.33, 1, 1, 1, 1, 1, 1]; // 竞技场用时系数，可配置
+            var arenaCoef = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // 竞技场用时系数，可配置
             var ratesAv = [];
             var ratesAt = [];
             if (result.configurableCoef) {
