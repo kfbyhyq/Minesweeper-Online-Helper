@@ -163,7 +163,7 @@
                     <button id="editFriend">管理好友</button>
                     <button id="editFriendOver" style="display: none;">完成</button>
                     <br><br>
-                    <table id="contactsTable"></table>
+                    <table id="contactsTable" class="implicitTable"></table>
                 </div>
             </div>
             <div id="eventArena" class="page">
@@ -280,11 +280,12 @@
                 <span class="plainText">当前登录账号uID（个人主页网址中的数字）：</span>
                 <input id="personalId" class="inputBox wideInput"><span id="pIdNow" style="display:none"></span>
                 <h1>参数设置</h1>
-                <span class="plainText">活跃度转化率（默认2.5）：</span><input id="act2ep" class="inputBox inputBlank"><span class="plainText">活动物品/活跃度</span><br>
-                <span class="plainText">活动物品估价（默认56.6）：</span><input id="ep2mc" class="inputBox inputBlank"><span class="plainText">金币/活动物品</span><br>
-                <span class="plainText">盲扫系数（默认0.75）：</span><input id="nfCoef" class="inputBox inputBlank"><span class="plainText">盲扫平均速度/标旗平均速度</span><br>
-                <span class="plainText">效率系数（默认0.75）：</span><input id="effCoef" class="inputBox inputBlank"><span class="plainText">100%+效率平均速度/标旗平均速度</span><br>
-                <span class="plainText">两系数仅为参考值，用于竞技场门票时间估计，可用高级/中级的对应pb近似计算。</span>
+                <span class="plainText">活跃度转化率（默认2.5）：</span><input id="act2ep" class="inputBox inputBlank">
+                <span class="blank"></span>
+                <span class="plainText">活动物品/活跃度</span><br>
+                <span class="plainText">活动物品估价（默认56.6）：</span><input id="ep2mc" class="inputBox inputBlank">
+                <span class="blank"></span>
+                <span class="plainText">金币/活动物品</span><br>
                 <h1>自动刷新</h1>
                 <div class="inRow">
                     <span class="plainText">自动刷新数据</span>
@@ -337,6 +338,65 @@
                 <span class="plainText">分</span>
                 <select id="secondSelect3" class="inputBox"></select>
                 <span class="plainText">秒</span>
+                <br>
+                <h1>竞技场用时系数</h1>
+                <span class="plainText">完成各竞技场的用时与参考值的比例，默认值均为1，设置系数右侧的列为当前系数下各等级的估计用时（不包括罚时和休息）</span><br>
+                <span class="plainText">不同等级竞技场的估计用时会有偏差（低等级偏少），建议以最常打的等级为准计算系数</span><br><br>
+                <table id="arenaCoefSettingTable" class="implicitTable">
+                    <tr>
+                        <td>类型</td><td>设置系数</td><td>L1</td><td>L2</td><td>L3</td><td>L4</td><td>L5</td><td>L6</td><td>L7</td><td>L8</td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">速度</span></td>
+                        <td><input id="spArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">速度NG</span></td>
+                        <td><input id="spngArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">盲扫</span></td>
+                        <td><input id="nfArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">效率</span></td>
+                        <td><input id="effArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">高难度</span></td>
+                        <td><input id="hdArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">随机难度</span></td>
+                        <td><input id="rdArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">硬核</span></td>
+                        <td><input id="hcArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">硬核NG</span></td>
+                        <td><input id="hcngArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">耐力</span></td>
+                        <td><input id="edArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td><span class="plainText">噩梦</span></td>
+                        <td><input id="nmArenaCoef" class="inputBox inputBlank"></td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                </table>
                 <br><br>
                 <div class="inRow">
                     <button id="saveSetting">保存</button><span id="saveSucc" class="plainText" style="display:none">保存成功！</span>

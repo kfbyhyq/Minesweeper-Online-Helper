@@ -260,6 +260,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+const arenaExpectTime = [
+    [37.5, 90, 165, 300, 462.5, 675, 910, 1200],
+    [ 37.5, 90, 165, 300, 462.5, 675, 910, 1200 ],
+    [ 30, 75, 135, 220, 375, 555, 787.5, 1040 ],
+    [ 15, 45, 90, 150, 225, 330, 455, 600 ],
+    [ 37.5, 75, 150, 300, 450, 750, 1000, 1250 ],
+    [ 55, 130, 255, 380, 505, 755, 1005, 1255 ],
+    [ 30, 75, 135, 220, 375, 555, 787.5, 1040 ],
+    [ 30, 75, 135, 220, 325, 450, 647.5, 900 ],
+    [ 75, 275, 562.5, 1000, 1562.5, 2250, 3062.5, 4000 ],
+    [ 375, 1000, 1875, 3000, 4375, 6000, 8750, 12000 ]
+]
+const arenaPreCoef = [4.5, 4.5, 5.1924, 9, 4.32, 4.3028, 5.1924, 6, 4.5, 4.5]; // 竞技场用时预分配系数，用于配齐默认系数为1
+const tm = 10;
+const lm = 8;
 /* 设置页 */
 document.addEventListener('DOMContentLoaded', function() {
     /* 读当前设置 */
@@ -275,13 +290,43 @@ document.addEventListener('DOMContentLoaded', function() {
         if (configurableCoef) {
             document.getElementById('act2ep').placeholder = configurableCoef[0];
             document.getElementById('ep2mc').placeholder = configurableCoef[1];
-            document.getElementById('nfCoef').placeholder = configurableCoef[2];
-            document.getElementById('effCoef').placeholder = configurableCoef[3];
+            document.getElementById('spArenaCoef').placeholder = configurableCoef[2];
+            document.getElementById('spngArenaCoef').placeholder = configurableCoef[3];
+            document.getElementById('nfArenaCoef').placeholder = configurableCoef[4];
+            document.getElementById('effArenaCoef').placeholder = configurableCoef[5];
+            document.getElementById('hdArenaCoef').placeholder = configurableCoef[6];
+            document.getElementById('rdArenaCoef').placeholder = configurableCoef[7];
+            document.getElementById('hcArenaCoef').placeholder = configurableCoef[8];
+            document.getElementById('hcngArenaCoef').placeholder = configurableCoef[9];
+            document.getElementById('edArenaCoef').placeholder = configurableCoef[10];
+            document.getElementById('nmArenaCoef').placeholder = configurableCoef[11];
         } else {
             document.getElementById('act2ep').placeholder = 2.5;
             document.getElementById('ep2mc').placeholder = 56.6;
-            document.getElementById('nfCoef').placeholder = 0.75;
-            document.getElementById('effCoef').placeholder = 0.75;
+            document.getElementById('spArenaCoef').placeholder = 1;
+            document.getElementById('spngArenaCoef').placeholder = 1;
+            document.getElementById('nfArenaCoef').placeholder = 1.33;
+            document.getElementById('effArenaCoef').placeholder = 1.33;
+            document.getElementById('hdArenaCoef').placeholder = 1;
+            document.getElementById('rdArenaCoef').placeholder = 1;
+            document.getElementById('hcArenaCoef').placeholder = 1;
+            document.getElementById('hcngArenaCoef').placeholder = 1;
+            document.getElementById('edArenaCoef').placeholder = 1;
+            document.getElementById('nmArenaCoef').placeholder = 1;
+        }
+        const acsTable = document.getElementById('arenaCoefSettingTable');
+        for (let t = 0; t < tm; t++) {
+            for (let l = 0; l < lm; l++) {
+                var time = arenaExpectTime[t][l] * configurableCoef[t + 2] * arenaPreCoef[t];
+                var h = time / 3600 | 0;
+                var m = (time - h * 3600) / 60 | 0;
+                var s = (time - h * 3600 - m * 60) | 0;
+                if (h > 100) {
+                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(3, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                } else {
+                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                }
+            }
         }
     });
     chrome.storage.local.get('autoUpdate', function (result) {
@@ -408,17 +453,71 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             configurableCoef[1] = document.getElementById('ep2mc').placeholder;
         }
-        if (document.getElementById('nfCoef').value) {
-            configurableCoef[2] = document.getElementById('nfCoef').value;
+        if (document.getElementById('spArenaCoef').value) {
+            configurableCoef[2] = document.getElementById('spArenaCoef').value;
         } else {
-            configurableCoef[2] = document.getElementById('nfCoef').placeholder;
+            configurableCoef[2] = document.getElementById('spArenaCoef').placeholder;
         }
-        if (document.getElementById('effCoef').value) {
-            configurableCoef[3] = document.getElementById('effCoef').value;
+        if (document.getElementById('spngArenaCoef').value) {
+            configurableCoef[3] = document.getElementById('spngArenaCoef').value;
         } else {
-            configurableCoef[3] = document.getElementById('effCoef').placeholder;
+            configurableCoef[3] = document.getElementById('spngArenaCoef').placeholder;
+        }
+        if (document.getElementById('nfArenaCoef').value) {
+            configurableCoef[4] = document.getElementById('nfArenaCoef').value;
+        } else {
+            configurableCoef[4] = document.getElementById('nfArenaCoef').placeholder;
+        }
+        if (document.getElementById('effArenaCoef').value) {
+            configurableCoef[5] = document.getElementById('effArenaCoef').value;
+        } else {
+            configurableCoef[5] = document.getElementById('effArenaCoef').placeholder;
+        }
+        if (document.getElementById('hdArenaCoef').value) {
+            configurableCoef[6] = document.getElementById('hdArenaCoef').value;
+        } else {
+            configurableCoef[6] = document.getElementById('hdArenaCoef').placeholder;
+        }
+        if (document.getElementById('rdArenaCoef').value) {
+            configurableCoef[7] = document.getElementById('rdArenaCoef').value;
+        } else {
+            configurableCoef[7] = document.getElementById('rdArenaCoef').placeholder;
+        }
+        if (document.getElementById('hcArenaCoef').value) {
+            configurableCoef[8] = document.getElementById('hcArenaCoef').value;
+        } else {
+            configurableCoef[8] = document.getElementById('hcArenaCoef').placeholder;
+        }
+        if (document.getElementById('hcngArenaCoef').value) {
+            configurableCoef[9] = document.getElementById('hcngArenaCoef').value;
+        } else {
+            configurableCoef[9] = document.getElementById('hcngArenaCoef').placeholder;
+        }
+        if (document.getElementById('edArenaCoef').value) {
+            configurableCoef[10] = document.getElementById('edArenaCoef').value;
+        } else {
+            configurableCoef[10] = document.getElementById('edArenaCoef').placeholder;
+        }
+        if (document.getElementById('nmArenaCoef').value) {
+            configurableCoef[11] = document.getElementById('nmArenaCoef').value;
+        } else {
+            configurableCoef[11] = document.getElementById('nmArenaCoef').placeholder;
         }
         chrome.storage.local.set({ configurableCoef: configurableCoef });
+        const acsTable = document.getElementById('arenaCoefSettingTable');
+        for (let t = 0; t < tm; t++) {
+            for (let l = 0; l < lm; l++) {
+                var time = arenaExpectTime[t][l] * configurableCoef[t + 2] * arenaPreCoef[t];
+                var h = time / 3600 | 0;
+                var m = (time - h * 3600) / 60 | 0;
+                var s = (time - h * 3600 - m * 60) | 0;
+                if (h > 100) {
+                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(3, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                } else {
+                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                }
+            }
+        }
     });
     /* 备份数据 */
     document.getElementById('backupButton').addEventListener('click', function () {

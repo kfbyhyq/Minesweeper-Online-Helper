@@ -20,7 +20,7 @@ function displayEventArena() {
                 ['E:mc/p', 0, 0, 0, 0, 0, 0, 0, 0]
             ];
             if (result.personalData) {
-                epCoe = 1 + parseFloat(result.personalData[21][9].replace('%', '')) / 100;
+                epCoe = 1 + parseFloat(String(result.personalData[21][9]).replace('%', '')) / 100;
             }
             for (let i = 0; i < 8; i++) {
                 document.getElementById(`value${i}`).innerText = values[i];

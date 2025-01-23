@@ -464,15 +464,16 @@ option {
 }
 
 /* 好友列表 */
-#contactsTable {
+.implicitTable {
     font-size: 14px;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
-#contactsTable tr {
+.implicitTable tr {
     background-color: transparent;
 }
-#contactsTable th, #contactsTable td {
+.implicitTable th, .implicitTable td {
     background-color: transparent;
+    text-align: left;
     padding: 2px 10px; /* 内边距 */
 }
 .changeRankButton {
