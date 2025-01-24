@@ -325,143 +325,145 @@ function displayTables() {
             }
         }
         /* 活动商店兑换参考 */
-        var eventShop = [
-            ['兑换项目', '所需活动点', '期望估价/活动点'],
-            ['功勋点', 1, 0],
-            ['功勋点（换代币）', 1, 0],
-            ['宝石', 10, 0],
-            ['初级门票包', 100, 0],
-            ['中级门票包', 200, 0],
-            ['高级门票包', 300, 0],
-            ['40%史诗装备', 450, 0],
-            ['45%史诗装备', 600, 0],
-            ['50%史诗装备', 750, 0],
-            ['55%史诗装备', 900, 0],
-            ['60%史诗装备', 1200, 0],
-            ['65%史诗装备', 1500, 0],
-            ['70%传说装备', 2000, 0],
-            ['75%传说装备', 3000, 0],
-            ['80%传说装备', 4500, 0],
-            ['85%传说装备', 6000, 0],
-            ['90%传说装备', 10000, 0],
-            ['95%传说装备', 15000, 0],
-            ['完美装备', 20000, 0]
-        ];
-        eventShop[1][2] = hp2mc.toFixed(2);
-        var token2mc = 150000; // 代币每点估价
-        var tokenProb = [0.36, 0.3, 0.16, 0.085, 0.045, 0.025, 0.015, 0.01]; // 代币生成概率
-        var token2hp = 5000; // 5000功勋生成一次代币
-        var tokenAvg = 0; // 每次生成代币的平均点数
-        for (let i = 0; i < tokenProb.length; i++) {
-            tokenAvg += tokenProb[i] * (i + 1);
+        {
+            var eventShop = [
+                ['兑换项目', '所需活动点', '期望估价/活动点'],
+                ['功勋点', 1, 0],
+                ['功勋点（换代币）', 1, 0],
+                ['宝石', 10, 0],
+                ['初级门票包', 100, 0],
+                ['中级门票包', 200, 0],
+                ['高级门票包', 300, 0],
+                ['40%史诗装备', 450, 0],
+                ['45%史诗装备', 600, 0],
+                ['50%史诗装备', 750, 0],
+                ['55%史诗装备', 900, 0],
+                ['60%史诗装备', 1200, 0],
+                ['65%史诗装备', 1500, 0],
+                ['70%传说装备', 2000, 0],
+                ['75%传说装备', 3000, 0],
+                ['80%传说装备', 4500, 0],
+                ['85%传说装备', 6000, 0],
+                ['90%传说装备', 10000, 0],
+                ['95%传说装备', 15000, 0],
+                ['完美装备', 20000, 0]
+            ];
+            eventShop[1][2] = hp2mc.toFixed(2);
+            var token2mc = 150000; // 代币每点估价
+            var tokenProb = [0.36, 0.3, 0.16, 0.085, 0.045, 0.025, 0.015, 0.01]; // 代币生成概率
+            var token2hp = 5000; // 5000功勋生成一次代币
+            var tokenAvg = 0; // 每次生成代币的平均点数
+            for (let i = 0; i < tokenProb.length; i++) {
+                tokenAvg += tokenProb[i] * (i + 1);
+            }
+            var hp2token2mc = tokenAvg * token2mc / token2hp;
+            eventShop[2][2] = hp2token2mc.toFixed(2);
+            var ticketProb = [0.14, 0.12, 0.06, 0.12, 0.12, 0.16, 0.1, 0.1, 0.04, 0.04]; // 各种类门票概率
+            var tpProb = [[2, 3, 4], [4, 5, 6], [0.75, 0.2, 0.05]]; // 中级、高级门票包种类与概率
+            var lowTp = 0; // 兑换初级门票包时每活动点的估价
+            var midTp = 0; // 中级
+            var highTp = 0; // 高级
+            if (result.ticketPrice) {
+                var tpLevelAvg = [0, 0, 0, 0, 0, 0, 0, 0]; // 每个等级门票的均价
+                for (let l = 0; l < lm; l++) {
+                    tpLevelAvg[l] = 0;
+                    for (let t = 0; t < tm; t++) {
+                        tpLevelAvg[l] += ticketPrice[t + 1][l + 1] * ticketProb[t];
+                    }
+                }
+                lowTp = tpLevelAvg[0];
+                for (let i = 0; i < 3; i++) {
+                    midTp += tpLevelAvg[tpProb[0][i] - 1] * tpProb[2][i];
+                    highTp += tpLevelAvg[tpProb[1][i] - 1] * tpProb[2][i];
+                }
+                lowTp = lowTp / eventShop[4][1] * 5;
+                midTp = midTp / eventShop[5][1] * 5;
+                highTp = highTp / eventShop[6][1] * 5;
+                eventShop[4][2] = lowTp.toFixed(2);
+                eventShop[5][2] = midTp.toFixed(2);
+                eventShop[6][2] = highTp.toFixed(2);
+            }
+            var uniqueEquipDis = [0, 0, 0, 0, 0, 0];
+            var legendEquipDis = [0, 0, 0, 0, 0, 0];
+            var perfectEquipDis = 0;
+            if (result.gemsPrice) {
+                var maxGp = Math.max(...gemsPrice[1]) / eventShop[3][1]; // 宝石价格取最贵的
+                eventShop[3][2] = maxGp.toFixed(2);
+                var partsNum = [
+                    ['40%', '45%', '50%', '55%', '60%', '65%'],
+                    [5, 7, 10, 15, 20, 28], // 史诗装备拆解的传说碎片数
+                    ['70%', '75%', '80%', '85%', '90%', '95%'],
+                    [5, 8, 13, 18, 36, 60] // 传说装备拆解的完美碎片数
+                ]
+                for (let i = 0; i < 6; i++) {
+                    uniqueEquipDis[i] = gemsPrice[5][2] * partsNum[1][i] / eventShop[i + 7][1];
+                    legendEquipDis[i] = gemsPrice[5][3] * partsNum[3][i] / eventShop[i + 13][1];
+                    eventShop[i + 7][2] = uniqueEquipDis[i].toFixed(2);
+                    eventShop[i + 13][2] = legendEquipDis[i].toFixed(2);
+                }
+                perfectEquipDis = gemsPrice[5][3] * 100 / eventShop[19][1]; // 完美装备按100个完美碎片算
+                eventShop[19][2] = perfectEquipDis.toFixed(2);
+            }
+            displayMatrix(eventShop, 'tableEventShop');
+            var tableEs = document.getElementById('tableEventShop');
+            for (let i = 0; i < 2; i++) {
+                tableEs.rows[i + 1].cells[0].style.backgroundColor = "#EAC476"; // 功勋标题颜色
+            }
+            tableEs.rows[3].cells[0].style.backgroundColor = "#B2D6B2"; // 宝石标题颜色
+            for (let i = 0; i < 3; i++) {
+                tableEs.rows[i + 4].cells[0].style.backgroundColor = "#A5CBE3"; // 门票包标题颜色
+            }
+            for (let i = 0; i < 6; i++) {
+                tableEs.rows[i + 7].cells[0].style.backgroundColor = "#D689ED";  // 史诗装备标题颜色
+                tableEs.rows[i + 13].cells[0].style.backgroundColor = "#FFA26C"; // 传说装备标题颜色
+            }
+            tableEs.rows[19].cells[0].style.backgroundColor = "#C83C3C"; // 完美装备标题颜色
+            var rates = eventShop.slice(1).map(row => row[row.length - 1]);
+            var levelColor = setLevelColor(rates, 1, 2); // 根据价值设置背景色
+            for (let i = 1; i < eventShop.length; i++) {
+                tableEs.rows[i].cells[2].style.backgroundColor = levelColor[i - 1];
+            }
         }
-        var hp2token2mc = tokenAvg * token2mc / token2hp;
-        eventShop[2][2] = hp2token2mc.toFixed(2);
-        var ticketProb = [0.14, 0.12, 0.06, 0.12, 0.12, 0.16, 0.1, 0.1, 0.04, 0.04]; // 各种类门票概率
-        var tpProb = [[2, 3, 4], [4, 5, 6], [0.75, 0.2, 0.05]]; // 中级、高级门票包种类与概率
-        var lowTp = 0; // 兑换初级门票包时每活动点的估价
-        var midTp = 0; // 中级
-        var highTp = 0; // 高级
-        if (result.ticketPrice) {
-            var tpLevelAvg = [0, 0, 0, 0, 0, 0, 0, 0]; // 每个等级门票的均价
-            for (let l = 0; l < lm; l++) {
-                tpLevelAvg[l] = 0;
+        /* 完美装备花费 */
+        {
+            if (result.gemsPrice && result.personalData) {
+                var coin = 1000000;
+                var gems = 5000;
+                var ac = 10000;
+                var perfect = [
+                    ['', '黄玉-金(T)', '红宝石-铜(R)', '蓝宝石-银(S)', '紫水晶-镍(A)', '缟玛瑙-钢(O)', '海蓝宝石-铁(Q)', '祖母绿-钯(E)', '石榴石-钛(G)', '碧玉-锌(J)', '钻石-铂(D)'],
+                    ['估价', '', '', '', '', '', '', '', '', '', ''],
+                    ['宝石花费', '', '', '', '', '', '', '', '', '', ''],
+                    ['场币花费', '', '', '', '', '', '', '', '', '', ''],
+                    ['总花费', '', '', '', '', '', '', '', '', '', '']
+                ];
                 for (let t = 0; t < tm; t++) {
-                    tpLevelAvg[l] += ticketPrice[t + 1][l + 1] * ticketProb[t];
+                    perfect[1][t + 1] = coin + gems * gemsPrice[1][t] + ac * gemsPrice[3][t];
+                    perfect[2][t + 1] = (gems - personalData[1][t]) * gemsPrice[1][t];
+                    perfect[3][t + 1] = (ac - personalData[3][t]) * gemsPrice[3][t];
+                    perfect[4][t + 1] = coin + (gems - personalData[1][t]) * gemsPrice[1][t] + (ac - personalData[3][t]) * gemsPrice[3][t];
+                }
+                displayMatrix(perfect, 'table4');
+                chrome.storage.local.set({ perfectValue: perfect });
+                var levelColorPerfect1 = setLevelColor(perfect[1].slice(1));
+                var levelColorPerfect2 = setLevelColor(perfect[4].slice(1));
+                const tablePerfect = document.getElementById('table4');
+                for (let i = 1; i <= tm; i++) {
+                    tablePerfect.rows[1].cells[i].style.backgroundColor = levelColorPerfect1[i - 1];
+                    tablePerfect.rows[4].cells[i].style.backgroundColor = levelColorPerfect2[i - 1];
                 }
             }
-            lowTp = tpLevelAvg[0];
-            for (let i = 0; i < 3; i++) {
-                midTp += tpLevelAvg[tpProb[0][i] - 1] * tpProb[2][i];
-                highTp += tpLevelAvg[tpProb[1][i] - 1] * tpProb[2][i];
-            }
-            lowTp = lowTp / eventShop[4][1] * 5;
-            midTp = midTp / eventShop[5][1] * 5;
-            highTp = highTp / eventShop[6][1] * 5;
-            eventShop[4][2] = lowTp.toFixed(2);
-            eventShop[5][2] = midTp.toFixed(2);
-            eventShop[6][2] = highTp.toFixed(2);
-        }
-        var uniqueEquipDis = [0, 0, 0, 0, 0, 0];
-        var legendEquipDis = [0, 0, 0, 0, 0, 0];
-        var perfectEquipDis = 0;
-        if (result.gemsPrice) {
-            var maxGp = Math.max(...gemsPrice[1]) / eventShop[3][1]; // 宝石价格取最贵的
-            eventShop[3][2] = maxGp.toFixed(2);
-            var partsNum = [
-                ['40%', '45%', '50%', '55%', '60%', '65%'],
-                [5, 7, 10, 15, 20, 28], // 史诗装备拆解的传说碎片数
-                ['70%', '75%', '80%', '85%', '90%', '95%'],
-                [5, 8, 13, 18, 36, 60] // 传说装备拆解的完美碎片数
-            ]
-            for (let i = 0; i < 6; i++) {
-                uniqueEquipDis[i] = gemsPrice[5][2] * partsNum[1][i] / eventShop[i + 7][1];
-                legendEquipDis[i] = gemsPrice[5][3] * partsNum[3][i] / eventShop[i + 13][1];
-                eventShop[i + 7][2] = uniqueEquipDis[i].toFixed(2);
-                eventShop[i + 13][2] = legendEquipDis[i].toFixed(2);
-            }
-            perfectEquipDis = gemsPrice[5][3] * 100 / eventShop[19][1]; // 完美装备按100个完美碎片算
-            eventShop[19][2] = perfectEquipDis.toFixed(2);
-        }
-        displayMatrix(eventShop, 'tableEventShop');
-        var tableEs = document.getElementById('tableEventShop');
-        for (let i = 0; i < 2; i++) {
-            tableEs.rows[i + 1].cells[0].style.backgroundColor = "#EAC476"; // 功勋标题颜色
-        }
-        tableEs.rows[3].cells[0].style.backgroundColor = "#B2D6B2"; // 宝石标题颜色
-        for (let i = 0; i < 3; i++) {
-            tableEs.rows[i + 4].cells[0].style.backgroundColor = "#A5CBE3"; // 门票包标题颜色
-        }
-        for (let i = 0; i < 6; i++) {
-            tableEs.rows[i + 7].cells[0].style.backgroundColor = "#D689ED";  // 史诗装备标题颜色
-            tableEs.rows[i + 13].cells[0].style.backgroundColor = "#FFA26C"; // 传说装备标题颜色
-        }
-        tableEs.rows[19].cells[0].style.backgroundColor = "#C83C3C"; // 完美装备标题颜色
-        var rates = eventShop.slice(1).map(row => row[row.length - 1]);
-        var levelColor = setLevelColor(rates, 1, 2); // 根据价值设置背景色
-        for (let i = 1; i < eventShop.length; i++) {
-            tableEs.rows[i].cells[2].style.backgroundColor = levelColor[i - 1];
-        }
-
-        /* 完美装备花费 */
-        if (result.gemsPrice && result.personalData) {
-            var coin = 1000000;
-            var gems = 5000;
-            var ac = 10000;
-            var perfect = [
-                ['', '黄玉-金(T)', '红宝石-铜(R)', '蓝宝石-银(S)', '紫水晶-镍(A)', '缟玛瑙-钢(O)', '海蓝宝石-铁(Q)', '祖母绿-钯(E)', '石榴石-钛(G)', '碧玉-锌(J)', '钻石-铂(D)'],
-                ['估价', '', '', '', '', '', '', '', '', '', ''],
-                ['宝石花费', '', '', '', '', '', '', '', '', '', ''],
-                ['场币花费', '', '', '', '', '', '', '', '', '', ''],
-                ['总花费', '', '', '', '', '', '', '', '', '', '']
+            var perfectUpgrade = [
+                ['', '经验', '金币', '宝石', '竞技场门票', '特殊加成', '碎片'],
+                ['引擎', 'Q D', 'G D', 'O D', 'E D', '每日任务', 'R S D'],
+                ['船体', 'A D', 'T D', 'J D', 'Q D', '赛季任务/任务等级', 'O G D'],
+                ['鱼雷', 'E D', 'S D', 'R D', 'A D', '活跃度', 'T J D'],
+                ['雷达', 'R D', 'A D', 'T D', 'J D', '活动物品', 'Q G D'],
+                ['声呐', 'O D', 'E D', 'S D', 'R D', '竞技场币', 'T A D']
             ];
-            for (let t = 0; t < tm; t++) {
-                perfect[1][t + 1] = coin + gems * gemsPrice[1][t] + ac * gemsPrice[3][t];
-                perfect[2][t + 1] = (gems - personalData[1][t]) * gemsPrice[1][t];
-                perfect[3][t + 1] = (ac - personalData[3][t]) * gemsPrice[3][t];
-                perfect[4][t + 1] = coin + (gems - personalData[1][t]) * gemsPrice[1][t] + (ac - personalData[3][t]) * gemsPrice[3][t];
-            }
-            displayMatrix(perfect, 'table4');
-            chrome.storage.local.set({ perfectValue: perfect });
-            var levelColorPerfect1 = setLevelColor(perfect[1].slice(1));
-            var levelColorPerfect2 = setLevelColor(perfect[4].slice(1));
-            const tablePerfect = document.getElementById('table4');
-            for (let i = 1; i <= tm; i++) {
-                tablePerfect.rows[1].cells[i].style.backgroundColor = levelColorPerfect1[i - 1];
-                tablePerfect.rows[4].cells[i].style.backgroundColor = levelColorPerfect2[i - 1];
-            }
+            // const tablePu = document.getElementById('perfectUpgrade');
+            displayMatrix(perfectUpgrade, 'perfectUpgrade');    
         }
-        var perfectUpgrade = [
-            ['', '经验', '金币', '宝石', '竞技场门票', '特殊加成', '碎片'],
-            ['引擎', 'Q D', 'G D', 'O D', 'E D', '每日任务', 'R S D'],
-            ['船体', 'A D', 'T D', 'J D', 'Q D', '赛季任务/任务等级', 'O G D'],
-            ['鱼雷', 'E D', 'S D', 'R D', 'A D', '活跃度', 'T J D'],
-            ['雷达', 'R D', 'A D', 'T D', 'J D', '活动物品', 'Q G D'],
-            ['声呐', 'O D', 'E D', 'S D', 'R D', '竞技场币', 'T A D']
-        ];
-        // const tablePu = document.getElementById('perfectUpgrade');
-        displayMatrix(perfectUpgrade, 'perfectUpgrade');
-
         /* 竞技场收益 */
         if (result.gemsPrice && result.ticketPrice) {
             var xL = [1, 2.5, 5, 10, 15, 20, 30, 40]; // 各等级的奖励倍率
@@ -728,6 +730,81 @@ function displayTables() {
                 }
             }
         }
+        /* BVPB */
+        // displayBVPB();
+        // 此处移除，在index.js初始化
+    });
+}
+/* BVPB显示函数 */
+function displayBVPB() {
+    // 初级1 中级2 高级3
+    const level = document.getElementById("pbOfBVLevel").textContent;
+    // 局数0 时间1 bvs3 效率5
+    const type = document.getElementById("pbOfBVType").textContent;
+    const pbt = document.getElementById("pbOfBVTable");
+    chrome.storage.local.get('pbOfBV', function(result) {
+        if (result.pbOfBV) {
+            let pbOfBV = result.pbOfBV;
+            if (pbOfBV[level]) {
+                document.getElementById("noPbOfBV").style.display = 'none';
+                const maxBV = 270;
+                var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
+                var bvRange = [[], [0, 5], [2, 13], [10, 26]];
+                for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
+                    pbOfBVTable[i + 1] = [(i + bvRange[level][0]) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
+                }
+                var valueArray = [];
+                var indexArray = [];
+                var itemNum = 0;
+                for (let bv in pbOfBV[level]) {
+                    if (bv < bvRange[level][0]) {
+                        continue;
+                    }
+                    if ((bv / 10 | 0) - bvRange[level][0] + 1 >= pbOfBVTable.length) {
+                        for (; (bv / 10 | 0) - bvRange[level][0] + 1 >= pbOfBVTable.length; ) {
+                            pbOfBVTable[pbOfBVTable.length] = [(pbOfBVTable.length + bvRange[level][0] - 1) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
+                        }
+                    }
+                    if (type == 0) {
+                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                        valueArray[itemNum] = pbOfBV[level][bv][type];
+                    } else if (type == 1) {
+                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
+                        valueArray[itemNum] = pbOfBV[level][bv][type];
+                    } else if (type == 3) {
+                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                        valueArray[itemNum] = pbOfBV[level][bv][type];
+                    } else if (type == 5) {
+                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                        valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                    }
+                    indexArray[itemNum] = bv;
+                    itemNum++;
+                }
+                displayMatrix(pbOfBVTable, 'pbOfBVTable');
+                var desc = 1;
+                if (type == 1) {
+                    desc = 0;
+                }
+                var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
+                for (let i = 0; i < itemNum; i++) {
+                    const cell = pbt.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
+                    cell.style.backgroundColor = colorArray[i];
+                    if (type > 0) {
+                        cell.style.cursor = 'pointer';
+                        cell.onclick = function() {
+                            window.open('https://minesweeper.online/cn/game/' + pbOfBV[level][indexArray[i]][+type + 1]);
+                        }
+                    }
+                }
+            } else {
+                document.getElementById("noPbOfBV").style.display = 'block';
+                pbt.innerHTML = '';
+            }
+        } else {
+            document.getElementById("noPbOfBV").style.display = 'block';
+            pbt.innerHTML = '';
+        }
     });
 }
 
@@ -926,7 +1003,7 @@ function displayTextMatrix(matrix, tableId, width = 0) {
 }
 
 /* 根据值设置色阶 */
-function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, firstColor = '#63BE7B', secondColor = '#FFEB84', thirdColor = '#F8696B') {
+function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, averageMid = true, firstColor = '#63BE7B', secondColor = '#FFEB84', thirdColor = '#F8696B') {
     var maxColor;
     var minColor;
     var medColor;
@@ -964,7 +1041,14 @@ function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, 
 
     var min = Math.max(Math.min(...array), minSet);
     var max = Math.min(Math.max(...array), maxSet);
-    var med = (min + max) / 2;
+    var med;
+    if (averageMid) {
+        med = (min + max) / 2;
+    } else {
+        var arr = array.slice();
+        arr.sort((a, b) => a - b);
+        med = (+arr[Math.floor(arr.length / 2)] + +arr[Math.ceil(arr.length / 2)]) / 2;
+    }
     var levelColor = array;
     if (colorNum == 2) {
         if (min == max) {

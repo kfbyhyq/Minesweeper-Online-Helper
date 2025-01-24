@@ -483,3 +483,11 @@ option {
     font-size: 12px;
     display: block;
 }
+
+/* BVPB */
+.pbOfBVButton {
+    margin: 2px;
+    height: 40px;
+    padding: 0px 10px;
+    font-size: 14px; /* 字体大小 */
+}

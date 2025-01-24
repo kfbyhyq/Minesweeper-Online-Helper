@@ -23,6 +23,7 @@
             <a href="#" id="nav-eventShop">活动商店</a>
             <a href="#" id="nav-perfect">完美装备</a>
             <a href="#" id="nav-contacts">好友</a>
+            <a href="#" id="nav-pbOfBV">BVPB</a>
             <a href="#" id="nav-eventArena" class="event" style="display: none;">活动竞技场</a>
             <a href="#" id="nav-friendQuest" class="event" style="display: none;">友谊任务</a>
             <a href="#" id="nav-eventQuest" class="event" style="display: none;">全球任务</a>
@@ -44,7 +45,7 @@
                 <table id="statisticDaily" class="ticketTable"></table>
                 <span id="noStDaily" class="plainText" style="display:none;">暂无每日数据</span><br><br>
             </div>
-            <div id="price" class="page active">
+            <div id="price" class="page">
                 <h1>宝石/竞技场币/碎片价格</h1>
                 <button id="marketPage">打开市场页</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
@@ -79,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div id="priceDaily" class="page active">
+            <div id="priceDaily" class="page">
                 <h1>历史市场最低价比较</h1>
                 <span class="plainText">查看类别：</span>
                 <select id="priceDailySelect" class="inputBox wideInputBox2"></select><br><br>
@@ -165,6 +166,14 @@
                     <br><br>
                     <table id="contactsTable" class="implicitTable"></table>
                 </div>
+            </div>
+            <div id="pbOfBV" class="page">
+                <span id="pbOfBVLevel" style="display:none;">3</span>
+                <span id="pbOfBVType" style="display:none;">1</span>
+                <button id="pbOfBV-beg" class="pbOfBVButton">初级</button><button id="pbOfBV-int" class="pbOfBVButton">中级</button><button id="pbOfBV-exp" class="pbOfBVButton">高级</button><br>
+                <button id="pbOfBV-wins" class="pbOfBVButton">局数</button><button id="pbOfBV-time" class="pbOfBVButton">时间</button><button id="pbOfBV-bvs" class="pbOfBVButton">3BV/S</button><button id="pbOfBV-eff" class="pbOfBVButton">效率</button><br>
+                <span id="noPbOfBV" class="plainText" style="display:none;">暂无各BV的PB数据，可在“我的游戏”页面通过插件弹出页“统计3BV分布”收集</span>
+                <table id="pbOfBVTable" class="ticketTable"></table>
             </div>
             <div id="eventArena" class="page">
                 <h1>活动竞技场门票价格</h1>

@@ -382,6 +382,10 @@ https://minesweeper.online/
 
 ### v3.9.5
 
+- 新增
+
+   BVPB功能
+   
 - 改动
 
    各竞技场的用时系数可以单独配置

@@ -11,16 +11,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     target: { tabId },
                     function: function () {
                         try {
-                            var BVDistribution = [['Index', 'Time', 'NF', '3BV', '3BV/s', 'Eff', 'Date', 'Id', 'Link']];
+                            var BVDistribution = [['Index', 'Time', 'NF', '3BV', '3BV/s', 'Eff', 'Date', 'Id', 'Link', 'Complete']];
                             var maxI = 10; // 一页最多十条
                             const dateFormatChs = /(\d{4})年\s+(\d{1,2})月\s+(\d{1,2})日,\s+(\d{2}):(\d{2})/; // 匹配 "2025年 1月 1日, 00:00"
                             const dateFormatEn = /(\d{1,2})\s+(\w+)\s+(\d{4}),\s+(\d{2}):(\d{2})/; // 匹配 "1 January 2025, 00:00"
                             const todayChs = /今天,\s+(\d{2}):(\d{2})/i; // 匹配 "今天, 01:01"
                             const todayEn = /Today,\s+(\d{2}):(\d{2})/i; // 匹配 "Today, 01:01"
- 
+                            
                             var pageNum = 1; // 录入页码
                             var t0 = 50;
                             var t1 = 10;
+                            var level = 0;
+                            const beg = document.querySelector("#level_select_1");
+                            const int = document.querySelector("#level_select_2");
+                            const exp = document.querySelector("#level_select_3");
+                            if (beg.classList.contains('active')) {
+                                level = 1;
+                            } else if (int.classList.contains('active')) {
+                                level = 2;
+                            } else if (exp.classList.contains('active')) {
+                                level = 3;
+                            }
                             BVInterval = setInterval(() => {
                                 const pageActive = document.querySelector("#stat_pagination > li.page.active");
                                 if (pageActive) { // 有翻页标记，多页
@@ -34,12 +45,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         BVDistribution[ind] = ['', '', '', '', '', '', '', ''];
                                                         BVDistribution[ind][0] = ind;
                                                         BVDistribution[ind][1] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2)`).textContent;
-                                                        BVDistribution[ind][2] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
+                                                        let nf = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
+                                                        let icon = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td.text-center > span > i`);
+                                                        if (nf.includes('NF')) {
+                                                            BVDistribution[ind][2] = 1;
+                                                        } else {
+                                                            BVDistribution[ind][2] = 0;
+                                                        }
                                                         let bv = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
                                                         if (bv.includes(' / ')) {
                                                             BVDistribution[ind][3] = bv.match(/ \/ (\d+)/)[1];
+                                                            BVDistribution[ind][9] = 0;
                                                         } else {
                                                             BVDistribution[ind][3] = bv;
+                                                            if (icon && icon.classList.contains('fa-rotate-right')) {
+                                                                BVDistribution[ind][9] = 0;
+                                                            } else {
+                                                                BVDistribution[ind][9] = 1;
+                                                            }
                                                         }
                                                         BVDistribution[ind][4] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5)`).textContent;
                                                         BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
@@ -83,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 clearInterval(BVInterval);
                                                 setTimeout(() => {
                                                     console.log(BVDistribution);
-                                                    chrome.runtime.sendMessage({ action: 'sendBVDistribution', BVDistribution: BVDistribution });
+                                                    chrome.runtime.sendMessage({ action: 'sendBVDistribution', BVDistribution: BVDistribution, level: level });
                                                     saveAsCsv(BVDistribution, 'BVDistribution.csv');
                                                 }, t1);
                                             } else { // 否则翻页
@@ -112,12 +135,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 BVDistribution[ind] = ['', '', '', '', '', '', '', ''];
                                                 BVDistribution[ind][0] = ind;
                                                 BVDistribution[ind][1] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2)`).textContent;
-                                                BVDistribution[ind][2] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
+                                                let nf = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3)`).textContent;
+                                                let icon = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td.text-center > span > i`);
+                                                if (nf.includes('NF')) {
+                                                    BVDistribution[ind][2] = 1;
+                                                } else {
+                                                    BVDistribution[ind][2] = 0;
+                                                }
                                                 let bv = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(4)`).textContent;
                                                 if (bv.includes(' / ')) {
                                                     BVDistribution[ind][3] = bv.match(/ \/ (\d+)/)[1];
+                                                    BVDistribution[ind][9] = 0;
                                                 } else {
                                                     BVDistribution[ind][3] = bv;
+                                                    if (icon && icon.classList.contains('fa-rotate-right')) {
+                                                        BVDistribution[ind][9] = 0;
+                                                    } else {
+                                                        BVDistribution[ind][9] = 1;
+                                                    }
                                                 }
                                                 BVDistribution[ind][4] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5)`).textContent;
                                                 BVDistribution[ind][5] = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(6)`).textContent;
@@ -158,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     clearInterval(BVInterval);
                                     setTimeout(() => {
                                         console.log(BVDistribution);
-                                        chrome.runtime.sendMessage({ action: 'sendBVDistribution', BVDistribution: BVDistribution });
+                                        chrome.runtime.sendMessage({ action: 'sendBVDistribution', BVDistribution: BVDistribution, level: level });
                                         saveAsCsv(BVDistribution, 'BVDistribution.csv');
                                     }, t1);
                                 }
@@ -196,7 +231,52 @@ document.addEventListener('DOMContentLoaded', function() {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'sendBVDistribution') {
         let BVDistribution = request.BVDistribution;
+        let level = request.level;
         console.log('收到3BV分布：', BVDistribution);   // 在控制台打出结果
         document.getElementById('buttonDistributionBV').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        if (level) { // 不考虑自定义
+            chrome.storage.local.get(['BVMap', 'pbOfBV'], function(result) {
+                const BVMap = result.BVMap || {};
+                const pbOfBV = result.pbOfBV || {};
+                // const BVMap = {};
+                // const pbOfBV = {};
+                if (!BVMap[level]) {
+                    BVMap[level] = {};
+                }
+                if (!pbOfBV[level]) {
+                    pbOfBV[level] = {};
+                }
+                for (let i = 1; i < BVDistribution.length; i++) {
+                    if (BVDistribution[i][9]) {
+                        const id = BVDistribution[i][7];
+                        const bv = BVDistribution[i][3];
+                        if (!BVMap[level][id]) {
+                            BVMap[level][id] = BVDistribution[i].slice(1);
+                            if (pbOfBV[level][bv]) {
+                                pbOfBV[level][bv][0]++;
+                                if (+BVDistribution[i][1] < +pbOfBV[level][bv][1]) {
+                                    pbOfBV[level][bv][1] = BVDistribution[i][1];
+                                    pbOfBV[level][bv][2] = id;
+                                }
+                                if (+BVDistribution[i][4] > +pbOfBV[level][bv][3]) {
+                                    pbOfBV[level][bv][3] = BVDistribution[i][4];
+                                    pbOfBV[level][bv][4] = id;
+                                }
+                                if (+(BVDistribution[i][5].replace('%','')) > +(pbOfBV[level][bv][5].replace('%',''))) {
+                                    pbOfBV[level][bv][5] = BVDistribution[i][5];
+                                    pbOfBV[level][bv][6] = id;
+                                }
+                            } else {
+                                pbOfBV[level][bv] = [1, BVDistribution[i][1], id, BVDistribution[i][4], id, BVDistribution[i][5], id];
+                            }
+                        }
+                    }
+                }
+                console.log(BVMap);
+                console.log(pbOfBV);
+                chrome.storage.local.set({ BVMap: BVMap });
+                chrome.storage.local.set({ pbOfBV: pbOfBV });
+            });
+        }
     }
 });

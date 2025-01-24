@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav-contacts').addEventListener('click', function(event) {
         showPage('contacts');
     });
+    document.getElementById('nav-pbOfBV').addEventListener('click', function(event) {
+        showPage('pbOfBV');
+    });
     document.getElementById('nav-eventArena').addEventListener('click', function(event) {
         showPage('eventArena');
     });
@@ -260,6 +263,77 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+/* BVPB */
+document.addEventListener('DOMContentLoaded', function() {
+    displayBVPB();
+    const level = document.getElementById("pbOfBVLevel");
+    const type = document.getElementById("pbOfBVType");
+    const beg = document.getElementById("pbOfBV-beg");
+    const int = document.getElementById("pbOfBV-int");
+    const exp = document.getElementById("pbOfBV-exp");
+    const wins = document.getElementById("pbOfBV-wins");
+    const time = document.getElementById("pbOfBV-time");
+    const bvs = document.getElementById("pbOfBV-bvs");
+    const eff = document.getElementById("pbOfBV-eff");
+    // 默认为高级时间
+    level.textContent = 3;
+    exp.style.backgroundColor = '#8fc4ef';
+    type.textContent = 1;
+    time.style.backgroundColor = '#8fc4ef';
+    beg.addEventListener('click', function() {
+        level.textContent = 1;
+        beg.style.backgroundColor = '#8fc4ef';
+        int.style.backgroundColor = '#D8F1EE';
+        exp.style.backgroundColor = '#D8F1EE';
+        displayBVPB();
+    });
+    int.addEventListener('click', function() {
+        level.textContent = 2;
+        beg.style.backgroundColor = '#D8F1EE';
+        int.style.backgroundColor = '#8fc4ef';
+        exp.style.backgroundColor = '#D8F1EE';
+        displayBVPB();
+    });
+    exp.addEventListener('click', function() {
+        level.textContent = 3;
+        beg.style.backgroundColor = '#D8F1EE';
+        int.style.backgroundColor = '#D8F1EE';
+        exp.style.backgroundColor = '#8fc4ef';
+        displayBVPB();
+    });
+    wins.addEventListener('click', function() {
+        type.textContent = 0;
+        wins.style.backgroundColor = '#8fc4ef';
+        time.style.backgroundColor = '#D8F1EE';
+        bvs.style.backgroundColor = '#D8F1EE';
+        eff.style.backgroundColor = '#D8F1EE';
+        displayBVPB();
+    });
+    time.addEventListener('click', function() {
+        type.textContent = 1;
+        wins.style.backgroundColor = '#D8F1EE';
+        time.style.backgroundColor = '#8fc4ef';
+        bvs.style.backgroundColor = '#D8F1EE';
+        eff.style.backgroundColor = '#D8F1EE';
+        displayBVPB();
+    });
+    bvs.addEventListener('click', function() {
+        type.textContent = 3;
+        wins.style.backgroundColor = '#D8F1EE';
+        time.style.backgroundColor = '#D8F1EE';
+        bvs.style.backgroundColor = '#8fc4ef';
+        eff.style.backgroundColor = '#D8F1EE';
+        displayBVPB();
+    });
+    eff.addEventListener('click', function() {
+        type.textContent = 5;
+        wins.style.backgroundColor = '#D8F1EE';
+        time.style.backgroundColor = '#D8F1EE';
+        bvs.style.backgroundColor = '#D8F1EE';
+        eff.style.backgroundColor = '#8fc4ef';
+        displayBVPB();
+    });
+});
 const arenaExpectTime = [
     [37.5, 90, 165, 300, 462.5, 675, 910, 1200],
     [ 37.5, 90, 165, 300, 462.5, 675, 910, 1200 ],
