@@ -749,7 +749,7 @@ function displayBVPB() {
                 document.getElementById("noPbOfBV").style.display = 'none';
                 const maxBV = 270;
                 var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
-                var bvRange = [[], [0, 5], [2, 13], [10, 26]];
+                var bvRange = [[], [0, 6], [2, 13], [10, 26]];
                 for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
                     pbOfBVTable[i + 1] = [(i + bvRange[level][0]) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
                 }
