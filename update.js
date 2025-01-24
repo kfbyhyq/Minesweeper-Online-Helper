@@ -255,11 +255,16 @@ function updateArenaTickets() {
                                     }, t0);
                                 }, t0 * 2);
                             }
-                            let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                            choice1.click(); // 选择竞技场门票分类
-                            setTimeout(() => {
-                                queryProgress(0, 0);
-                            }, t0 * 10);
+                            startQuery = setInterval(() => {
+                                let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                                if (choice1) {
+                                    clearInterval(startQuery);
+                                    choice1.click(); // 选择竞技场门票分类
+                                    setTimeout(() => {
+                                        queryProgress(0, 0);
+                                    }, t0 * 20);
+                                }
+                            }, t0);
                         } catch (e) {
                             console.error(e);
                         }

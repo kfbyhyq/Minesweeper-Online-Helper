@@ -396,16 +396,21 @@ function updateEventArenaTickets() {
                                 }, t0);
                             }, t0 * 2);
                         }
-                        let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                        choice1.click(); // 选择竞技场门票分类
-                        setTimeout(() => {
-                            let choice2 = document.querySelector("#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(12) > a");
-                            choice2.click(); // 选择活动竞技场
-                        }, t0 * 20);
-                        setTimeout(() => {
-                            queryProgress(0);
-                        }, t0 * 40);
-
+                        
+                        startQueryEa = setInterval(() => {
+                            let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                            if (choice1) {
+                                clearInterval(startQueryEa);
+                                choice1.click(); // 选择竞技场门票分类
+                                setTimeout(() => {
+                                    let choice2 = document.querySelector("#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(12) > a");
+                                    choice2.click(); // 选择活动竞技场
+                                }, t0 * 20);
+                                setTimeout(() => {
+                                    queryProgress(0);
+                                }, t0 * 40);
+                            }
+                        }, t0);
                         // for (let L = 1; L <= LMax; L++) {
                         //     const ticket = document.querySelector(`#arena_content > table:nth-child(3) > tbody > tr:nth-child(${L}) > td.text-nowrap > span.help`);
                         //     if (!ticket) {

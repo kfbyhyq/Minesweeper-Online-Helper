@@ -122,6 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('equipmentPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: true });
     });
+    document.getElementById('equipmentPage2').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: true });
+    });
     document.getElementById('friendQuestPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true });
     });
@@ -718,17 +721,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     chrome.storage.local.set({ friendQuestDaily: fqDaily });
                     /* 设置 */
-                    const pId = result.pId
+                    const pId = result.pId;
                     if (pId) {
                         chrome.storage.local.set({ pId: pId });
                     }
-                    const autoUpdate = result.autoUpdate
+                    const autoUpdate = result.autoUpdate;
                     if (autoUpdate) {
                         chrome.storage.local.set({ autoUpdate: autoUpdate });
                     }
                     const configurableCoef = result.configurableCoef;
                     if (configurableCoef) {
                         chrome.storage.local.set({ configurableCoef: configurableCoef });
+                    }
+                    const advancedMode = result.advancedMode;
+                    if (advancedMode) {
+                        chrome.storage.local.set({ advancedMode: advancedMode });
                     }
                 });
                 // location.reload();

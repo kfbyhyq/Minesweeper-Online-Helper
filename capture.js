@@ -119,11 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get(['advancedMode'], function(result) {
         if (!result.advancedMode) {
             document.getElementById('advMode').innerHTML = '';
+        } else {
+            document.getElementById('advMode').style.display = 'block';
         }
     });
 });
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     var advancedMode = 1;
-//     chrome.storage.local.set({ advancedMode: advancedMode });
-// });
