@@ -134,6 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('personEcoPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: true });
     });
+    document.getElementById('myGamePage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/my-games', active: true });
+    });
     document.getElementById('github').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://github.com/kfbyhyq/Minesweeper-Online-Helper', active: true });
     });
@@ -335,6 +338,50 @@ document.addEventListener('DOMContentLoaded', function() {
         bvs.style.backgroundColor = '#D8F1EE';
         eff.style.backgroundColor = '#8fc4ef';
         displayBVPB();
+    });
+    /* 重新统计功能 */
+    document.getElementById("updatePbofBV").addEventListener('click', function() {
+        chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
+            const BVMap = result.BVMap || {};
+            console.log('旧统计', result.pbOfBV)
+            const pbOfBV = {1:{}, 2:{}, 3:{}};
+            const pbOfBVMap = result.pbOfBVMap || {};
+            for (let level = 1; level <= 3; level++) {
+                for (let id in BVMap[level]) {
+                    const bv = BVMap[level][id][2];
+                    if (pbOfBV[level][bv]) {
+                        pbOfBV[level][bv][0]++;
+                        if (+BVMap[level][id][0] < +pbOfBV[level][bv][1]) {
+                            pbOfBV[level][bv][1] = BVMap[level][id][0];
+                            pbOfBV[level][bv][2] = id;
+                        }
+                        if (+BVMap[level][id][3] > +pbOfBV[level][bv][3]) {
+                            pbOfBV[level][bv][3] = BVMap[level][id][3];
+                            pbOfBV[level][bv][4] = id;
+                        }
+                        if (+(BVMap[level][id][4].replace('%','')) > +(pbOfBV[level][bv][5].replace('%',''))) {
+                            pbOfBV[level][bv][5] = BVMap[level][id][4];
+                            pbOfBV[level][bv][6] = id;
+                        }
+                    } else {
+                        pbOfBV[level][bv] = [1, BVMap[level][id][0], id, BVMap[level][id][3], id, BVMap[level][id][4], id];
+                    }
+                }
+            }
+
+            const currentDate = new Date();
+            const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+            pbOfBVMap[newDate] = pbOfBV;
+            
+            console.log('新统计', pbOfBV);
+            console.log(pbOfBVMap);
+
+            chrome.storage.local.set({ pbOfBV: pbOfBV });
+            chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
+            setTimeout(() => {
+                displayBVPB();
+            }, 100);
+        });
     });
 });
 const arenaExpectTime = [
@@ -676,6 +723,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                     chrome.storage.local.set({ contactsList: contactsList });
+                    /* BVPB */
+                    const BVMap = result.BVMap || {};
+                    const BVMapIn = dataIn['BVMap'];
+                    for (let i = 1; i <= 3; i++) {
+                        for (const id in BVMapIn[i]) {
+                            BVMap[i][id] = BVMapIn[i][id];
+                        }
+                    }
+                    const pbOfBVMap = result.pbOfBVMap || {};
+                    const pbOfBVMapIn = dataIn['pbOfBVMap'];
+                    for (const date in pbOfBVMapIn) {
+                        pbOfBVMap[date] = pbOfBVMapIn[data];
+                    }
+                    chrome.storage.local.set({ BVMap: BVMap });
+                    chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
                     /* 活动竞技场 */
                     const eapMap = result.eaPriceMap || {};
                     const eapMapIn = dataIn['eaPriceMap'];

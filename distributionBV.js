@@ -235,9 +235,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         console.log('收到3BV分布：', BVDistribution);   // 在控制台打出结果
         document.getElementById('buttonDistributionBV').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         if (level) { // 不考虑自定义
-            chrome.storage.local.get(['BVMap', 'pbOfBV'], function(result) {
+            chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
                 const BVMap = result.BVMap || {};
                 const pbOfBV = result.pbOfBV || {};
+                const pbOfBVMap = result.pbOfBVMap || {};
                 // const BVMap = {};
                 // const pbOfBV = {};
                 if (!BVMap[level]) {
@@ -272,10 +273,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         }
                     }
                 }
+                const currentDate = new Date();
+                const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+                pbOfBVMap[newDate] = pbOfBV;
+
                 console.log(BVMap);
                 console.log(pbOfBV);
+                console.log(pbOfBVMap);
                 chrome.storage.local.set({ BVMap: BVMap });
                 chrome.storage.local.set({ pbOfBV: pbOfBV });
+                chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
             });
         }
     }
