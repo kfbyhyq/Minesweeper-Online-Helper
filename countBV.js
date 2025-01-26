@@ -205,7 +205,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     var advancedMode = 1;
-//     chrome.storage.local.set({ advancedMode: advancedMode });
-// });

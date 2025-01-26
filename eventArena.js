@@ -5,7 +5,7 @@ function displayEventArena() {
     var epCoe = 1;
     var hp2mc = 56.6; // 功勋点折算金币
     var levelMax = 8;
-    chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'personalData'], function(result) { // 从存储中读出总数据
+    chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'equipStats'], function(result) { // 从存储中读出总数据
         const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
         // chrome.storage.local.set({ eaPriceMap: eapMap }); // 改数据用，正常情况勿启用
         // console.log('历史活动竞技场门票价格:', eapMap);
@@ -19,8 +19,8 @@ function displayEventArena() {
                 ['mc/p', 0, 0, 0, 0, 0, 0, 0, 0],
                 ['E:mc/p', 0, 0, 0, 0, 0, 0, 0, 0]
             ];
-            if (result.personalData) {
-                epCoe = 1 + parseFloat(String(result.personalData[21][9]).replace('%', '')) / 100;
+            if (result.equipStats) {
+                epCoe = parseFloat(String(result.equipStats[1][8]).replace('x', ''));
             }
             for (let i = 0; i < 8; i++) {
                 document.getElementById(`value${i}`).innerText = values[i];

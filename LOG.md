@@ -397,3 +397,5 @@ https://minesweeper.online/
 - 改动
 
    BVPB添加重新统计、备份等功能
+
+   活动竞技场引用的装备加成更新

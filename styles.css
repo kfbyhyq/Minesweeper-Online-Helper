@@ -333,6 +333,13 @@ input {
     border: 1px solid #ccc; /* 边框颜色 */
     background-color: #eefff8;
 }
+.narrowInput {
+    width: 30px;
+    padding: 6px; /* 内边距 */
+    border-radius: 5px; /* 圆角边框 */
+    border: 1px solid #ccc; /* 边框颜色 */
+    background-color: #eefff8;
+}
 .inputBox:hover {
     border-color: #6bc1f3; /* 悬停时边框颜色 */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 悬停时阴影效果 */
@@ -342,6 +349,14 @@ input {
     border-color: #6bc1f3; /* 聚焦时边框颜色 */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 聚焦时阴影效果 */
 }
+/* 宽下拉菜单 */
+.wideInputBox1 {
+    width: 100px;
+}
+.wideInputBox2 {
+    width: auto;
+}
+
 .inRow {
     display: flex;
     align-items: center;
@@ -405,14 +420,6 @@ select {
 option {
     background-color: #eefff8; /* 背景色 */
 }
-/* 宽下拉菜单 */
-.wideInputBox1 {
-    width: 100px;
-}
-.wideInputBox2 {
-    width: auto;
-}
-
 /* 友谊任务相关设置 */
 .flexContent {
     display: flex;
