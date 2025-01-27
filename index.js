@@ -727,14 +727,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     const BVMap = result.BVMap || {};
                     const BVMapIn = dataIn['BVMap'];
                     for (let i = 1; i <= 3; i++) {
-                        for (const id in BVMapIn[i]) {
-                            BVMap[i][id] = BVMapIn[i][id];
+                        if (BVMap[i]) {
+                            for (const id in BVMapIn[i]) {
+                                BVMap[i][id] = BVMapIn[i][id];
+                            }
+                        } else {
+                            BVMap[i] = BVMapIn[i];
                         }
                     }
                     const pbOfBVMap = result.pbOfBVMap || {};
                     const pbOfBVMapIn = dataIn['pbOfBVMap'];
                     for (const date in pbOfBVMapIn) {
-                        pbOfBVMap[date] = pbOfBVMapIn[data];
+                        pbOfBVMap[date] = pbOfBVMapIn[date];
                     }
                     chrome.storage.local.set({ BVMap: BVMap });
                     chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
