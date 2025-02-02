@@ -169,6 +169,9 @@ function displayTables() {
     var hp2mc = 56.6; // 功勋点折算金币
     /* 读取数据 */
     chrome.storage.local.get(null, function(result) {
+        if (result.configurableCoef) { // 读取功勋点设置
+            hp2mc = result.configurableCoef[12] || 56.6;
+        }
         /* 宝石 */
         if (result.gemsPrice) {
             gemsPrice = result.gemsPrice;
@@ -328,7 +331,7 @@ function displayTables() {
         {
             var eventShop = [
                 ['兑换项目', '所需活动点', '期望估价/活动点'],
-                ['功勋点', 1, 0],
+                ['功勋点（换完美碎片）', 1, 0],
                 ['功勋点（换代币）', 1, 0],
                 ['宝石', 10, 0],
                 ['初级门票包', 100, 0],
@@ -348,7 +351,7 @@ function displayTables() {
                 ['95%传说装备', 15000, 0],
                 ['完美装备', 20000, 0]
             ];
-            eventShop[1][2] = hp2mc.toFixed(2);
+            eventShop[1][2] = '56.60';
             var token2mc = 150000; // 代币每点估价
             var tokenProb = [0.36, 0.3, 0.16, 0.085, 0.045, 0.025, 0.015, 0.01]; // 代币生成概率
             var token2hp = 5000; // 5000功勋生成一次代币

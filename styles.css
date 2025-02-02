@@ -498,3 +498,15 @@ option {
     padding: 0px 10px;
     font-size: 14px; /* 字体大小 */
 }
+
+#copyNotify {
+    position: absolute; /* 绝对定位 */
+    background-color: #e0fbd5; /* 背景色 */
+    color: #000; /* 文字颜色 */
+    padding: 6px 8px; /* 内边距 */
+    border-radius: 6px; /* 圆角 */
+    z-index: 1000; /* 确保在最上层 */
+    display: none; /* 初始隐藏 */
+    font-size: 10px; /* 字体大小 */
+    pointer-events: none; /* 防止提示框干扰点击 */
+}

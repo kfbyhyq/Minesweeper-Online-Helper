@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 message.includes('L') && message.includes('+') &&
                                 (message.includes('Win') || message.includes('Earn') || message.includes('Find') || 
                                 message.includes('获得') || message.includes('完成') || message.includes('獲得')))) {
-                                    playAudio(523.2, 0.5, 0.5);
+                                    playAudio(523.2, 0.5, 0.5); // 播放提示音
                                     console.log(message);
                                     const regex = /(Beginner|Intermediate|Expert|custom|Easy|Medium|Hard|Evil|row|flags|efficiency|minecoin|honour|gem|arena coins|arena|初级|中级|高级|自定义|简单|中等|困难|地狱|连胜|盲扫|效率|金币|功勋|宝石|竞技场币|竞技场|初級|中級|高級|自訂|簡單|中等|困難|地獄|連勝|無旗幟|效率|金幣|榮譽值|寶石|競技場硬幣|競技場)/g;
                                     const abbr = { 'Beginner':'beg', 'Intermediate':'int', 'Expert':'exp', 'custom':'cus', 
@@ -74,6 +74,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                         typeArea.appendChild(buttonArea);
                                     }
                                     buttonArea.innerHTML = '';
+                                    var clearBoxButton = document.createElement('button');
+                                    clearBoxButton.textContent = '清空输入框';
+                                    clearBoxButton.className = 'fastInputButton';
+                                    buttonArea.appendChild(clearBoxButton);
+                                    clearBoxButton.addEventListener('click', function() {
+                                        const inputBox = document.querySelector("#chat_new_message");
+                                        inputBox.value = '';
+                                    });
+                                    var typeButtonMe = document.createElement('button');
+                                    typeButtonMe.textContent = 'me';
+                                    typeButtonMe.className = 'fastInputButton';
+                                    buttonArea.appendChild(typeButtonMe);
+                                    fastInput(typeButtonMe);
                                     for (let i = 0; i < matchedStr.length; i++) {
                                         var typeButton = document.createElement('button');
                                         typeButton.textContent = abbr[matchedStr[i]];

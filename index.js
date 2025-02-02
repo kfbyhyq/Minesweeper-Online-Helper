@@ -424,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('hcngArenaCoef').placeholder = configurableCoef[9];
             document.getElementById('edArenaCoef').placeholder = configurableCoef[10];
             document.getElementById('nmArenaCoef').placeholder = configurableCoef[11];
+            document.getElementById('hp2mc').placeholder = configurableCoef[12];
         } else {
             document.getElementById('act2ep').placeholder = 2.5;
             document.getElementById('ep2mc').placeholder = 56.6;
@@ -437,6 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('hcngArenaCoef').placeholder = 1;
             document.getElementById('edArenaCoef').placeholder = 1;
             document.getElementById('nmArenaCoef').placeholder = 1;
+            document.getElementById('hp2mc').placeholder = 56.6;
         }
         const acsTable = document.getElementById('arenaCoefSettingTable');
         for (let t = 0; t < tm; t++) {
@@ -576,6 +578,11 @@ document.addEventListener('DOMContentLoaded', function() {
             configurableCoef[1] = document.getElementById('ep2mc').value;
         } else {
             configurableCoef[1] = document.getElementById('ep2mc').placeholder;
+        }
+        if (document.getElementById('hp2mc').value) {
+            configurableCoef[12] = document.getElementById('hp2mc').value;
+        } else {
+            configurableCoef[12] = document.getElementById('hp2mc').placeholder;
         }
         if (document.getElementById('spArenaCoef').value) {
             configurableCoef[2] = document.getElementById('spArenaCoef').value;

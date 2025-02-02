@@ -5,7 +5,10 @@ function displayEventArena() {
     var epCoe = 1;
     var hp2mc = 56.6; // 功勋点折算金币
     var levelMax = 8;
-    chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'equipStats'], function(result) { // 从存储中读出总数据
+    chrome.storage.local.get(['eaPrice', 'eaPriceMap', 'equipStats', 'configurableCoef'], function(result) { // 从存储中读出总数据
+        if (result.configurableCoef) { // 读取功勋点设置
+            hp2mc = result.configurableCoef[12] || 56.6;
+        }
         const eapMap = result.eaPriceMap || {}; // 确保存在数据，防止为 undefined
         // chrome.storage.local.set({ eaPriceMap: eapMap }); // 改数据用，正常情况勿启用
         // console.log('历史活动竞技场门票价格:', eapMap);
