@@ -146,20 +146,31 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('showPeDaily').addEventListener('click', function () {
         if (document.getElementById('showPedFlag').textContent == 1) {
-            document.getElementById('showPeDaily').textContent = '展开财产变化';
+            document.getElementById('showPeDaily').textContent = '展开每日财产变化';
             document.getElementById('peDaily').style.display = "none";
             document.getElementById('showPedFlag').textContent = 0;
         } else {
-            document.getElementById('showPeDaily').textContent = '收起财产变化';
+            document.getElementById('showPeDaily').textContent = '收起每日财产变化';
             document.getElementById('peDaily').style.display = "block";
             document.getElementById('showPedFlag').textContent = 1;
+        }
+    });
+    document.getElementById('showPrDaily').addEventListener('click', function () {
+        if (document.getElementById('showPrdFlag').textContent == 1) {
+            document.getElementById('showPrDaily').textContent = '展开每日资源变化';
+            document.getElementById('prDaily').style.display = "none";
+            document.getElementById('showPrdFlag').textContent = 0;
+        } else {
+            document.getElementById('showPrDaily').textContent = '收起每日资源变化';
+            document.getElementById('prDaily').style.display = "block";
+            document.getElementById('showPrdFlag').textContent = 1;
         }
     });
 });
 
 /* 历史价格 */
 document.addEventListener('DOMContentLoaded', function() {
-    var pdCategory = ['宝石', '竞技场币', 
+    var pdCategory = ['', '宝石', '竞技场币', 
         '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
         'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
     var gemsCategory = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
@@ -203,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newDate = currentDate.getUTCFullYear() + '-' + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getUTCDate()).padStart(2, '0');
     eDate.value = newDate;
     /* 显示 */
-    displayPriceDaily();
+    // displayPriceDaily();
     /* 选择条目刷新显示 */
     pds.addEventListener('change', function() {
         displayPriceDaily();
@@ -384,6 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 const arenaExpectTime = [
     [37.5, 90, 165, 300, 462.5, 675, 910, 1200],
     [ 37.5, 90, 165, 300, 462.5, 675, 910, 1200 ],

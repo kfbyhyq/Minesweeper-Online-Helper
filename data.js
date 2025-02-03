@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 });
                                 let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
-                                personalData[row + 1][6] = hp.textContent;
+                                personalData[row + 1][6] = hp.textContent.replace(/\s+/g, '');
                                 row += 3;       // 空一行
         
                                 /* 读装备信息 */

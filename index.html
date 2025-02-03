@@ -54,7 +54,7 @@
                 <h1>竞技场门票价格</h1>
                 <button id="arenaPage">打开竞技场页</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
-                <table id="table2" class="ticketTable noempty"></table>
+                <table id="table2" class="ticketTable"></table>
                 <h1>竞技场门票收益参考</h1>
                 <span class="plainText">门票收益估值不包括对局中的收益，仅为参考值，不代表实际收益。</span><br>
                 <span class="plainText">收益考虑了装备加成，其中场币价格以市场最低价为准，活跃度和活动物品的价值可在设置页配置，功勋价值参考值为56.6金币。</span><br>
@@ -83,19 +83,21 @@
                 <h1>历史市场最低价比较</h1>
                 <span class="plainText">查看类别：</span>
                 <select id="priceDailySelect" class="inputBox wideInputBox2"></select><br><br>
-                <span class="plainText">手动修改数据：</span>
-                <input type="date" id="editPriceDate" class="inputBox wideInputBox2 inputBlank">
-                <span class="blank"></span>
-                <select id="editGems" class="inputBox wideInputBox1" style="display:none;"></select>
-                <select id="editAcs" class="inputBox wideInputBox1" style="display:none;"></select>
-                <select id="editAt" class="inputBox wideInputBox1" style="display:none;"></select>
-                <select id="editAl" class="inputBox wideInputBox1" style="display:none;"></select>
-                <span class="blank"></span>
-                <div id="confirmEdit" style="display:none;">
-                    <span class="plainText">将价格修改为：</span>
-                    <input type="number" id="editNewPrice" class="inputBox wideInputBox1 inputBlank">
+                <div id="editSelectDiv" style="display:none;">
+                    <span class="plainText">手动修改数据：</span>
+                    <input type="date" id="editPriceDate" class="inputBox wideInputBox2 inputBlank">
                     <span class="blank"></span>
-                    <button id="saveEditPrice">确认</button>
+                    <select id="editGems" class="inputBox wideInputBox1" style="display:none;"></select>
+                    <select id="editAcs" class="inputBox wideInputBox1" style="display:none;"></select>
+                    <select id="editAt" class="inputBox wideInputBox1" style="display:none;"></select>
+                    <select id="editAl" class="inputBox wideInputBox1" style="display:none;"></select>
+                    <span class="blank"></span>
+                    <div id="confirmEdit" style="display:none;">
+                        <span class="plainText">将价格修改为：</span>
+                        <input type="number" id="editNewPrice" class="inputBox wideInputBox1 inputBlank">
+                        <span class="blank"></span>
+                        <button id="saveEditPrice">确认</button>
+                    </div>
                 </div>
                 <br><br>
                 <table id="priceDailyTable" class="ticketTable"></table>
@@ -104,12 +106,16 @@
             <div id="resource" class="page">
                 <div id="flag3" style="display:none;">0</div>
                 <h1>总资源数</h1>
-                <button id="playerPage">打开我的主页</button><br><br>
+                <button id="playerPage">打开我的主页</button>
+                <span class="blank"></span>
+                <button id="showPrDaily">展开每日资源变化</button><br><br>
+                <div id="showPrdFlag" style="display:none;">0</div>
                 <div id="flagPe" style="display:none;">0</div>
                 <table id="table3-1"></table>
                 <h1>明细</h1>
-                <table id="table3-2"></table>
-                <br>
+                <span id="noPrData" class="plainText" style="display:none;">暂无资源数据</span>
+                <table id="table3-2"></table><br>
+                <table id="prDaily" class="ticketTable" style="display:none;"></table><br>
                 <table id="table3-3" class="ticketTable"></table>
                 <h1>装备加成</h1>
                 <button id="equipmentPage">打开装备页</button><br><br>
@@ -119,11 +125,11 @@
                 <h1>财产估值</h1>
                 <button id="personEcoPage">打开游戏经济页</button>
                 <span class="blank"></span>
-                <button id="showPeDaily">展开财产变化</button><br><br>
+                <button id="showPeDaily">展开每日财产变化</button><br><br>
                 <div id="showPedFlag" style="display:none;">0</div>
                 <table id="tablePe"></table><br>
                 <table id="peDaily" class="ticketTable" style="display:none;"></table>
-                <span id="noPeDaily" class="plainText" style="display:none;">暂无财产历史数据</span><br>
+                <span id="noPeDaily" class="plainText" style="display:none;">暂无财产数据</span><br>
                 <h1>奖杯</h1>
                 <!-- <div class="atv">总奖杯数：</div><div class="atv" id="tropNum"></div><div class="atv">排名：</div><div class="atv" id="tropRank"></div> -->
                 <table id="tableTrophy" class="noempty"></table><br><br>
@@ -141,7 +147,7 @@
                 <span class="plainText">金币需求：1 000 000</span><br>
                 <span class="plainText">宝石需求：5 000</span><br>
                 <span class="plainText">竞技场币需求：1 000</span><br><br>
-                <table id="table4" class="ticketTable noempty"></table><br><br>
+                <table id="table4" class="ticketTable"></table><br><br>
                 <span class="plainText">推荐升级顺序：活动物品 -> 赛季任务 -> 每日任务 -> 活跃度</span><br><br>
                 <table id="perfectUpgrade" class="ticketTable"></table><br>
             </div>

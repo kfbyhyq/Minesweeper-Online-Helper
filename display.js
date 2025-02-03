@@ -219,7 +219,7 @@ function displayTables() {
             console.log('个人数据:', result.personalData);
             displayMatrix(personalData.slice(17, 19), 'table3-1');    // 显示总资源数
             displayMatrix(personalData.slice(0, 4), 'table3-2');    // 显示宝石和场币明细
-            if (personalData[15]) {
+            if (personalData[15][0]) {
                 displayMatrix(personalData.slice(4, 16), 'table3-3');    // 显示门票明细（有活动门票）
             } else {
                 displayMatrix(personalData.slice(4, 15), 'table3-3');    // 显示门票明细
@@ -250,22 +250,46 @@ function displayTables() {
             pdDate.sort((a, b) => b.localeCompare(a)); // 降序排列
             let dnow = pdDate[0];
             tableTrophy[0][5] = dnow.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-            pdDate.forEach(date => {
-                if (pdMap[date][24]) {
-                    if (pdMap[date][24] && (pdMap[date][24][1] < pdMap[dnow][24][1])) {
-                        const trophyNew = pdMap[date].slice(24, 28);
+            var tablePrDaily = [['日期', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石', 
+                '金', '铜', '银', '镍', '钢', '铁', '钯', '钛', '锌', '铂',
+                '金币', '功勋']];
+            for (let i = 0; i < pdDate.length; i++) {
+                if (pdMap[pdDate[i]][24]) {
+                    if (pdMap[pdDate[i]][24] && (pdMap[pdDate[i]][24][1] < pdMap[dnow][24][1])) {
+                        const trophyNew = pdMap[pdDate[i]].slice(24, 28);
                         trophyNew[0][4] = '达成日期';
-                        trophyNew[0][5] = date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+                        trophyNew[0][5] = pdDate[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
                         tableTrophy = [...tableTrophy, ...trophyNew];
                         ipd++;
-                        dnow = date;
+                        dnow = pdDate[i];
                     } else {
-                        tableTrophy[ipd*4][5] = date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-                        dnow = date;
+                        tableTrophy[ipd*4][5] = pdDate[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+                        dnow = pdDate[i];
                     }
                 }
-            });
+                if (!pdMap[pdDate[i]][18][6]) {pdMap[pdDate[i]][18][6] = 0;}
+                pdMap[pdDate[i]][18][6] = String(pdMap[pdDate[i]][18][6]).replace(/\s+/g, '');
+                // 资源每日变化 借用奖杯的循环
+                if (i > 0) {
+                    const pr1 = pdMap[pdDate[i-1]];
+                    const pr2 = pdMap[pdDate[i]];
+                    var row = [pdDate[i-1].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")];
+                    for (let j = 0; j < tm; j++) {
+                        row.push(pr1[1][j] - pr2[1][j]);
+                    }
+                    for (let j = 0; j < tm; j++) {
+                        row.push(pr1[3][j] - pr2[3][j]);
+                    }
+                    row.push(pr1[18][0] - pr2[18][0]);
+                    row.push(pr1[18][6] - pr2[18][6]);
+                    tablePrDaily.push(row);
+                }
+            }
+            chrome.storage.local.set({ personalDataMap: pdMap });
             displayMatrix(tableTrophy, 'tableTrophy', 10);
+            displayMatrix(tablePrDaily, 'prDaily');
+        } else {
+            document.getElementById('noPrData').style.display = "block";
         }
         /* 财产估值 */
         if (result.personalEco) {
@@ -738,6 +762,7 @@ function displayTables() {
         // 此处移除，在index.js初始化
     });
 }
+
 /* BVPB显示函数 */
 function displayBVPB() {
     // 初级1 中级2 高级3
@@ -817,11 +842,13 @@ function displayPriceDaily() {
         '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
         'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
     const pdc = document.getElementById("priceDailySelect").value;
+    const esd = document.getElementById("editSelectDiv");
     const eg = document.getElementById("editGems");
     const eac = document.getElementById("editAcs");
     const eat = document.getElementById("editAt");
     const eal = document.getElementById("editAl");
     const confirm = document.getElementById("confirmEdit");
+    esd.style.display = 'none';
     eg.style.display = 'none';
     eac.style.display = 'none';
     eat.style.display = 'none';
@@ -832,7 +859,10 @@ function displayPriceDaily() {
         const tpMap = result.ticketPriceMap || {};
         var dataMap = {};
         if (pdc == 0) {
+            document.getElementById("priceDailyTable").innerHTML = '';
+        } else if (pdc == 1) {
             if (gpMap) {
+                esd.style.display = 'inline-block';
                 eg.style.display = 'inline-block';
                 eac.style.display = 'none';
                 eat.style.display = 'none';
@@ -847,8 +877,9 @@ function displayPriceDaily() {
             } else {
                 document.getElementById('noPriceDaily').style.display = 'block';
             }
-        } else if (pdc == 1) {
+        } else if (pdc == 2) {
             if (gpMap) {
+                esd.style.display = 'inline-block';
                 eg.style.display = 'none';
                 eac.style.display = 'inline-block';
                 eat.style.display = 'none';
@@ -863,8 +894,9 @@ function displayPriceDaily() {
             } else {
                 document.getElementById('noPriceDaily').style.display = 'block';
             }
-        } else if (pdc < 12) {
+        } else if (pdc < 13) {
             if (tpMap) {
+                esd.style.display = 'inline-block';
                 eg.style.display = 'none';
                 eac.style.display = 'none';
                 eat.style.display = 'none';
@@ -875,7 +907,7 @@ function displayPriceDaily() {
                 for (const date in tpMap) {
                     var item = []
                     for (let i = 0; i < title.length; i++) {
-                        item[i] = tpMap[date][pdc - 1][i + 1];
+                        item[i] = tpMap[date][pdc - 2][i + 1];
                     }
                     if (Math.min(...item) > 0) {
                         dataMap[date] = item;
@@ -885,8 +917,9 @@ function displayPriceDaily() {
             } else {
                 document.getElementById('noPriceDaily').style.display = 'block';
             }
-        } else if (pdc < 20) {
+        } else if (pdc < 21) {
             if (tpMap) {
+                esd.style.display = 'inline-block';
                 eg.style.display = 'none';
                 eac.style.display = 'none';
                 eat.style.display = 'inline-block';
@@ -897,7 +930,7 @@ function displayPriceDaily() {
                 for (const date in tpMap) {
                     var item = []
                     for (let i = 0; i < title.length; i++) {
-                        item[i] = tpMap[date][i + 1][pdc - 11];
+                        item[i] = tpMap[date][i + 1][pdc - 12];
                     }
                     if (Math.min(...item) > 0) {
                         dataMap[date] = item;
@@ -973,12 +1006,20 @@ function displayMatrix(matrix, tableId, width = 0) {
 function num(number) {
     var output = '';
     let n = parseInt(number)
+    var neg = false;
+    if (n < 0) {
+        neg = true;
+        n = n * -1;
+    }
     while (n >= 1000) {
         var text = n.toString().slice(-3);
         output = ' ' + text + output;
         n = parseInt(n / 1000);
     }
     output = n + output;
+    if (neg) {
+        output = '-' + output;
+    }
     return output;
 }
 
