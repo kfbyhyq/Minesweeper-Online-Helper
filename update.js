@@ -28,23 +28,36 @@ function updateGems() {
     document.getElementById('flag1').textContent = 0;
     chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: false }, function (tab1) {
         const ti1 = tab1.id;
-        recur(ti1, 0);
+        var t1 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 30;
+        extractGems(ti1);
+        intervalGems = setInterval(() => {
+            flag = document.getElementById('flag1').textContent;
+            if (flag == 1 || count > countMax) {
+                clearInterval(intervalGems);
+                chrome.tabs.remove(ti1, function() {});
+            } else {
+                count++;
+            }
+        }, t1);
 
-        function recur(tabId, i) {
-            var maxI = 50;
-            var t0 = 200;
-            setTimeout(() => {
-                extract(tabId);
-                const flag = document.getElementById('flag1').textContent;
-                if (flag == 1 || i > maxI) {
-                    chrome.tabs.remove(tabId, function() {});
-                } else {
-                    recur(tabId, i + 1);
-                }
-            }, i * t0);
-        }
-
-        function extract(tabId) {
+        // recur(ti1, 0);
+        // function recur(tabId, i) {
+        //     var maxI = 50;
+        //     var t0 = 200;
+        //     setTimeout(() => {
+        //         extract(tabId);
+        //         const flag = document.getElementById('flag1').textContent;
+        //         if (flag == 1 || i > maxI) {
+        //             chrome.tabs.remove(tabId, function() {});
+        //         } else {
+        //             recur(tabId, i + 1);
+        //         }
+        //     }, i * t0);
+        // }
+        function extractGems(tabId) {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
@@ -59,60 +72,67 @@ function updateGems() {
                         ['稀有碎片', '史诗碎片', '传说碎片', '完美碎片'],
                         [0, 0, 0, 0]
                     ];
+                    var t0 = 100;
                     try {
-                        var Topaz = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                        priceMap[1][0] = Topaz.textContent;
-                        var Ruby = document.querySelector("#stat_table_body > tr:nth-child(2) > td:nth-child(3)");
-                        priceMap[1][1] = Ruby.textContent;
-                        var Sapphire = document.querySelector("#stat_table_body > tr:nth-child(3) > td:nth-child(3)");
-                        priceMap[1][2] = Sapphire.textContent;
-                        var Amethyst = document.querySelector("#stat_table_body > tr:nth-child(4) > td:nth-child(3)");
-                        priceMap[1][3] = Amethyst.textContent;
-                        var Onyx = document.querySelector("#stat_table_body > tr:nth-child(5) > td:nth-child(3)");
-                        priceMap[1][4] = Onyx.textContent;
-                        var Aquamarine = document.querySelector("#stat_table_body > tr:nth-child(6) > td:nth-child(3)");
-                        priceMap[1][5] = Aquamarine.textContent;
-                        var Emerald = document.querySelector("#stat_table_body > tr:nth-child(7) > td:nth-child(3)");
-                        priceMap[1][6] = Emerald.textContent;
-                        var Garnet = document.querySelector("#stat_table_body > tr:nth-child(8) > td:nth-child(3)");
-                        priceMap[1][7] = Garnet.textContent;
-                        var Jade = document.querySelector("#stat_table_body > tr:nth-child(9) > td:nth-child(3)");
-                        priceMap[1][8] = Jade.textContent;
-                        var Diamond = document.querySelector("#stat_table_body > tr:nth-child(10) > td:nth-child(3)");
-                        priceMap[1][9] = Diamond.textContent;
-
-                        var Gold = document.querySelector("#stat_table_body > tr:nth-child(11) > td:nth-child(3)");
-                        priceMap[3][0] = Gold.textContent;
-                        var Copper = document.querySelector("#stat_table_body > tr:nth-child(12) > td:nth-child(3)");
-                        priceMap[3][1] = Copper.textContent;
-                        var Silver = document.querySelector("#stat_table_body > tr:nth-child(13) > td:nth-child(3)");
-                        priceMap[3][2] = Silver.textContent;
-                        var Nickel = document.querySelector("#stat_table_body > tr:nth-child(14) > td:nth-child(3)");
-                        priceMap[3][3] = Nickel.textContent;
-                        var Steel = document.querySelector("#stat_table_body > tr:nth-child(15) > td:nth-child(3)");
-                        priceMap[3][4] = Steel.textContent;
-                        var Iron = document.querySelector("#stat_table_body > tr:nth-child(16) > td:nth-child(3)");
-                        priceMap[3][5] = Iron.textContent;
-                        var Palladium = document.querySelector("#stat_table_body > tr:nth-child(17) > td:nth-child(3)");
-                        priceMap[3][6] = Palladium.textContent;
-                        var Titanium = document.querySelector("#stat_table_body > tr:nth-child(18) > td:nth-child(3)");
-                        priceMap[3][7] = Titanium.textContent;
-                        var Zinc = document.querySelector("#stat_table_body > tr:nth-child(19) > td:nth-child(3)");
-                        priceMap[3][8] = Zinc.textContent;
-                        var Platinum = document.querySelector("#stat_table_body > tr:nth-child(20) > td:nth-child(3)");
-                        priceMap[3][9] = Platinum.textContent;
-
-                        var Rare = document.querySelector("#stat_table_body > tr:nth-last-child(4) > td:nth-child(3)");
-                        priceMap[5][0] = Rare.textContent.replace(/ /g, "");
-                        var Unique = document.querySelector("#stat_table_body > tr:nth-last-child(3) > td:nth-child(3)");
-                        priceMap[5][1] = Unique.textContent.replace(/ /g, "");
-                        var Legendary = document.querySelector("#stat_table_body > tr:nth-last-child(2) > td:nth-child(3)");
-                        priceMap[5][2] = Legendary.textContent.replace(/ /g, "");
-                        var Perfect = document.querySelector("#stat_table_body > tr:nth-last-child(1) > td:nth-child(3)");
-                        priceMap[5][3] = Perfect.textContent.replace(/ /g, "");
-
-                        console.log(priceMap);
-                        chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
+                        startGemsQuery = setInterval(() => {
+                            let firstItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                            if (firstItem) {
+                                clearInterval(startGemsQuery);
+                                var Topaz = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                                priceMap[1][0] = Topaz.textContent;
+                                var Ruby = document.querySelector("#stat_table_body > tr:nth-child(2) > td:nth-child(3)");
+                                priceMap[1][1] = Ruby.textContent;
+                                var Sapphire = document.querySelector("#stat_table_body > tr:nth-child(3) > td:nth-child(3)");
+                                priceMap[1][2] = Sapphire.textContent;
+                                var Amethyst = document.querySelector("#stat_table_body > tr:nth-child(4) > td:nth-child(3)");
+                                priceMap[1][3] = Amethyst.textContent;
+                                var Onyx = document.querySelector("#stat_table_body > tr:nth-child(5) > td:nth-child(3)");
+                                priceMap[1][4] = Onyx.textContent;
+                                var Aquamarine = document.querySelector("#stat_table_body > tr:nth-child(6) > td:nth-child(3)");
+                                priceMap[1][5] = Aquamarine.textContent;
+                                var Emerald = document.querySelector("#stat_table_body > tr:nth-child(7) > td:nth-child(3)");
+                                priceMap[1][6] = Emerald.textContent;
+                                var Garnet = document.querySelector("#stat_table_body > tr:nth-child(8) > td:nth-child(3)");
+                                priceMap[1][7] = Garnet.textContent;
+                                var Jade = document.querySelector("#stat_table_body > tr:nth-child(9) > td:nth-child(3)");
+                                priceMap[1][8] = Jade.textContent;
+                                var Diamond = document.querySelector("#stat_table_body > tr:nth-child(10) > td:nth-child(3)");
+                                priceMap[1][9] = Diamond.textContent;
+        
+                                var Gold = document.querySelector("#stat_table_body > tr:nth-child(11) > td:nth-child(3)");
+                                priceMap[3][0] = Gold.textContent;
+                                var Copper = document.querySelector("#stat_table_body > tr:nth-child(12) > td:nth-child(3)");
+                                priceMap[3][1] = Copper.textContent;
+                                var Silver = document.querySelector("#stat_table_body > tr:nth-child(13) > td:nth-child(3)");
+                                priceMap[3][2] = Silver.textContent;
+                                var Nickel = document.querySelector("#stat_table_body > tr:nth-child(14) > td:nth-child(3)");
+                                priceMap[3][3] = Nickel.textContent;
+                                var Steel = document.querySelector("#stat_table_body > tr:nth-child(15) > td:nth-child(3)");
+                                priceMap[3][4] = Steel.textContent;
+                                var Iron = document.querySelector("#stat_table_body > tr:nth-child(16) > td:nth-child(3)");
+                                priceMap[3][5] = Iron.textContent;
+                                var Palladium = document.querySelector("#stat_table_body > tr:nth-child(17) > td:nth-child(3)");
+                                priceMap[3][6] = Palladium.textContent;
+                                var Titanium = document.querySelector("#stat_table_body > tr:nth-child(18) > td:nth-child(3)");
+                                priceMap[3][7] = Titanium.textContent;
+                                var Zinc = document.querySelector("#stat_table_body > tr:nth-child(19) > td:nth-child(3)");
+                                priceMap[3][8] = Zinc.textContent;
+                                var Platinum = document.querySelector("#stat_table_body > tr:nth-child(20) > td:nth-child(3)");
+                                priceMap[3][9] = Platinum.textContent;
+        
+                                var Rare = document.querySelector("#stat_table_body > tr:nth-last-child(4) > td:nth-child(3)");
+                                priceMap[5][0] = Rare.textContent.replace(/ /g, "");
+                                var Unique = document.querySelector("#stat_table_body > tr:nth-last-child(3) > td:nth-child(3)");
+                                priceMap[5][1] = Unique.textContent.replace(/ /g, "");
+                                var Legendary = document.querySelector("#stat_table_body > tr:nth-last-child(2) > td:nth-child(3)");
+                                priceMap[5][2] = Legendary.textContent.replace(/ /g, "");
+                                var Perfect = document.querySelector("#stat_table_body > tr:nth-last-child(1) > td:nth-child(3)");
+                                priceMap[5][3] = Perfect.textContent.replace(/ /g, "");
+        
+                                console.log(priceMap);
+                                chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
+                            }
+                        }, t0);
                     } catch (e) {
                         console.error('错误页面', e);
                     }
@@ -134,33 +154,22 @@ function updateArenaTickets() {
         }
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: activePage }, function (tab2) {
             const ti2 = tab2.id;
-            recur(ti2);
+            var t1 = 1000;
+            extractAt(ti2);
+            var flag;
+            var count = 1;
+            var countMax = 300;
+            checkIntervalAt = setInterval(() => {
+                flag = document.getElementById('flag2').textContent;
+                if (flag == 1 || count > countMax) {
+                    clearInterval(checkIntervalAt);
+                    chrome.tabs.remove(ti2, function() {});
+                } else {
+                    count++;
+                }
+            }, t1);
 
-            function recur(tabId) {
-                var maxI = 1; // 不循环了，只运行一次
-                var t0 = 10000;
-                var t1 = 1000;
-                setTimeout(() => {
-                    extract(tabId);
-                }, t0);
-                // setTimeout(() => {
-                //     chrome.tabs.remove(tabId, function() {});
-                // }, 30 * t0);
-                var flag;
-                var count = 1;
-                var countMax = 300;
-                checkIntervalAt = setInterval(() => {
-                    flag = document.getElementById('flag2').textContent;
-                    if (flag == 1 || count == countMax) {
-                        clearInterval(checkIntervalAt);
-                        chrome.tabs.remove(tabId, function() {});
-                    } else {
-                        count++;
-                    }
-                }, t1);
-            }
-
-            function extract(tabId) {
+            function extractAt(tabId) {
                 chrome.scripting.executeScript({
                     target: { tabId },
                     // args: [backgroundCoe],
@@ -189,7 +198,7 @@ function updateArenaTickets() {
                                     typeMenu.click(); // 选择门票种类
                                     let levelMenu = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${level + 2}) > a`);
                                     levelMenu.click(); // 选择门票等级
-                                }, t0 * 1);
+                                }, t0);
                             }
                             function queryTicket() { // 查询当前页面最低价是否存在
                                 let price = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
@@ -255,14 +264,18 @@ function updateArenaTickets() {
                                     }, t0);
                                 }, t0 * 2);
                             }
-                            startQuery = setInterval(() => {
+                            startAtQuery = setInterval(() => {
                                 let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
                                 if (choice1) {
-                                    clearInterval(startQuery);
+                                    clearInterval(startAtQuery);
                                     choice1.click(); // 选择竞技场门票分类
-                                    setTimeout(() => {
-                                        queryProgress(0, 0);
-                                    }, t0 * 20);
+                                    atCategoryInterval = setInterval(() => {
+                                        let firstItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span")
+                                        if (firstItem.textContent.includes('L')) {
+                                            clearInterval(atCategoryInterval);
+                                            queryProgress(0, 0);
+                                        }
+                                    }, t0);
                                 }
                             }, t0);
                         } catch (e) {
@@ -379,22 +392,22 @@ function updateEquipmentStats() {
     document.getElementById('flagEquip').textContent = 0;
     chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: false }, function (tabEquip) {
         const tiEquip = tabEquip.id;
-        var t0 = 1000;
+        var t1 = 1000;
         var flag;
         var count = 1;
-        var countMax = 20;
+        var countMax = 30;
+        extractEquip(tiEquip);
         intervalEquip = setInterval(() => {
             flag = document.getElementById('flagEquip').textContent;
-            if (flag == 1 || count == countMax) {
+            if (flag == 1 || count > countMax) {
                 clearInterval(intervalEquip);
                 chrome.tabs.remove(tiEquip, function() {});
             } else {
-                extract(tiEquip);
                 count++;
             }
-        }, t0);
+        }, t1);
 
-        function extract(tabId) {
+        function extractEquip(tabId) {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
@@ -408,23 +421,30 @@ function updateEquipmentStats() {
                                       3, 4, 5, '', '', '', '', 6, '', 7, 
                                       8, '', '', '', '', '', '', '', '', '', 
                                       10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+                    var t0 = 100;
                     try {
-                        let allStats = document.querySelector("#EquipmentBlock > div:nth-child(1) > div.pull-right > span:nth-child(3) > img");
-                        hoverBox(allStats);      // 鼠标悬浮展开宝石数量
-                        let list = document.querySelector("body > div.popover.fade.bottom.in > div.popover-content > div > div");
+                        startEquipQuery = setInterval(() => {
+                            let allStats = document.querySelector("#EquipmentBlock > div:nth-child(1) > div.pull-right > span:nth-child(3) > img");
+                            if (allStats) {
+                                clearInterval(startEquipQuery);
 
-                        for (const item of list.children) {
-                            const classText = item.classList.value;
-                            if (classText.includes('bonus-')) {
-                                var bonusType = classText.match(/(\d+)/g)[0];
-                                var value = item.textContent.match(/[:：](.*)/)[1];
-                                equipStats[1 + 2 * (bonusIndex[bonusType] / 10 | 0)][bonusIndex[bonusType] % 10] = value;
+                                hoverBox(allStats);
+                                let list = document.querySelector("body > div.popover.fade.bottom.in > div.popover-content > div > div");
+        
+                                for (const item of list.children) {
+                                    const classText = item.classList.value;
+                                    if (classText.includes('bonus-')) {
+                                        var bonusType = classText.match(/(\d+)/g)[0];
+                                        var value = item.textContent.match(/[:：](.*)/)[1];
+                                        equipStats[1 + 2 * (bonusIndex[bonusType] / 10 | 0)][bonusIndex[bonusType] % 10] = value;
+                                    }
+                                }
+                                console.log(equipStats);
+                                chrome.runtime.sendMessage({ action: 'sendEquipStats', equipStats: equipStats });
                             }
-                        }
-                        console.log(equipStats);
-                        chrome.runtime.sendMessage({ action: 'sendEquipStats', equipStats: equipStats });
-                    } catch (error) {
-                        console.error(error);
+                        }, t0);
+                    } catch (e) {
+                        console.error('错误页面', e);
                     }
 
                     /* 模拟鼠标悬浮在button */
@@ -451,23 +471,22 @@ function updateStatistics() {
     const u1 = 'https://minesweeper.online/cn/statistics/' + pId;
     chrome.tabs.create({ url: u1, active: false }, function (tab5) {
         const ti5 = tab5.id;
-        recur(ti5, 0);
+        var t1 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 30;
+        extractStats(ti5);
+        intervalStats = setInterval(() => {
+            flag = document.getElementById('flag5').textContent;
+            if (flag == 1 || count > countMax) {
+                clearInterval(intervalStats);
+                chrome.tabs.remove(ti5, function() {});
+            } else {
+                count++;
+            }
+        }, t1);
 
-        function recur(tabId, i) {
-            var maxI = 50;
-            var t0 = 200;
-            setTimeout(() => {
-                extract(tabId);
-                const flag = document.getElementById('flag5').textContent;
-                if (flag == 1 || i > maxI) {
-                    chrome.tabs.remove(tabId, function() {});
-                } else {
-                    recur(tabId, i + 1);
-                }
-            }, i * t0);
-        }
-
-        function extract(tabId) {
+        function extractStats(tabId) {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
@@ -475,36 +494,43 @@ function updateStatistics() {
                         ['总局数', '胜局数', '总耗时', '完成的任务', '完成的竞技场', '已解决3BV', '经验', '金币', '宝石', '竞技场门票', '活跃度', '活动物品', '竞技场币'],
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     ];
+                    var t0 = 100;
                     try {
-                        var totalGames = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(1)");
-                        statistics[1][0] = totalGames.textContent.replace(/ /g, "");
-                        var totalWins = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(3)");
-                        statistics[1][1] = totalWins.textContent.replace(/ /g, "");
-                        var totalTime = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(5)");
-                        statistics[1][2] = totalTime.textContent.replace(/ /g, "");
-                        var quests = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(7)");
-                        statistics[1][3] = quests.textContent.replace(/ /g, "");
-                        var arenas = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(9)");
-                        statistics[1][4] = arenas.textContent.replace(/ /g, "");
-                        var bv = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(11)");
-                        statistics[1][5] = bv.textContent.replace(/ /g, "");
-                        var experience = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(1)");
-                        statistics[1][6] = experience.textContent.replace(/ /g, "");
-                        var minecoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(3)");
-                        statistics[1][7] = minecoins.textContent.replace(/ /g, "");
-                        var gems = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(5) > span > span");
-                        statistics[1][8] = gems.textContent.replace(/ /g, "");
-                        var tickets = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(7)");
-                        statistics[1][9] = tickets.textContent.replace(/ /g, "");
-                        var activity = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(9)");
-                        statistics[1][10] = activity.textContent.replace(/ /g, "");
-                        var eventPoints = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(11)");
-                        statistics[1][11] = eventPoints.textContent.replace(/ /g, "");
-                        var arenaCoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(13) > span > span");
-                        statistics[1][12] = arenaCoins.textContent.replace(/ /g, "");
-                        
-                        console.log(statistics);
-                        chrome.runtime.sendMessage({ action: 'sendStatistics', statistics: statistics });
+                        startStatsQuery = setInterval(() => {
+                            var totalGames = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(1)");
+                            if (totalGames) {
+                                clearInterval(startStatsQuery);
+                                // var totalGames = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(1)");
+                                statistics[1][0] = totalGames.textContent.replace(/ /g, "");
+                                var totalWins = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(3)");
+                                statistics[1][1] = totalWins.textContent.replace(/ /g, "");
+                                var totalTime = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(5)");
+                                statistics[1][2] = totalTime.textContent.replace(/ /g, "");
+                                var quests = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(7)");
+                                statistics[1][3] = quests.textContent.replace(/ /g, "");
+                                var arenas = document.querySelector("#aggregate > div > div:nth-child(1) > span:nth-child(9)");
+                                statistics[1][4] = arenas.textContent.replace(/ /g, "");
+                                var bv = document.querySelector("#aggregate > div > div:nth-child(1) > strong:nth-child(11)");
+                                statistics[1][5] = bv.textContent.replace(/ /g, "");
+                                var experience = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(1)");
+                                statistics[1][6] = experience.textContent.replace(/ /g, "");
+                                var minecoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(3)");
+                                statistics[1][7] = minecoins.textContent.replace(/ /g, "");
+                                var gems = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(5) > span > span");
+                                statistics[1][8] = gems.textContent.replace(/ /g, "");
+                                var tickets = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(7)");
+                                statistics[1][9] = tickets.textContent.replace(/ /g, "");
+                                var activity = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(9)");
+                                statistics[1][10] = activity.textContent.replace(/ /g, "");
+                                var eventPoints = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(11)");
+                                statistics[1][11] = eventPoints.textContent.replace(/ /g, "");
+                                var arenaCoins = document.querySelector("#aggregate > div > div:nth-child(2) > span:nth-child(13) > span > span");
+                                statistics[1][12] = arenaCoins.textContent.replace(/ /g, "");
+                                
+                                console.log(statistics);
+                                chrome.runtime.sendMessage({ action: 'sendStatistics', statistics: statistics });
+                            }
+                        }, t0);
                     } catch (e) {
                         console.error('错误页面', e);
                     }
@@ -521,23 +547,22 @@ function updatePersonalData() {
     const u2 = 'https://minesweeper.online/cn/player/' + pId;
     chrome.tabs.create({ url: u2, active: false }, function (tab3) {
         const ti3 = tab3.id;
-        recur(ti3, 0);
+        var t1 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 30;
+        extractPd(ti3);
+        intervalPd = setInterval(() => {
+            flag = document.getElementById('flag3').textContent;
+            if (flag == 1 || count > countMax) {
+                clearInterval(intervalPd);
+                chrome.tabs.remove(ti3, function() {});
+            } else {
+                count++;
+            }
+        }, t1);
 
-        function recur(tabId, i) {
-            var maxI = 50;
-            var t0 = 200;
-            setTimeout(() => {
-                extract(tabId);
-                const flag = document.getElementById('flag3').textContent;
-                if (flag == 1 || i > maxI) {
-                    chrome.tabs.remove(tabId, function() {});
-                } else {
-                    recur(tabId, i + 1);
-                }
-            }, i * t0);
-        }
-
-        function extract(tabId) {
+        function extractPd(tabId) {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
@@ -574,184 +599,191 @@ function updatePersonalData() {
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     ];
                     var row = 0;        // 当前录入行
+                    var t0 = 100;
                     try {
-                        let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(2)");
-                        hoverBox(gem);      // 鼠标悬浮展开宝石数量
-                        let coin = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(3)");
-                        hoverBox(coin);     // 鼠标悬浮展开竞技场币数量
-                        let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
-                        hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
-                        let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-last-child(1) > span > span");
-                        hoverBox(equipment);   // 鼠标悬浮展开装备信息
-                        let trophy = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span");
-                        trophy.click(); // 20250120更新改为点击弹出
-                        hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
-
-                        let popoverList = document.querySelectorAll("div.popover.fade.top.in, div.popover.fade.left.in");
-
-                        let gemList;
-                        let coinList;
-                        let ticketList;
-                        let equipList;
-                        /* 检查弹窗种类 */
-                        for (let i = 0; i < popoverList.length; i++) {
-                            const judge1 = popoverList[i].querySelector("div.popover-content > table > tbody > tr:nth-child(1) > td:nth-child(3)");
-                            const judge2 = popoverList[i].querySelector("div.popover-content > div > span:nth-child(1) > i");
-                            const judge3 = popoverList[i].querySelector("div.popover-content > div > div:nth-child(1)");
-                            if (judge3) {
-                                equipList = popoverList[i].querySelector("div.popover-content > div > div:nth-child(5) > div");
-                            } else if (judge2) {
-                                ticketList = popoverList[i].querySelector("div.popover-content > div");
-                            } else if (judge1) {
-                                if (personalData[0].includes(judge1.textContent)) {
-                                    gemList = popoverList[i].querySelector("div.popover-content > table > tbody");;
-                                } else {
-                                    coinList = popoverList[i].querySelector("div.popover-content > table > tbody");
-                                }
-                            }
-                        }
-                        
-                        /* 读宝石数量 */
-                        // let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
-                        if (gemList) {
-                            let gems = gemList.children;
-                            for (let i = 0; i < gems.length; i++) {
-                                let gemPrice = gems[i].querySelector("td.text-right");
-                                let gemName = gems[i].querySelector("td:nth-child(3)");
-                                for (let j = 0; j < 10; j++) {
-                                    if (personalData[row][j] == gemName.textContent) {
-                                        personalData[row + 1][j] = gemPrice.textContent.replace(/ /g, "");
-                                        break;
+                        startPdQuery = setInterval(() => {
+                            let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(2)");
+                            if (gem) {
+                                clearInterval(startPdQuery);
+                                // let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(2)");
+                                hoverBox(gem);      // 鼠标悬浮展开宝石数量
+                                let coin = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(3)");
+                                hoverBox(coin);     // 鼠标悬浮展开竞技场币数量
+                                let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
+                                hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
+                                let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-last-child(1) > span > span");
+                                hoverBox(equipment);   // 鼠标悬浮展开装备信息
+                                let trophy = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span");
+                                trophy.click(); // 20250120更新改为点击弹出
+                                hoverBox(trophy);   // 鼠标悬浮展开奖杯信息
+        
+                                let popoverList = document.querySelectorAll("div.popover.fade.top.in, div.popover.fade.left.in");
+        
+                                let gemList;
+                                let coinList;
+                                let ticketList;
+                                let equipList;
+                                /* 检查弹窗种类 */
+                                for (let i = 0; i < popoverList.length; i++) {
+                                    const judge1 = popoverList[i].querySelector("div.popover-content > table > tbody > tr:nth-child(1) > td:nth-child(3)");
+                                    const judge2 = popoverList[i].querySelector("div.popover-content > div > span:nth-child(1) > i");
+                                    const judge3 = popoverList[i].querySelector("div.popover-content > div > div:nth-child(1)");
+                                    if (judge3) {
+                                        equipList = popoverList[i].querySelector("div.popover-content > div > div:nth-child(5) > div");
+                                    } else if (judge2) {
+                                        ticketList = popoverList[i].querySelector("div.popover-content > div");
+                                    } else if (judge1) {
+                                        if (personalData[0].includes(judge1.textContent)) {
+                                            gemList = popoverList[i].querySelector("div.popover-content > table > tbody");;
+                                        } else {
+                                            coinList = popoverList[i].querySelector("div.popover-content > table > tbody");
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        // personalData.splice(row, 1);      // 删除用于匹配的中文行
-                        row += 2;
-
-                        /* 读竞技场币数量 */
-                        // let coinList = popoverList[1].querySelector("div.popover-content > table > tbody");
-                        if (coinList) {
-                            let coins = coinList.children;
-                            for (let i = 0; i < coins.length; i++) {
-                                let coinPrice = coins[i].querySelector("td.text-right");
-                                let coinName = coins[i].querySelector("td:nth-child(3)");
-                                for (let j = 0; j < 10; j++) {
-                                    if (personalData[row][j] == coinName.textContent) {
-                                        personalData[row + 1][j] = coinPrice.textContent.replace(/ /g, "");
-                                        break;
+                                
+                                /* 读宝石数量 */
+                                // let gemList = popoverList[0].querySelector("div.popover-content > table > tbody");
+                                if (gemList) {
+                                    let gems = gemList.children;
+                                    for (let i = 0; i < gems.length; i++) {
+                                        let gemPrice = gems[i].querySelector("td.text-right");
+                                        let gemName = gems[i].querySelector("td:nth-child(3)");
+                                        for (let j = 0; j < 10; j++) {
+                                            if (personalData[row][j] == gemName.textContent) {
+                                                personalData[row + 1][j] = gemPrice.textContent.replace(/ /g, "");
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        // personalData.splice(row, 1);
-                        row += 3;       // 空一行
-
-                        /* 读竞技场门票数量 */
-                        // let ticketList = popoverList[2].querySelector("div.popover-content > div");
-                        if (ticketList) {
-                            let tickets = ticketList.children;
-                            for (let i = 0; i < tickets.length; i++) {
-                                let typeClass = tickets[i].querySelector("i.fa-ticket");
-                                var type = typeClass.className.match(/ticket(\d+)/)[1];
-                                if (type > 10) { // 如果有活动票
-                                    personalData[15][0] = '活动竞技场';
-                                    type = 11;
-                                }
-                                var level = tickets[i].textContent.match(/L(\d+)/)[1];
-                                var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
-                                var n = num.replace(/ /g, "");
-                                personalData[row + +type - 1][level] = n;
-                            }
-                        }
-                        var levelMax = 8; // 最大等级
-                        if (personalData[15]) {
-                            for (let l = 0; l < levelMax; l++) {
-                                if (!personalData[15][l + 1]) { 
-                                    console.log(personalData[15][l + 1]);
-                                    personalData[15][l + 1] = 0;
-                                }
-                            }
-                        }
-                        row += 12;      // 空一行
-
-                        /* 读资源数 */
-                        let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
-                        personalData[row + 1][0] = resource.childNodes[0].textContent.replace(/\s+/g, '');
-                        const spans = resource.querySelectorAll("span");
-                        spans.forEach((span) => {
-                            if (span.querySelector("img")) {
-                                if (span.querySelector("img").className.includes('gem')) {
-                                    personalData[row + 1][1] = span.querySelector("span").textContent.replace(/\s+/g, '');
-                                } else if (span.querySelector("img").className.includes('arena')) {
-                                    personalData[row + 1][2] = span.querySelector("span").textContent.replace(/\s+/g, '');
-                                } else if (span.querySelector("img").className.includes('eq')) {
-                                    personalData[row + 1][4] = span.querySelector("span").textContent.replace(/\s+/g, '');
-                                } else if (span.querySelector("img").className.includes('parts')) {
-                                    personalData[row + 1][5] = span.textContent.replace(/\s+/g, '');
-                                }
-                            } else if (span.querySelector("i")) {
-                                personalData[row + 1][3] = span.querySelector("span").textContent.replace(/\s+/g, '');
-                            }
-                        });
-                        let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
-                        personalData[row + 1][6] = hp.textContent.replace(/\s+/g, '');
-                        row += 3;       // 空一行
-
-                        /* 读装备信息 */
-                        // let equipList = popoverList[3].querySelector("div.popover-content > div > div:nth-child(5) > div");
-                        if (equipList) {
-                            let equip = equipList.children;
-                            for (let i = 0; i < equip.length; i++) {
-                                let item = equip[i].className.match(/bonus-(\d+)/)[1];
-                                let percent = equip[i].textContent.match(/\+([^+]+)/)[1];
-                                if (item < 4) {
-                                    personalData[row + 1][item] = percent;
-                                } else if (item > 10 && item < 14) {
-                                    personalData[row + 1][item - 7] = percent;
-                                } else if (item > 17 && item < 22) {
-                                    personalData[row + 1][item - 11] = percent;
-                                } else if (item > 30 && item < 41) {
-                                    personalData[row + 3][item - 31] = percent;
-                                }
-                            }
-                        }
-                        row += 4;
-
-                        /* 读奖杯信息 */
-                        let trophyList = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > div > div.popover-content > table");
-                        let trs = trophyList.querySelectorAll('tr');
-                        
-                        personalData[row][1] = parseInt(document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span").textContent, 10);
-                        let rank = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > a");
-                        if (rank && rank.textContent) {
-                            personalData[row][3] = parseInt(rank.textContent.match(/\d+/), 10) || '';
-                        }
-                        // 遍历每一行
-                        var gls = ['', '初', '中', '高', '自'];
-                        trs.forEach(tr => {
-                            let cells = tr.querySelectorAll('td'); // 获取所有td元素
-                            let title = cells[0].textContent; // 第一个td为标题
-                            let index = personalData[row + 1].indexOf(title); // 匹配标题在personalData中的索引
-                            if (index !== -1) {
-                                // 填入值和奖杯数
-                                personalData[row + 2][index] = cells[1].textContent || '';
-                                personalData[row + 3][index] = parseInt(cells[2].textContent, 10) || 0;
-                                // 检查初中高级
-                                let grade = cells[1].querySelector("i");
-                                if (grade) {
-                                    let cname = grade.className;
-                                    let glevel = cname.charAt(cname.length - 1);
-                                    if (!isNaN(glevel)) {
-                                        personalData[row + 2][index] = gls[glevel] + personalData[row + 2][index];
+                                // personalData.splice(row, 1);      // 删除用于匹配的中文行
+                                row += 2;
+        
+                                /* 读竞技场币数量 */
+                                // let coinList = popoverList[1].querySelector("div.popover-content > table > tbody");
+                                if (coinList) {
+                                    let coins = coinList.children;
+                                    for (let i = 0; i < coins.length; i++) {
+                                        let coinPrice = coins[i].querySelector("td.text-right");
+                                        let coinName = coins[i].querySelector("td:nth-child(3)");
+                                        for (let j = 0; j < 10; j++) {
+                                            if (personalData[row][j] == coinName.textContent) {
+                                                personalData[row + 1][j] = coinPrice.textContent.replace(/ /g, "");
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
+                                // personalData.splice(row, 1);
+                                row += 3;       // 空一行
+        
+                                /* 读竞技场门票数量 */
+                                // let ticketList = popoverList[2].querySelector("div.popover-content > div");
+                                if (ticketList) {
+                                    let tickets = ticketList.children;
+                                    for (let i = 0; i < tickets.length; i++) {
+                                        let typeClass = tickets[i].querySelector("i.fa-ticket");
+                                        var type = typeClass.className.match(/ticket(\d+)/)[1];
+                                        if (type > 10) { // 如果有活动票
+                                            personalData[15][0] = '活动竞技场';
+                                            type = 11;
+                                        }
+                                        var level = tickets[i].textContent.match(/L(\d+)/)[1];
+                                        var num = tickets[i].querySelector("span.tickets-amount").textContent.match(/\d+/)[0];
+                                        var n = num.replace(/ /g, "");
+                                        personalData[row + +type - 1][level] = n;
+                                    }
+                                }
+                                var levelMax = 8; // 最大等级
+                                if (personalData[15]) {
+                                    for (let l = 0; l < levelMax; l++) {
+                                        if (!personalData[15][l + 1]) { 
+                                            console.log(personalData[15][l + 1]);
+                                            personalData[15][l + 1] = 0;
+                                        }
+                                    }
+                                }
+                                row += 12;      // 空一行
+        
+                                /* 读资源数 */
+                                let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
+                                personalData[row + 1][0] = resource.childNodes[0].textContent.replace(/\s+/g, '');
+                                const spans = resource.querySelectorAll("span");
+                                spans.forEach((span) => {
+                                    if (span.querySelector("img")) {
+                                        if (span.querySelector("img").className.includes('gem')) {
+                                            personalData[row + 1][1] = span.querySelector("span").textContent.replace(/\s+/g, '');
+                                        } else if (span.querySelector("img").className.includes('arena')) {
+                                            personalData[row + 1][2] = span.querySelector("span").textContent.replace(/\s+/g, '');
+                                        } else if (span.querySelector("img").className.includes('eq')) {
+                                            personalData[row + 1][4] = span.querySelector("span").textContent.replace(/\s+/g, '');
+                                        } else if (span.querySelector("img").className.includes('parts')) {
+                                            personalData[row + 1][5] = span.textContent.replace(/\s+/g, '');
+                                        }
+                                    } else if (span.querySelector("i")) {
+                                        personalData[row + 1][3] = span.querySelector("span").textContent.replace(/\s+/g, '');
+                                    }
+                                });
+                                let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
+                                personalData[row + 1][6] = hp.textContent.replace(/\s+/g, '');
+                                row += 3;       // 空一行
+        
+                                /* 读装备信息 */
+                                // let equipList = popoverList[3].querySelector("div.popover-content > div > div:nth-child(5) > div");
+                                if (equipList) {
+                                    let equip = equipList.children;
+                                    for (let i = 0; i < equip.length; i++) {
+                                        let item = equip[i].className.match(/bonus-(\d+)/)[1];
+                                        let percent = equip[i].textContent.match(/\+([^+]+)/)[1];
+                                        if (item < 4) {
+                                            personalData[row + 1][item] = percent;
+                                        } else if (item > 10 && item < 14) {
+                                            personalData[row + 1][item - 7] = percent;
+                                        } else if (item > 17 && item < 22) {
+                                            personalData[row + 1][item - 11] = percent;
+                                        } else if (item > 30 && item < 41) {
+                                            personalData[row + 3][item - 31] = percent;
+                                        }
+                                    }
+                                }
+                                row += 4;
+        
+                                /* 读奖杯信息 */
+                                let trophyList = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > div > div.popover-content > table");
+                                let trs = trophyList.querySelectorAll('tr');
+                                
+                                personalData[row][1] = parseInt(document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > span").textContent, 10);
+                                let rank = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(2) > div.col-xs-8.form-text > a");
+                                if (rank && rank.textContent) {
+                                    personalData[row][3] = parseInt(rank.textContent.match(/\d+/), 10) || '';
+                                }
+                                // 遍历每一行
+                                var gls = ['', '初', '中', '高', '自'];
+                                trs.forEach(tr => {
+                                    let cells = tr.querySelectorAll('td'); // 获取所有td元素
+                                    let title = cells[0].textContent; // 第一个td为标题
+                                    let index = personalData[row + 1].indexOf(title); // 匹配标题在personalData中的索引
+                                    if (index !== -1) {
+                                        // 填入值和奖杯数
+                                        personalData[row + 2][index] = cells[1].textContent || '';
+                                        personalData[row + 3][index] = parseInt(cells[2].textContent, 10) || 0;
+                                        // 检查初中高级
+                                        let grade = cells[1].querySelector("i");
+                                        if (grade) {
+                                            let cname = grade.className;
+                                            let glevel = cname.charAt(cname.length - 1);
+                                            if (!isNaN(glevel)) {
+                                                personalData[row + 2][index] = gls[glevel] + personalData[row + 2][index];
+                                            }
+                                        }
+                                    }
+                                });
+        
+                                console.log(personalData);
+        
+                                chrome.runtime.sendMessage({ action: 'sendPersonalData', personalData: personalData });
                             }
-                        });
-
-                        console.log(personalData);
-
-                        chrome.runtime.sendMessage({ action: 'sendPersonalData', personalData: personalData });
+                        }, t0);
                     } catch (e) {
                         console.error('错误页面', e);
                     }
@@ -778,23 +810,22 @@ function updateEconomy() {
     document.getElementById('flagPe').textContent = 0;
     chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: false }, function (tabEco) {
         const tiE = tabEco.id;
-        recur(tiE, 0);
+        var t1 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 40;
+        extractEco(tiE);
+        intervalEco = setInterval(() => {
+            flag = document.getElementById('flagPe').textContent;
+            if (flag == 1 || count > countMax) {
+                clearInterval(intervalEco);
+                chrome.tabs.remove(tiE, function() {});
+            } else {
+                count++;
+            }
+        }, t1);
 
-        function recur(tabId, i) {
-            var maxI = 10;
-            var t0 = 2000;
-            setTimeout(() => {
-                const flag = document.getElementById('flagPe').textContent;
-                if (flag == 1 || i > maxI) {
-                    chrome.tabs.remove(tabId, function() {});
-                } else {
-                    extract(tabId);
-                    recur(tabId, i + 1);
-                }
-            }, i * t0);
-        }
-
-        function extract(tabId) {
+        function extractEco(tabId) {
             chrome.scripting.executeScript({
                 target: { tabId },
                 function: function () {
@@ -802,40 +833,50 @@ function updateEconomy() {
                         ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币'],
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     ];
+                    var t0 = 100;
                     try {
-                        let myRank = document.querySelector("#stat_my_rank > a");
-                        myRank.click();
-                        setTimeout(() => {
-                            let myRow = document.querySelector("#stat_table_body > tr.stat-my-row");
-                            let value = myRow.querySelector("td:nth-child(3) > span.help.dotted-underline");
-                            personalEco[1][0] = value.textContent;
-                            hoverBox(value);
-                            let dataDisp = myRow.querySelector("td:nth-child(3) > div > div.popover-content");
-                            var data = dataDisp.innerHTML.split(/<[^>]*>/g);
-                            for (let i = 0; i < data.length; i++) {
-                                for (let j = 1; j <= personalEco[0].length; j++) {
-                                    if (data[i].includes(personalEco[0][j] + '：')) {
-                                        var match = data[i].match(/：(.*)/);
-                                        personalEco[1][j] = match[1];
-                                        break;
+                        startEcoQuery = setInterval(() => {
+                            let myRank = document.querySelector("#stat_my_rank > a");
+                            if (myRank) {
+                                clearInterval(startEcoQuery);
+                                myRank.click();
+                                checkMyRank = setInterval(() => {
+                                    let check = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(4) > a > i");
+                                    if (check) {
+                                        clearInterval(checkMyRank);
+                                        let myRow = document.querySelector("#stat_table_body > tr.stat-my-row");
+                                        let value = myRow.querySelector("td:nth-child(3) > span.help.dotted-underline");
+                                        personalEco[1][0] = value.textContent;
+                                        hoverBox(value);
+                                        let dataDisp = myRow.querySelector("td:nth-child(3) > div > div.popover-content");
+                                        var data = dataDisp.innerHTML.split(/<[^>]*>/g);
+                                        for (let i = 0; i < data.length; i++) {
+                                            for (let j = 1; j <= personalEco[0].length; j++) {
+                                                if (data[i].includes(personalEco[0][j] + '：')) {
+                                                    var match = data[i].match(/：(.*)/);
+                                                    personalEco[1][j] = match[1];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        console.log(personalEco);
+                                        chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
                                     }
+                                }, t0)
+                                
+                                /* 模拟鼠标悬浮在button */
+                                function hoverBox(button) {
+                                    let event = new MouseEvent("mouseover", {
+                                        bubbles: true,
+                                        cancelable: true,
+                                        view: window,
+                                        clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
+                                        clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
+                                    });
+                                    button.dispatchEvent(event);
                                 }
                             }
-                            console.log(personalEco);
-                            chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
-                        }, 2000);
-                        
-                        /* 模拟鼠标悬浮在button */
-                        function hoverBox(button) {
-                            let event = new MouseEvent("mouseover", {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window,
-                                clientX: button.getBoundingClientRect().left + button.offsetWidth / 2,
-                                clientY: button.getBoundingClientRect().top + button.offsetHeight / 2
-                            });
-                            button.dispatchEvent(event);
-                        }
+                        }, t0);
                     } catch (e) {
                         console.log(e);
                     }
