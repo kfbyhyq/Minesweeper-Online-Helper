@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             const messageItem = chatBox.querySelector("div:last-child > table > tbody > tr > td:nth-child(2) > span.chat-message-text");
                             if (messageItem) {
                                 const message = messageItem.textContent;
-                                if (message.includes('free') || 
+                                if (message.includes('free') || message.includes('FREE') || message.includes('Free') || message.includes('免费') ||
                                 (!message.includes('rading') && !message.includes('rade') && !message.includes('mc') && !message.includes('ell') && 
                                 message.includes('L') && message.includes('+') &&
                                 (message.includes('Win') || message.includes('Earn') || message.includes('Find') || 
