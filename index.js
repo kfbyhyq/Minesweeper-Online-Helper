@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showPedFlag').textContent = 0;
         } else {
             document.getElementById('showPeDaily').textContent = '收起每日财产变化';
-            document.getElementById('peDaily').style.display = "block";
+            document.getElementById('peDaily').style.display = "table";
             document.getElementById('showPedFlag').textContent = 1;
         }
     });
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('showPrdFlag').textContent = 0;
         } else {
             document.getElementById('showPrDaily').textContent = '收起每日资源变化';
-            document.getElementById('prDaily').style.display = "block";
+            document.getElementById('prDaily').style.display = "table";
             document.getElementById('showPrdFlag').textContent = 1;
         }
     });

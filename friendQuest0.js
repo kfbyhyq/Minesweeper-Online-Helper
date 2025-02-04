@@ -127,7 +127,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (!fqDaily[newDate]) {
                 fqDaily[newDate] = {'fqSend': {}, 'fqReceive': {}};
             }
-
+            if (!fqInfoAll[newMonth]) {
+                fqInfoAll[newMonth] = {'fqSend': {}, 'fqReceive': {}}
+            }
             if (fqInfo[newMonth]) {
                 for (const id in fqInfo[newMonth].fqSend) {
                     if (!fqInfoAll[newMonth].fqSend.hasOwnProperty(id)) { 

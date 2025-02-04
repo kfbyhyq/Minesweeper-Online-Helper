@@ -125,7 +125,7 @@ function displayFriendQuest() {
             const dates = Object.keys(fqDaily).sort().reverse();
             // 按顺序遍历
             dates.forEach(date => {
-                if (activityMap[date]) {
+                if (date.includes(newMonth) && activityMap[date]) {
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
                     let sumLevelS = 0; // 发任务总等级
                     let countR = Object.keys(fqDaily[date].fqReceive).length; // 收任务总数
@@ -235,13 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('detailFq').addEventListener('click', function () {
         if (document.getElementById('detailFlag').textContent == 1) {
             document.getElementById('detailFq').textContent = '展开详情';
-            document.getElementById('shortTableFqStats').style.display = "block";
+            document.getElementById('shortTableFqStats').style.display = "table";
             document.getElementById('tableFqStats').style.display = "none";
             document.getElementById('detailFlag').textContent = 0;
         } else {
             document.getElementById('detailFq').textContent = '收起详情';
             document.getElementById('shortTableFqStats').style.display = "none";
-            document.getElementById('tableFqStats').style.display = "block";
+            document.getElementById('tableFqStats').style.display = "table";
             document.getElementById('detailFlag').textContent = 1;
         }
     });
@@ -288,7 +288,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (!fqDaily[newDate]) {
                 fqDaily[newDate] = {'fqSend': {}, 'fqReceive': {}};
             }
-
+            if (!fqInfoAll[newMonth]) {
+                fqInfoAll[newMonth] = {'fqSend': {}, 'fqReceive': {}}
+            }
             if (fqInfo[newMonth]) {
                 for (const id in fqInfo[newMonth].fqSend) {
                     if (!fqInfoAll[newMonth].fqSend.hasOwnProperty(id)) { 

@@ -445,9 +445,10 @@ option {
     background-color: #ddf196; 
     font-weight: bold;
 }
-
+.sortTable {
+    width: 600px;
+}
 .sortTable th {
-    width: 500px;
     background-color: #E4EEC9;
     font-weight: bold;
     cursor: pointer;
