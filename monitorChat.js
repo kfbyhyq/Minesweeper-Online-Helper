@@ -102,7 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         function fastInput(button) {
                             button.addEventListener('click', function() {
                                 const inputBox = document.querySelector("#chat_new_message");
-                                inputBox.value = inputBox.value + button.textContent + ' ';
+                                const send = document.querySelector("#chat_send_button");
+                                inputBox.value = inputBox.value + button.textContent;
+                                send.click();
                             });
                         }
 
