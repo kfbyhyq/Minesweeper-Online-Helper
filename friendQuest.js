@@ -124,8 +124,9 @@ function displayFriendQuest() {
 
             const dates = Object.keys(fqDaily).sort().reverse();
             // 按顺序遍历
+            console.log(activityMap);
             dates.forEach(date => {
-                if (date.includes(newMonth) && activityMap[date]) {
+                if (date.includes(newMonth) && (date.slice(-2) == '04' || activityMap[date])) {
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
                     let sumLevelS = 0; // 发任务总等级
                     let countR = Object.keys(fqDaily[date].fqReceive).length; // 收任务总数
@@ -139,6 +140,9 @@ function displayFriendQuest() {
                         // 累加等级
                         sumLevelS += levelS;
                     });
+                    if (date.slice(-2) == '04') {
+                        activityMap[date] = sumLevelS;
+                    }
                     Object.values(fqDaily[date].fqReceive).forEach(entry => {
                         const lrMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
                         let levelR = parseInt(lrMatch[1], 10);

@@ -54,18 +54,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                     playAudio(523.2, 0.5, 0.5); // 播放提示音
                                     console.log(message);
                                     const regex = /(Beginner|Intermediate|Expert|custom|Easy|Medium|Hard|Evil|row|flags|efficiency|minecoin|honour|gem|arena coins|arena|初级|中级|高级|自定义|简单|中等|困难|地狱|连胜|盲扫|效率|金币|功勋|宝石|竞技场币|竞技场|初級|中級|高級|自訂|簡單|中等|困難|地獄|連勝|無旗幟|效率|金幣|榮譽值|寶石|競技場硬幣|競技場)/g;
-                                    const abbr = { 'Beginner':'beg', 'Intermediate':'int', 'Expert':'exp', 'custom':'cus', 
-                                        'Easy':'easy', 'Medium':'med', 'Hard':'hard', 'Evil':'evil', 
-                                        'row':'ws', 'flags':'nf', 'efficiency':'eff', 
-                                        'minecoin':'mc', 'honour':'hp', 'gem':'gem', 'arena coins':'ac', 'arena':'arena', 
-                                        '初级':'初级', '中级':'中级', '高级':'高级', '自定义':'自定义', 
-                                        '简单':'简单', '中等':'中等', '困难':'困难', '地狱':'地狱', 
-                                        '连胜':'连胜', '盲扫':'盲扫', '效率':'效率', 
-                                        '金币':'金币', '功勋':'功勋', '宝石':'宝石', '竞技场币':'场币', '竞技场':'竞技场', 
-                                        '初級':'初級', '中級':'中級', '高級':'高級', '自訂':'自訂', 
-                                        '簡單':'簡單', '中等':'中等', '困難':'困難', '地獄':'地獄', 
-                                        '連勝':'連勝', '無旗幟':'無旗', '效率':'效率', 
-                                        '金幣':'金幣', '榮譽值':'榮譽', '寶石':'寶石', '競技場硬幣':'場幣', '競技場':'競技場'}
+                                    const abbr = { 'Beginner':['beg', '#54E083'], 'Intermediate':['int', '#54E083'], 'Expert':['exp', '#54E083'], 'custom':['cus', '#C1C1C1'], 
+                                        'Easy':['easy', '#17FFFF'], 'Medium':['med', '#17FFFF'], 'Hard':['hard', '#17FFFF'], 'Evil':['evil', '#17FFFF'], 
+                                        'row':['ws', '#E0B1FF'], 'flags':['nf', '#72CFFE'], 'efficiency':['eff', '#FFD117'], 
+                                        'minecoin':['mc', '#FFF017'], 'honour':['hp', '#B2F0FF'], 'gem':['gem', '#F0F0F0'], 'arena coins':['ac', '#83FFB2'], 'arena':['arena', '#83FFB2'], 
+                                        '初级':['初级', '#54E083'], '中级':['中级', '#54E083'], '高级':['高级', '#54E083'], '自定义':['自定义', '#C1C1C1'], 
+                                        '简单':['简单', '#17FFFF'], '中等':['中等', '#17FFFF'], '困难':['困难', '#17FFFF'], '地狱':['地狱', '#17FFFF'], 
+                                        '连胜':['连胜', '#E0B1FF'], '盲扫':['盲扫', '#72CFFE'], '效率':['效率', '#FFD117'], 
+                                        '金币':['金币', '#FFF017'], '功勋':['功勋', '#B2F0FF'], '宝石':['宝石', '#54E083'], '竞技场币':['场币', '#83FFB2'], '竞技场':['竞技场', '#83FFB2'], 
+                                        '初級':['初級', '#54E083'], '中級':['中級', '#54E083'], '高級':['高級', '#54E083'], '自訂':['自訂', '#C1C1C1'], 
+                                        '簡單':['簡單', '#17FFFF'], '中等':['中等', '#17FFFF'], '困難':['困難', '#17FFFF'], '地獄':['地獄', '#17FFFF'], 
+                                        '連勝':['連勝', '#E0B1FF'], '無旗幟':['無旗', '#72CFFE'], '效率':['效率', '#FFD117'], 
+                                        '金幣':['金幣', '#FFF017'], '榮譽值':['榮譽', '#B2F0FF'], '寶石':['寶石', '#F0F0F0'], '競技場硬幣':['場幣', '#83FFB2'], '競技場':['競技場', '#83FFB2']}
                                     const matchedStr = [...message.matchAll(regex)].map(match => match[0]);
                                     const typeArea = document.querySelector("#chat_send_message"); // 输入框所在元素
                                     var buttonArea = typeArea.querySelector("#buttonArea"); // 在输入框下方创建按钮集合
@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     fastInput(typeButtonMe);
                                     for (let i = 0; i < matchedStr.length; i++) {
                                         var typeButton = document.createElement('button');
-                                        typeButton.textContent = abbr[matchedStr[i]];
+                                        typeButton.textContent = abbr[matchedStr[i]][0];
+                                        typeButton.style.backgroundColor = abbr[matchedStr[i]][1];
+                                        typeButton.style.color = '#000';
                                         typeButton.className = 'fastInputButton';
                                         buttonArea.appendChild(typeButton);
                                         fastInput(typeButton);
