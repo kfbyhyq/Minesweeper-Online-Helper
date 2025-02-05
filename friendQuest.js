@@ -124,7 +124,6 @@ function displayFriendQuest() {
 
             const dates = Object.keys(fqDaily).sort().reverse();
             // 按顺序遍历
-            console.log(activityMap);
             dates.forEach(date => {
                 if (date.includes(newMonth) && (date.slice(-2) == '04' || activityMap[date])) {
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
