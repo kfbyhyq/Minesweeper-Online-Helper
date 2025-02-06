@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 (message.includes('free') || message.includes('FREE') || message.includes('Free') || message.includes('免费') ||
                                 (!message.includes('rading') && !message.includes('rade') && !message.includes('RADE') && !message.includes('RADING') &&
                                 !message.includes('ell') && !message.includes('ELL') && !message.includes('ale') && !message.includes('ALE') && 
-                                !message.includes('mc') && !message.includes('xchange') && !message.includes('XCHANGE') && 
+                                !message.includes('mc') && !message.includes('MC') && !message.includes('xchange') && !message.includes('XCHANGE') && 
                                 (message.includes('Win') || message.includes('Earn') || message.includes('Find') || message.includes('Complete') ||
                                 message.includes('获得') || message.includes('完成') || message.includes('获取') || message.includes('达到') || 
                                 message.includes('獲得'))))) {
