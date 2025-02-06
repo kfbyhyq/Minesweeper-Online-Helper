@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             const pageNext = document.querySelector("#stat_pagination > li.next");
                                             pageNext.click();
                                         }, t1);
-                                    } else if (pageActive.textContent > pageNum) { // 页码领先于录入页面就回到第一页
+                                    } else if (pageActive.textContent > pageNum) { // 页码领先于录入页码就回到第一页
                                         setTimeout(() => {
                                             const pageFirst = document.querySelector("#stat_pagination > li.first");
                                             pageFirst.click();

@@ -265,10 +265,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* 接收网页传回的数据 */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     if (request.action === 'friendQuest') {
         let fqInfo = request.fqInfo;
         let activity = request.activity;
-        console.log('本次提取活跃度:', activity, '友谊任务信息：', fqInfo);   // 在控制台打出结果
+        console.log(timeStr, '提取活跃度:', activity, '友谊任务信息：', fqInfo);   // 在控制台打出结果
         chrome.storage.local.get(['friendQuestInfo', 'activityMap', 'friendQuestDaily'], function(result) {
             let fqInfoAll = result.friendQuestInfo || {}; // 确保存在数据，防止为 undefined
             let activityMap = result.activityMap || {}; // 确保存在数据，防止为 undefined
@@ -317,6 +325,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             console.log('友谊任务信息汇总:', fqInfoAll);   // 在控制台打出结果
         });
         document.getElementById('flagFq').textContent = 1;   // 设置成功标记
+        document.getElementById('flagFqAll').textContent = 1;   // 设置成功标记
         setTimeout(() => {
             displayFriendQuest();
         }, 10);
@@ -416,7 +425,234 @@ function updateFriendQuest() {
     });
 }
 
+/* 刷新友谊任务（全部） */
+function updateFriendQuestAll() {
+    document.getElementById('flagFqAll').textContent = 0;
+    chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: false }, function (tabFq) {
+        const ti0 = tabFq.id;
+        var t1 = 1000;
+        var flag;
+        var count = 1;
+        var countMax = 60;
+        extractFqAll(ti0);
+        intervalFqAll = setInterval(() => {
+            flag = document.getElementById('flagFqAll').textContent;
+            if (flag == 1 || count > countMax) {
+                clearInterval(intervalFqAll);
+                chrome.tabs.remove(ti0, function() {});
+            } else {
+                count++;
+            }
+        }, t1);
+
+        function extractFqAll(tabId) {
+            chrome.scripting.executeScript({
+                target: { tabId },
+                function: function () {
+                    const currentDate = new Date();
+                    const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+                    var fqInfo = {[newMonth]: {'fqSend': {}, 'fqReceive': {}}};
+                    var t0 = 100;
+                    try {
+                        startFqAllQuery = setInterval(() => {
+                            let activityP = document.querySelector("#QuestsBlock > p");
+                            if (activityP) {
+                                clearInterval(startFqAllQuery);
+                                let activity = parseInt(activityP.textContent.match(/\d+$/)[0], 10);
+                                const questsBlock = document.querySelector("#QuestsBlock");
+                                var ti = [[0, 0, 0], [0, 0, 0]]; // tableIndex
+                                var fqsiFlag = 0;
+                                var fqrFlag = 0;
+                                var fqsdFlag = 0;
+                                for (let i = 0; i < questsBlock.children.length; i++) {
+                                    const ele = questsBlock.children[i];
+                                    var currentTable;
+                                    if (ele.classList.contains('table-bordered')) { // 检查是否为 table
+                                        if (ele.querySelector("thead > tr > th:nth-child(4)").textContent == '奖励' 
+                                        || ele.querySelector("thead > tr > th:nth-child(4)").textContent == 'Reward') {
+                                            ti[0][0] = i + 1;
+                                            currentTable = 0;
+                                        } else if (ele.querySelector("thead > tr > th:nth-child(6)").textContent == '发送自' 
+                                        || ele.querySelector("thead > tr > th:nth-child(6)").textContent == 'Sent by') {
+                                            ti[0][1] = i + 1;
+                                            currentTable = 1;
+                                        } else if (ele.querySelector("thead > tr > th:nth-child(6)").textContent == '发送到' 
+                                        || ele.querySelector("thead > tr > th:nth-child(6)").textContent == 'Sent to') {
+                                            ti[0][2] = i + 1;
+                                            currentTable = 2;
+                                        }
+                                        // 检查下一个元素是否为 link
+                                        if (i + 1 < questsBlock.children.length) {
+                                            const nextEle = questsBlock.children[i + 1];
+                                            if (nextEle.classList.contains('pagination')) {
+                                                ti[1][currentTable] = i + 2;
+                                                i++; // 跳过已处理的 link
+                                            }
+                                        }
+                                    }
+                                }
+                                console.log(ti);
+                                var t0 = 100;
+                                if (ti[0][0] > 0) { // 待发送任务
+                                    if (ti[1][0] > 0) { // 翻页
+                                        var sipn = 1;
+                                        sipInterval = setInterval(() => {
+                                            let sipSet = document.querySelector(`#QuestsBlock > ul:nth-child(${ti[1][0]})`);
+                                            let sipActive = sipSet.querySelector("li.page.active");
+                                            if (sipActive.textContent == sipn) { // 当前页码等于录入页码
+                                                let questSending = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][0]})`);
+                                                Array.from(questSending.getElementsByTagName('tr')).forEach(tr => {
+                                                    const id = tr.id;
+                                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                                    if (id) {
+                                                        fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                                    }
+                                                });
+                                                sipn++;
+                                                const sipLastDisabled = sipSet.querySelector("li.last.disabled");
+                                                if (sipLastDisabled) { // 没有下一页说明到达最后一页
+                                                    clearInterval(sipInterval);
+                                                    // console.log(fqInfo);
+                                                    fqsiFlag = 1;
+                                                } else { // 否则翻页
+                                                    const sipNext = sipSet.querySelector("li.next");
+                                                    sipNext.click();
+                                                }
+                                            } else if (sipActive.textContent < sipn) { // 页码落后于录入页码就翻页
+                                                const sipNext = sipSet.querySelector("li.next");
+                                                sipNext.click();
+                                            } else if (sipActive.textContent > sipn) { // 页码领先于录入页码就回到第一页
+                                                const sipFirst = sipSet.querySelector("li.first");
+                                                sipFirst.click();
+                                            }
+                                        }, t0);
+                                    } else {
+                                        let questSending = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][0]})`);
+                                        Array.from(questSending.getElementsByTagName('tr')).forEach(tr => {
+                                            const id = tr.id;
+                                            const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                            if (id) {
+                                                fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    fqsiFlag = 1;
+                                }
+                                if (ti[0][1] > 0) { // 接收到的任务
+                                    if (ti[1][1] > 0) { // 翻页
+                                        var rpn = 1;
+                                        rpInterval = setInterval(() => {
+                                            let rpSet = document.querySelector(`#QuestsBlock > ul:nth-child(${ti[1][1]})`);
+                                            let rpActive = rpSet.querySelector("li.page.active");
+                                            if (rpActive.textContent == rpn) { // 当前页码等于录入页码
+                                                let questReceived = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][1]})`);
+                                                Array.from(questReceived.getElementsByTagName('tr')).forEach(tr => {
+                                                    const id = tr.id;
+                                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                                    if (id) {
+                                                        fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                                    }
+                                                });
+                                                rpn++;
+                                                const rpLastDisabled = rpSet.querySelector("li.last.disabled");
+                                                if (rpLastDisabled) { // 没有下一页说明到达最后一页
+                                                    clearInterval(rpInterval);
+                                                    // console.log(fqInfo);
+                                                    fqrFlag = 1;
+                                                } else { // 否则翻页
+                                                    const rpNext = rpSet.querySelector("li.next");
+                                                    rpNext.click();
+                                                }
+                                            } else if (rpActive.textContent < rpn) { // 页码落后于录入页码就翻页
+                                                const rpNext = rpSet.querySelector("li.next");
+                                                rpNext.click();
+                                            } else if (rpActive.textContent > rpn) { // 页码领先于录入页码就回到第一页
+                                                const rpFirst = rpSet.querySelector("li.first");
+                                                rpFirst.click();
+                                            }
+                                        }, t0);
+                                    } else {
+                                        let questReceived = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][1]})`);
+                                        Array.from(questReceived.getElementsByTagName('tr')).forEach(tr => {
+                                            const id = tr.id;
+                                            const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                            if (id) {
+                                                fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    fqrFlag = 1;
+                                }
+                                if (ti[0][2] > 0) { // 已发送任务
+                                    if (ti[1][2] > 0) { // 翻页
+                                        var sdpn = 1;
+                                        sdpInterval = setInterval(() => {
+                                            let sdpSet = document.querySelector(`#QuestsBlock > ul:nth-child(${ti[1][2]})`);
+                                            let sdpActive = sdpSet.querySelector("li.page.active");
+                                            if (sdpActive.textContent == sdpn) { // 当前页码等于录入页码
+                                                let questSent = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][2]})`);
+                                                Array.from(questSent.getElementsByTagName('tr')).forEach(tr => {
+                                                    const id = tr.id;
+                                                    const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                                    if (id) {
+                                                        fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                                    }
+                                                });
+                                                sdpn++;
+                                                const sdpLastDisabled = sdpSet.querySelector("li.last.disabled");
+                                                if (sdpLastDisabled) { // 没有下一页说明到达最后一页
+                                                    clearInterval(sdpInterval);
+                                                    // console.log(fqInfo);
+                                                    fqsdFlag = 1;
+                                                } else { // 否则翻页
+                                                    const sdpNext = sdpSet.querySelector("li.next");
+                                                    sdpNext.click();
+                                                }
+                                            } else if (sdpActive.textContent < sdpn) { // 页码落后于录入页码就翻页
+                                                const sdpNext = sdpSet.querySelector("li.next");
+                                                sdpNext.click();
+                                            } else if (sdpActive.textContent > sdpn) { // 页码领先于录入页码就回到第一页
+                                                const sdpFirst = sdpSet.querySelector("li.first");
+                                                sdpFirst.click();
+                                            }
+                                        }, t0);
+                                    } else {
+                                        let questSent = document.querySelector(`#QuestsBlock > table:nth-child(${ti[0][2]})`);
+                                        Array.from(questSent.getElementsByTagName('tr')).forEach(tr => {
+                                            const id = tr.id;
+                                            const tdValues = Array.from(tr.getElementsByTagName('td')).map(td => td.innerText); // 获取每个td中的内容
+                                            if (id) {
+                                                fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    fqsdFlag = 1;
+                                }
+                                checkQueryOver = setInterval(() => {
+                                    if (fqsiFlag && fqrFlag && fqsdFlag) {
+                                        clearInterval(checkQueryOver);
+                                        console.log(activity, fqInfo);
+                                        chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
+                                    }
+                                }, t0);
+                            }
+                        }, t0);
+                    } catch (e) {
+                        console.error('错误页面', e);
+                    }
+                }
+            });
+        }
+    });
+}
+
 /* 刷新任务 */
 document.getElementById('updateFq').addEventListener('click', function () {
     updateFriendQuest();
+});
+document.getElementById('updateFqAll').addEventListener('click', function () {
+    updateFriendQuestAll();
 });

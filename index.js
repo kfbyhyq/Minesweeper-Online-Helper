@@ -951,7 +951,7 @@ dailyTaskFriendQuest();
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'updateFqTask') {
         // document.getElementById('updateFq').click();
-        updateFriendQuest();
+        updateFriendQuestAll();
         // 重新调度下一天的任务
         dailyTaskFriendQuest();
     }
