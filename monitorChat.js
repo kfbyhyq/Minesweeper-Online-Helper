@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 message.includes('获得') || message.includes('完成') || message.includes('获取') || message.includes('达到') || 
                                 message.includes('獲得'))))) {
                                     playAudio(523.2, 0.5, 0.5); // 播放提示音
-                                    const regex = /(Beginner|Intermediate|Expert|custom|Easy|Medium|Hard|Evil|row|flags|efficiency|minecoin|honour|gem|arena coins|arena|初级|中级|高级|自定义|简单|中等|困难|地狱|连胜|盲扫|效率|金币|功勋|宝石|竞技场币|竞技场|初級|中級|高級|自訂|簡單|中等|困難|地獄|連勝|無旗幟|效率|金幣|榮譽值|寶石|競技場硬幣|競技場)/g;
+                                    // const regex = /(Beginner|Intermediate|Expert|custom|Easy|Medium|Hard|Evil|row|flags|efficiency|minecoin|honour|gem|arena coins|arena|初级|中级|高级|自定义|简单|中等|困难|地狱|连胜|盲扫|效率|金币|功勋|宝石|竞技场币|竞技场|初級|中級|高級|自訂|簡單|中等|困難|地獄|連勝|無旗幟|效率|金幣|榮譽值|寶石|競技場硬幣|競技場)/g;
+                                    const regex = /L(\d+)(E?)[^+]*\+/g;
                                     const abbr = { 'Beginner':['beg', '#54E083'], 'Intermediate':['int', '#54E083'], 'Expert':['exp', '#54E083'], 'custom':['cus', '#C1C1C1'], 
                                         'Easy':['easy', '#17FFFF'], 'Medium':['med', '#17FFFF'], 'Hard':['hard', '#17FFFF'], 'Evil':['evil', '#17FFFF'], 
                                         'row':['ws', '#E0B1FF'], 'flags':['nf', '#72CFFE'], 'efficiency':['eff', '#FFD117'], 
@@ -68,7 +69,22 @@ document.addEventListener('DOMContentLoaded', function() {
                                         '簡單':['简单', '#17FFFF'], '中等':['中等', '#17FFFF'], '困難':['困难', '#17FFFF'], '地獄':['地狱', '#17FFFF'], 
                                         '連勝':['连胜', '#E0B1FF'], '無旗幟':['盲扫', '#72CFFE'], '效率':['效率', '#FFD117'], 
                                         '金幣':['金币', '#FFF017'], '榮譽值':['功勋', '#B2F0FF'], '寶石':['宝石', '#F0F0F0'], '競技場硬幣':['场币', '#83FFB2'], '競技場':['竞技场', '#83FFB2']}
-                                    const matchedStr = [...message.matchAll(regex)].map(match => match[0]);
+                                    // const matchedStr = [...message.matchAll(regex)].map(match => match[0]);
+                                    const matchedResult = [...message.matchAll(regex)];
+                                    console.log(matchedResult);
+                                    const sortedResults = matchedResult.sort((a, b) => {
+                                        const numA = parseInt(a[1], 10);
+                                        const numB = parseInt(b[1], 10);
+                                        const hasE_A = a[2] !== '';
+                                        const hasE_B = b[2] !== '';
+                                    
+                                        // 优先排序没有E的结果
+                                        if (hasE_A === hasE_B) {
+                                            return numA - numB; // 数字升序
+                                        }
+                                        return hasE_A ? 1 : -1;
+                                    });
+                                    // const matchedStr = sortedResults.map(match => match[0]);
                                     const typeArea = document.querySelector("#chat_send_message"); // 输入框所在元素
                                     var buttonArea = typeArea.querySelector("#buttonArea"); // 在输入框下方创建按钮集合
                                     if (!buttonArea) {
@@ -90,14 +106,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                     typeButtonMe.className = 'fastInputButton';
                                     buttonArea.appendChild(typeButtonMe);
                                     fastInput(typeButtonMe);
-                                    for (let i = 0; i < matchedStr.length; i++) {
-                                        var typeButton = document.createElement('button');
-                                        typeButton.textContent = abbr[matchedStr[i]][0];
-                                        typeButton.style.backgroundColor = abbr[matchedStr[i]][1];
-                                        typeButton.style.color = '#000';
-                                        typeButton.className = 'fastInputButton';
-                                        buttonArea.appendChild(typeButton);
-                                        fastInput(typeButton);
+                                    for (let i = 0; i < sortedResults.length; i++) {
+                                        for (let key in abbr) {
+                                            if (sortedResults[i][0].includes(key)) {
+                                                var typeButton = document.createElement('button');
+                                                typeButton.textContent = abbr[key][0];
+                                                typeButton.style.backgroundColor = abbr[key][1];
+                                                typeButton.style.color = '#000';
+                                                if (sortedResults[i][2] == 'E') {
+                                                    typeButton.style.fontWeight = 'bold';
+                                                }
+                                                typeButton.className = 'fastInputButton';
+                                                buttonArea.appendChild(typeButton);
+                                                fastInput(typeButton);
+                                            }
+                                        }
+                                        // var typeButton = document.createElement('button');
+                                        // typeButton.textContent = abbr[matchedStr[i]][0];
+                                        // typeButton.style.backgroundColor = abbr[matchedStr[i]][1];
+                                        // typeButton.style.color = '#000';
+                                        // typeButton.className = 'fastInputButton';
+                                        // buttonArea.appendChild(typeButton);
+                                        // fastInput(typeButton);
                                     }
                                 }
                             }
