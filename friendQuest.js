@@ -512,7 +512,7 @@ function updateFriendQuestAll() {
                                                 const sipLastDisabled = sipSet.querySelector("li.last.disabled");
                                                 if (sipLastDisabled) { // 没有下一页说明到达最后一页
                                                     clearInterval(sipInterval);
-                                                    // console.log(fqInfo);
+                                                    // console.log('待发送提取完成');
                                                     fqsiFlag = 1;
                                                 } else { // 否则翻页
                                                     const sipNext = sipSet.querySelector("li.next");
@@ -535,6 +535,7 @@ function updateFriendQuestAll() {
                                                 fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
                                             }
                                         });
+                                        fqsiFlag = 1;
                                     }
                                 } else {
                                     fqsiFlag = 1;
@@ -558,7 +559,7 @@ function updateFriendQuestAll() {
                                                 const rpLastDisabled = rpSet.querySelector("li.last.disabled");
                                                 if (rpLastDisabled) { // 没有下一页说明到达最后一页
                                                     clearInterval(rpInterval);
-                                                    // console.log(fqInfo);
+                                                    // console.log('接收提取完成');
                                                     fqrFlag = 1;
                                                 } else { // 否则翻页
                                                     const rpNext = rpSet.querySelector("li.next");
@@ -581,6 +582,7 @@ function updateFriendQuestAll() {
                                                 fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
                                             }
                                         });
+                                        fqrFlag = 1;
                                     }
                                 } else {
                                     fqrFlag = 1;
@@ -604,7 +606,7 @@ function updateFriendQuestAll() {
                                                 const sdpLastDisabled = sdpSet.querySelector("li.last.disabled");
                                                 if (sdpLastDisabled) { // 没有下一页说明到达最后一页
                                                     clearInterval(sdpInterval);
-                                                    // console.log(fqInfo);
+                                                    // console.log('已发送提取完成');
                                                     fqsdFlag = 1;
                                                 } else { // 否则翻页
                                                     const sdpNext = sdpSet.querySelector("li.next");
@@ -627,6 +629,7 @@ function updateFriendQuestAll() {
                                                 fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
                                             }
                                         });
+                                        fqsdFlag = 1;
                                     }
                                 } else {
                                     fqsdFlag = 1;
@@ -636,6 +639,8 @@ function updateFriendQuestAll() {
                                         clearInterval(checkQueryOver);
                                         console.log(activity, fqInfo);
                                         chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
+                                    } else {
+                                        // console.log(fqsiFlag, fqrFlag, fqsdFlag)
                                     }
                                 }, t0);
                             }
