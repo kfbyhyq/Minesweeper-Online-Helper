@@ -113,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         try {
                             const questsBlock = document.querySelector("#QuestsBlock");
                             var ti = [[0, 0, 0], [0, 0, 0]]; // tableIndex
+                            var fqsiFlag = 0;
+                            var fqrFlag = 0;
+                            var fqsdFlag = 0;
                             for (let i = 0; i < questsBlock.children.length; i++) {
                                 const ele = questsBlock.children[i];
                                 var currentTable;
@@ -162,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             if (sipLastDisabled) { // 没有下一页说明到达最后一页
                                                 clearInterval(sipInterval);
                                                 // console.log(fqInfo)
+                                                fqsiFlag = 1;
                                             } else { // 否则翻页
                                                 const sipNext = sipSet.querySelector("li.next");
                                                 sipNext.click();
@@ -183,7 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                             fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
                                         }
                                     });
+                                    fqsiFlag = 1;
                                 }
+                            } else {
+                                fqsiFlag = 1;
                             }
                             if (ti[0][1] > 0) { // 接收到的任务
                                 if (ti[1][1] > 0) { // 翻页
@@ -205,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             if (rpLastDisabled) { // 没有下一页说明到达最后一页
                                                 clearInterval(rpInterval);
                                                 // console.log(fqInfo)
+                                                fqrFlag = 1;
                                             } else { // 否则翻页
                                                 const rpNext = rpSet.querySelector("li.next");
                                                 rpNext.click();
@@ -226,7 +234,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                             fqInfo[newMonth].fqReceive[id] = tdValues; // 将id作为键，td中的内容存入数组
                                         }
                                     });
+                                    fqrFlag = 1;
                                 }
+                            } else {
+                                fqrFlag = 1;
                             }
                             if (ti[0][2] > 0) { // 已发送任务
                                 if (ti[1][2] > 0) { // 翻页
@@ -248,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             if (sdpLastDisabled) { // 没有下一页说明到达最后一页
                                                 clearInterval(sdpInterval);
                                                 // console.log(fqInfo)
+                                                fqsdFlag = 1;
                                             } else { // 否则翻页
                                                 const sdpNext = sdpSet.querySelector("li.next");
                                                 sdpNext.click();
@@ -269,15 +281,25 @@ document.addEventListener('DOMContentLoaded', function() {
                                             fqInfo[newMonth].fqSend[id] = tdValues; // 将id作为键，td中的内容存入数组
                                         }
                                     });
+                                    fqsdFlag = 1;
                                 }
+                            } else {
+                                fqsdFlag = 1;
                             }
                             let activity = 0;
                             const activityP = document.querySelector("#QuestsBlock > p");
                             if (activityP) {
                                 activity = parseInt(activityP.textContent.match(/\d+$/)[0], 10);
                             }
-                            console.log(activity, fqInfo);
-                            chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
+                            checkQueryOver = setInterval(() => {
+                                if (fqsiFlag && fqrFlag && fqsdFlag) {
+                                    clearInterval(checkQueryOver);
+                                    console.log(activity, fqInfo);
+                                    chrome.runtime.sendMessage({ action: 'friendQuest', fqInfo: fqInfo, activity: activity });
+                                } else {
+                                    // console.log(fqsiFlag, fqrFlag, fqsdFlag)
+                                }
+                            }, t0);
                         } catch (error) {
                             console.log(error);
                             window.alert('错误页面', error);
@@ -359,7 +381,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set({ friendQuestDaily: fqDaily });
             console.log('友谊任务信息汇总:', fqInfoAll);   // 在控制台打出结果
         });
-        document.getElementById('buttonFq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        if (document.getElementById('buttonFq').style.backgroundColor === 'rgb(255, 159, 24)') {
+            document.getElementById('buttonFq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        }
+        if (document.getElementById('buttonFqAll').style.backgroundColor == 'rgb(255, 159, 24)') {
+            document.getElementById('buttonFqAll').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        }
     }
 });
 
