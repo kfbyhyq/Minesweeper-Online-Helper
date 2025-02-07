@@ -123,6 +123,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
         chrome.storage.local.get(['perfectValue', 'gemsPrice'], function(result) {
             const perfectValue = result.perfectValue;
+            // var perfectNew = [0, 0, 0, 0, 0, 0, 0, 31800, 0, 0];
             const gemsPrice = result.gemsPrice;
             var equipCheap = [['页码', '序号', '名称', '质量', '碎片', '碎片价', '售价']]; // 结果表
             var ecn = 0;
@@ -136,6 +137,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     }
                 } else if (quality >= lt && quality < pt) { // 传说
                     var disPrice = legendEquipment[quality - lt] * perfectValue[1][equipmentInfo[i][1] + 1] / 100; // 碎片个数乘以对应碎片估价
+                    // var disPrice = legendEquipment[quality - lt] * perfectNew[equipmentInfo[i][1]];
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
                         equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], legendEquipment[quality - lt], disPrice, equipmentInfo[i][3]];

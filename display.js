@@ -267,8 +267,8 @@ function displayTables() {
                         dnow = pdDate[i];
                     }
                 }
-                if (!pdMap[pdDate[i]][18][6]) {pdMap[pdDate[i]][18][6] = 0;}
-                pdMap[pdDate[i]][18][6] = String(pdMap[pdDate[i]][18][6]).replace(/\s+/g, '');
+                // if (!pdMap[pdDate[i]][18][6]) {pdMap[pdDate[i]][18][6] = 0;}
+                // pdMap[pdDate[i]][18][6] = String(pdMap[pdDate[i]][18][6]).replace(/\s+/g, '');
                 // 资源每日变化 借用奖杯的循环
                 if (i > 0) {
                     const pr1 = pdMap[pdDate[i-1]];
@@ -285,7 +285,7 @@ function displayTables() {
                     tablePrDaily.push(row);
                 }
             }
-            chrome.storage.local.set({ personalDataMap: pdMap });
+            // chrome.storage.local.set({ personalDataMap: pdMap });
             displayMatrix(tableTrophy, 'tableTrophy', 10);
             displayMatrix(tablePrDaily, 'prDaily');
         } else {
