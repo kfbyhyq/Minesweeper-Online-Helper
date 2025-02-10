@@ -450,6 +450,43 @@ function displayTables() {
             for (let i = 1; i < eventShop.length; i++) {
                 tableEs.rows[i].cells[2].style.backgroundColor = levelColor[i - 1];
             }
+            // 完美线
+            var perfectLine = [
+                ['今日/累计', 0, 0],
+                ['完美线', '每日目标', '当日线'],
+                ['20k', 0, 0],
+                ['20.5k', 0, 0],
+                ['21k', 0, 0],
+                ['40k', 0, 0],
+                ['40.5k', 0, 0],
+                ['41k', 0, 0],
+                ['41.5k', 0, 0],
+                ['42k', 0, 0]
+            ]
+            let currentYear = new Date().getFullYear();
+            let currentMonth = new Date().getMonth();
+            let currentDate = new Date().getDate();
+            let dayNum = new Date(currentYear, currentMonth + 1, 0).getDate();
+            console.log(currentDate, dayNum);
+            perfectLine[0][1] = stDaily[1][12];
+            perfectLine[0][2] = personalData[18][7];
+            perfectLine[2][1] = 20000 / (dayNum - 3);
+            perfectLine[2][2] = 20000 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[3][1] = 20500 / (dayNum - 3);
+            perfectLine[3][2] = 20500 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[4][1] = 21000 / (dayNum - 3);
+            perfectLine[4][2] = 21000 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[5][1] = 40000 / (dayNum - 3);
+            perfectLine[5][2] = 40000 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[6][1] = 40500 / (dayNum - 3);
+            perfectLine[6][2] = 40500 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[7][1] = 41000 / (dayNum - 3);
+            perfectLine[7][2] = 41000 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[8][1] = 41500 / (dayNum - 3);
+            perfectLine[8][2] = 41500 / (dayNum - 3) * (currentDate - 3);
+            perfectLine[9][1] = 42000 / (dayNum - 3);
+            perfectLine[9][2] = 42000 / (dayNum - 3) * (currentDate - 3);
+            displayMatrix(perfectLine, 'tablePerfectLine');
         }
         /* 完美装备花费 */
         {

@@ -511,3 +511,22 @@ option {
     font-size: 10px; /* 字体大小 */
     pointer-events: none; /* 防止提示框干扰点击 */
 }
+/* 完美线 */
+#tablePerfectLine {
+    width: 300px;
+}
+#tablePerfectLine tbody td:first-child {
+    /* background-color: #ACD8A7; */
+    background-color: #E4EEC9; /* 第一列背景颜色 */
+    font-weight: bold;
+}
+#tablePerfectLine tbody tr:nth-child(2) {
+    background-color: #E4EEC9; /* 第一行背景颜色 */
+    font-weight: bold;
+}
+#tablePerfectLine tr:nth-child(odd) {
+    background-color: #a8dfff; /* 每隔行背景颜色 */
+}
+#tablePerfectLine tr:hover {
+    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+}

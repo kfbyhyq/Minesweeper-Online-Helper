@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     // const matchedStr = [...message.matchAll(regex)].map(match => match[0]);
                                     const matchedResult = [...message.matchAll(regex)];
                                     console.log(matchedResult);
-                                    const sortedResults = matchedResult.sort((a, b) => {
+                                    const sortedResults = matchedResult.sort((b, a) => {
                                         const numA = parseInt(a[1], 10);
                                         const numB = parseInt(b[1], 10);
                                         const hasE_A = a[2] !== '';
