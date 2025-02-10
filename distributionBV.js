@@ -232,7 +232,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'sendBVDistribution') {
         let BVDistribution = request.BVDistribution;
         let level = request.level;
-        console.log('收到3BV分布：', BVDistribution);   // 在控制台打出结果
+        console.log('收到我的游戏数据：', BVDistribution);   // 在控制台打出结果
         document.getElementById('buttonDistributionBV').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         if (level) { // 不考虑自定义
             chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {

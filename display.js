@@ -769,6 +769,8 @@ function displayBVPB() {
     const level = document.getElementById("pbOfBVLevel").textContent;
     // 局数0 时间1 bvs3 效率5
     const type = document.getElementById("pbOfBVType").textContent;
+    // // 0全部 1盲扫
+    // const isNf = document.getElementById("pbOfBVIsNf");
     const pbt = document.getElementById("pbOfBVTable");
     chrome.storage.local.get('pbOfBV', function(result) {
         if (result.pbOfBV) {
