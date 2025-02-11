@@ -267,8 +267,42 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                     pbOfBV[level][bv][5] = BVDistribution[i][5];
                                     pbOfBV[level][bv][6] = id;
                                 }
+                                if (BVDistribution[i][2] == 1) { // 是盲扫
+                                    if (pbOfBV[level][bv][7]) {
+                                        pbOfBV[level][bv][7]++;
+                                        if (+BVDistribution[i][1] < +pbOfBV[level][bv][8]) {
+                                            pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                            pbOfBV[level][bv][9] = id;
+                                        }
+                                        if (+BVDistribution[i][4] > +pbOfBV[level][bv][10]) {
+                                            pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                            pbOfBV[level][bv][11] = id;
+                                        }
+                                        if (+(BVDistribution[i][5].replace('%','')) > +(pbOfBV[level][bv][12].replace('%',''))) {
+                                            pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                            pbOfBV[level][bv][13] = id;
+                                        }
+                                    } else {
+                                        pbOfBV[level][bv][7] = 1;
+                                        pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                        pbOfBV[level][bv][9] = id;
+                                        pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                        pbOfBV[level][bv][11] = id;
+                                        pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                        pbOfBV[level][bv][13] = id;
+                                    }
+                                }
                             } else {
                                 pbOfBV[level][bv] = [1, BVDistribution[i][1], id, BVDistribution[i][4], id, BVDistribution[i][5], id];
+                                if (BVDistribution[i][2] == 1) {
+                                    pbOfBV[level][bv][7] = 1;
+                                    pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                    pbOfBV[level][bv][9] = id;
+                                    pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                    pbOfBV[level][bv][11] = id;
+                                    pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                    pbOfBV[level][bv][13] = id;
+                                }
                             }
                         }
                     }

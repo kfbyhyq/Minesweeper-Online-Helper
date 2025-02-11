@@ -309,7 +309,12 @@ function displayTables() {
                     const pe1 = peMap[dates[i-1]];
                     const pe2 = peMap[dates[i]];
                     var row = [dates[i-1].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")];
-                    for (let j = 0; j < pe1[0].length; j++) {
+                    let j = 0;
+                    if (pe1[1][11]) {
+                        row.push(pe1[1][11]);
+                        j = 1;
+                    }
+                    for (; j < 11; j++) {
                         var peData1 = pe1[1][j].toString();
                         var peData2 = pe2[1][j].toString();
                         var num1 = parseFloat(peData1.replace(/[MK]/, ''));
@@ -463,11 +468,10 @@ function displayTables() {
                 ['41.5k', 0, 0],
                 ['42k', 0, 0]
             ]
-            let currentYear = new Date().getFullYear();
-            let currentMonth = new Date().getMonth();
-            let currentDate = new Date().getDate();
+            let currentYear = new Date().getUTCFullYear();
+            let currentMonth = new Date().getUTCMonth();
+            let currentDate = new Date().getUTCDate();
             let dayNum = new Date(currentYear, currentMonth + 1, 0).getDate();
-            console.log(currentDate, dayNum);
             perfectLine[0][1] = stDaily[1][12];
             perfectLine[0][2] = personalData[18][7];
             perfectLine[2][1] = 20000 / (dayNum - 3);
@@ -805,16 +809,16 @@ function displayBVPB() {
     // 初级1 中级2 高级3
     const level = document.getElementById("pbOfBVLevel").textContent;
     // 局数0 时间1 bvs3 效率5
-    const type = document.getElementById("pbOfBVType").textContent;
+    const typeIni = document.getElementById("pbOfBVType").textContent;
     // // 0全部 1盲扫
-    // const isNf = document.getElementById("pbOfBVIsNf");
+    const isNf = document.getElementById("pbOfBVIsNf").textContent;
+    var type = +typeIni + isNf * 7;
     const pbt = document.getElementById("pbOfBVTable");
     chrome.storage.local.get('pbOfBV', function(result) {
         if (result.pbOfBV) {
             let pbOfBV = result.pbOfBV;
             if (pbOfBV[level]) {
                 document.getElementById("noPbOfBV").style.display = 'none';
-                const maxBV = 270;
                 var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
                 var bvRange = [[], [0, 6], [2, 13], [10, 26]];
                 for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
@@ -832,32 +836,44 @@ function displayBVPB() {
                             pbOfBVTable[pbOfBVTable.length] = [(pbOfBVTable.length + bvRange[level][0] - 1) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
                         }
                     }
-                    if (type == 0) {
-                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
-                        valueArray[itemNum] = pbOfBV[level][bv][type];
-                    } else if (type == 1) {
-                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
-                        valueArray[itemNum] = pbOfBV[level][bv][type];
-                    } else if (type == 3) {
-                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
-                        valueArray[itemNum] = pbOfBV[level][bv][type];
-                    } else if (type == 5) {
-                        pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
-                        valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                    if (isNf == 0) {
+                        if (type == 0 || type == 3) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 1) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
+                            valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 5) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                        }
+                        indexArray[itemNum] = bv;
+                        itemNum++;
+                    } else if (pbOfBV[level][bv][7]) {
+                        if (type == 7 || type == 10) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 8) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
+                            valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 12) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                        }
+                        indexArray[itemNum] = bv;
+                        itemNum++;
                     }
-                    indexArray[itemNum] = bv;
-                    itemNum++;
                 }
                 displayMatrix(pbOfBVTable, 'pbOfBVTable');
                 var desc = 1;
-                if (type == 1) {
+                if (type == 1 || type == 8) {
                     desc = 0;
                 }
                 var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
                 for (let i = 0; i < itemNum; i++) {
                     const cell = pbt.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
                     cell.style.backgroundColor = colorArray[i];
-                    if (type > 0) {
+                    if (type != 0 && type != 7) {
                         cell.style.cursor = 'pointer';
                         cell.onclick = function() {
                             window.open('https://minesweeper.online/cn/game/' + pbOfBV[level][indexArray[i]][+type + 1]);

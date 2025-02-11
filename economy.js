@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     target: { tabId },
                     function: function () {
                         var personalEco = [
-                            ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币'],
-                            ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+                            ['总财产', '装备', '金币', '宝石', '功勋点', '活动物品', '竞技场门票', '仓库', '装备碎片', '竞技场币', '代币', '今日增量'],
+                            ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
                         ];
                         try {
                             let myRank = document.querySelector("#stat_my_rank > a");
@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                         }
                                     }
                                 }
+                                let upArrow = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(3) > span.help.price-up > i");
+                                hoverBox(upArrow);
+                                let growth = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(3) > div > div.tooltip-inner");
+                                personalEco[1][11] = growth.textContent;
                                 console.log(personalEco);
                                 chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
                             }, 2000);

@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
     displayBVPB();
     const level = document.getElementById("pbOfBVLevel");
     const type = document.getElementById("pbOfBVType");
-    // const isNf = document.getElementById("pbOfBVIsNf");
+    const isNf = document.getElementById("pbOfBVIsNf");
     const beg = document.getElementById("pbOfBV-beg");
     const int = document.getElementById("pbOfBV-int");
     const exp = document.getElementById("pbOfBV-exp");
@@ -293,14 +293,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const time = document.getElementById("pbOfBV-time");
     const bvs = document.getElementById("pbOfBV-bvs");
     const eff = document.getElementById("pbOfBV-eff");
-    // const nf = document.getElementById("pbOfBV-nf");
+    const nf = document.getElementById("pbOfBV-nf");
     // 默认为高级时间
     level.textContent = 3;
     exp.style.backgroundColor = '#8fc4ef';
     type.textContent = 1;
     time.style.backgroundColor = '#8fc4ef';
-    // isNf.textContent = 0;
-    // nf.style.backgroundColor = '#D8F1EE';
+    isNf.textContent = 0;
+    nf.style.backgroundColor = '#D8F1EE';
     beg.addEventListener('click', function() {
         level.textContent = 1;
         beg.style.backgroundColor = '#8fc4ef';
@@ -354,17 +354,17 @@ document.addEventListener('DOMContentLoaded', function() {
         eff.style.backgroundColor = '#8fc4ef';
         displayBVPB();
     });
-    // nf.addEventListener('click', function() {
-    //     if (isNf.textContent == 0) {
-    //         isNf.textContent = 1;
-    //         nf.style.backgroundColor = '#8fc4ef';
-    //         displayBVPB();
-    //     } else {
-    //         isNf.textContent = 0;
-    //         nf.style.backgroundColor = '#D8F1EE';
-    //         displayBVPB();
-    //     }
-    // });
+    nf.addEventListener('click', function() {
+        if (isNf.textContent == 0) {
+            isNf.textContent = 1;
+            nf.style.backgroundColor = '#8fc4ef';
+            displayBVPB();
+        } else {
+            isNf.textContent = 0;
+            nf.style.backgroundColor = '#D8F1EE';
+            displayBVPB();
+        }
+    });
     /* 重新统计功能 */
     document.getElementById("updatePbofBV").addEventListener('click', function() {
         chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
@@ -389,8 +389,42 @@ document.addEventListener('DOMContentLoaded', function() {
                             pbOfBV[level][bv][5] = BVMap[level][id][4];
                             pbOfBV[level][bv][6] = id;
                         }
+                        if (BVMap[level][id][1] == 1) { // 是盲扫
+                            if (pbOfBV[level][bv][7]) {
+                                pbOfBV[level][bv][7]++;
+                                if (+BVMap[level][id][0] < +pbOfBV[level][bv][8]) {
+                                    pbOfBV[level][bv][8] = BVMap[level][id][0];
+                                    pbOfBV[level][bv][9] = id;
+                                }
+                                if (+BVMap[level][id][3] > +pbOfBV[level][bv][10]) {
+                                    pbOfBV[level][bv][10] = BVMap[level][id][3];
+                                    pbOfBV[level][bv][11] = id;
+                                }
+                                if (+(BVMap[level][id][4].replace('%','')) > +(pbOfBV[level][bv][12].replace('%',''))) {
+                                    pbOfBV[level][bv][12] = BVMap[level][id][4];
+                                    pbOfBV[level][bv][13] = id;
+                                }
+                            } else {
+                                pbOfBV[level][bv][7] = 1;
+                                pbOfBV[level][bv][8] = BVMap[level][id][0];
+                                pbOfBV[level][bv][9] = id;
+                                pbOfBV[level][bv][10] = BVMap[level][id][3];
+                                pbOfBV[level][bv][11] = id;
+                                pbOfBV[level][bv][12] = BVMap[level][id][4];
+                                pbOfBV[level][bv][13] = id;
+                            }
+                        }
                     } else {
                         pbOfBV[level][bv] = [1, BVMap[level][id][0], id, BVMap[level][id][3], id, BVMap[level][id][4], id];
+                        if (BVMap[level][id][1] == 1) {
+                            pbOfBV[level][bv][7] = 1;
+                            pbOfBV[level][bv][8] = BVMap[level][id][0];
+                            pbOfBV[level][bv][9] = id;
+                            pbOfBV[level][bv][10] = BVMap[level][id][3];
+                            pbOfBV[level][bv][11] = id;
+                            pbOfBV[level][bv][12] = BVMap[level][id][4];
+                            pbOfBV[level][bv][13] = id;
+                        }
                     }
                 }
             }
