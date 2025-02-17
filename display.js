@@ -459,6 +459,11 @@ function displayTables() {
             var perfectLine = [
                 ['今日/累计', 0, 0],
                 ['完美线', '每日目标', '当日线'],
+                ['3k', 0, 0],
+                ['4.5k', 0, 0],
+                ['6k', 0, 0],
+                ['10k', 0, 0],
+                ['15k', 0, 0],
                 ['20k', 0, 0],
                 ['20.5k', 0, 0],
                 ['21k', 0, 0],
@@ -474,23 +479,17 @@ function displayTables() {
             let dayNum = new Date(currentYear, currentMonth + 1, 0).getDate();
             perfectLine[0][1] = stDaily[1][12];
             perfectLine[0][2] = personalData[18][7];
-            perfectLine[2][1] = 20000 / (dayNum - 3);
-            perfectLine[2][2] = 20000 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[3][1] = 20500 / (dayNum - 3);
-            perfectLine[3][2] = 20500 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[4][1] = 21000 / (dayNum - 3);
-            perfectLine[4][2] = 21000 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[5][1] = 40000 / (dayNum - 3);
-            perfectLine[5][2] = 40000 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[6][1] = 40500 / (dayNum - 3);
-            perfectLine[6][2] = 40500 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[7][1] = 41000 / (dayNum - 3);
-            perfectLine[7][2] = 41000 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[8][1] = 41500 / (dayNum - 3);
-            perfectLine[8][2] = 41500 / (dayNum - 3) * (currentDate - 3);
-            perfectLine[9][1] = 42000 / (dayNum - 3);
-            perfectLine[9][2] = 42000 / (dayNum - 3) * (currentDate - 3);
+            for (let i = 2; i < perfectLine.length; i++) {
+                let epNum = perfectLine[i][0].replace('k', '');
+                perfectLine[i][1] = Number(epNum) * 1000 / (dayNum - 3);
+                perfectLine[i][2] = Number(epNum) * 1000 / (dayNum - 3) * (currentDate - 3);
+            }
             displayMatrix(perfectLine, 'tablePerfectLine');
+            for (let i = 2; i < perfectLine.length; i++) {
+                if (perfectLine[0][2] < perfectLine[i][2]) {
+                    document.getElementById('tablePerfectLine').rows[i].cells[2].style.color = 'rgb(219, 0, 0)';
+                }
+            }
         }
         /* 完美装备花费 */
         {

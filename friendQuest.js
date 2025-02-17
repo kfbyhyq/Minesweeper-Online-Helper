@@ -31,8 +31,11 @@ function displayFriendQuest() {
             const dataReceive = fqReceiveMap.slice(1);
             let countS = dataSend.length; // 发任务总数
             let sumLevelS = 0; // 发任务总等级
+            let sumChangeRate = 0; // 总转化率（新增）
             let countR = dataReceive.length; // 收任务总数
             let sumLevelR = 0; // 收任务总等级
+            let sumRsRate = 0; // 总收发比（新增）
+            let sumActivity = 0; // 总活跃（用于计算转化率）
             // 按用户分类
             const personStats = {};
             // 发任务统计
@@ -93,22 +96,17 @@ function displayFriendQuest() {
                 stats.countS, 
                 stats.sumLevelS, 
                 stats.countR, 
-                stats.sumLevelR
+                stats.sumLevelR,
+                (stats.sumLevelR / stats.sumLevelS).toFixed(3)
             ]);
     
             // 按照 sumLevelR 降序排列
             fqStats.sort((a, b) => {
                 return b[1] - a[1]; // 进行降序比较
             });
-            let fqStasTitle = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
-            let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR];
-            fqStats.unshift(fqStasTotal);
-            displayMatrixBody([fqStasTotal, []], 'shortTableFqStats');
-            displayMatrixBody(fqStats, 'tableFqStats');
-            currentFqStats = fqStats;
 
             /* 每日统计 */
-            let fqDailyMap = [['日期', '昨日活跃度', '发任务数', '发任务等级', '转化率', '收任务数', '收任务等级', '收发比']];
+            let fqDailyMap = [['日期', '昨日活跃度', '发任务数', 'E数', '发任务等级', '转化率', '收任务数', '收任务等级', '收发比']];
             let activityMap = result.activityMap || {}; // 确保存在数据，防止为 undefined
             // 当前UTC时间
             const currentDate = new Date();
@@ -126,21 +124,26 @@ function displayFriendQuest() {
             // 按顺序遍历
             dates.forEach(date => {
                 if (date.includes(newMonth) && (date.slice(-2) == '04' || activityMap[date])) {
+                    if (activityMap[date]) {
+                        sumActivity += activityMap[date];
+                    }
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
-                    let sumLevelS = 0; // 发任务总等级
+                    let dailyLevelS = 0; // 发任务总等级
                     let countR = Object.keys(fqDaily[date].fqReceive).length; // 收任务总数
-                    let sumLevelR = 0; // 收任务总等级
+                    let dailyLevelR = 0; // 收任务总等级
+                    let eNum = 0; // E的个数（新增）
                     Object.values(fqDaily[date].fqSend).forEach(entry => {
                         const lsMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
                         let levelS = parseInt(lsMatch[1], 10);
                         if (lsMatch[2]) { // 如果有 E 等级乘3
+                            eNum++;
                             levelS *= 3;
                         }
                         // 累加等级
-                        sumLevelS += levelS;
+                        dailyLevelS += levelS;
                     });
                     if (date.slice(-2) == '04') {
-                        activityMap[date] = sumLevelS;
+                        activityMap[date] = dailyLevelS;
                     }
                     Object.values(fqDaily[date].fqReceive).forEach(entry => {
                         const lrMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
@@ -149,20 +152,29 @@ function displayFriendQuest() {
                             levelR *= 3;
                         }
                         // 累加等级
-                        sumLevelR += levelR;
+                        dailyLevelR += levelR;
                     });
-                    let changeRate = sumLevelS / activityMap[date];
-                    let rsRate = sumLevelR / sumLevelS;
-                    const daylyRow = [date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), activityMap[date], countS, sumLevelS, changeRate.toFixed(3), countR, sumLevelR, rsRate.toFixed(3)];
+                    let changeRate = dailyLevelS / activityMap[date];
+                    let rsRate = dailyLevelR / dailyLevelS;
+                    const daylyRow = [date.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), activityMap[date], countS, eNum, dailyLevelS, changeRate.toFixed(3), countR, dailyLevelR, rsRate.toFixed(3)];
                     fqDailyMap.push(daylyRow);
                 }
             });
+            sumChangeRate = sumLevelS / sumActivity;
+            sumRsRate = sumLevelR / sumLevelS;
+            let fqStasTitle = ['id', '发任务数', '发任务等级', '总转化率（新增）', '收任务数', '收任务等级', '总收发比（新增）'];
+            let fqStasTotalNew = ['总计', countS, sumLevelS, sumChangeRate.toFixed(3), countR, sumLevelR, sumRsRate.toFixed(3)];
+            displayMatrixBody([fqStasTotalNew, []], 'shortTableFqStats');
             displayMatrix(fqDailyMap, 'tableFqDaily');
+            let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR, sumRsRate.toFixed(3)];
+            fqStats.unshift(fqStasTotal);
+            displayMatrixBody(fqStats, 'tableFqStats');
+            currentFqStats = fqStats;
         }
     });
 }
 
-const defaltTitleFqStats = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级'];
+const defaltTitleFqStats = ['id', '发任务数', '发任务等级', '收任务数', '收任务等级', '收发比'];
 let currentSortOrder = [true, true, true, true, true]; // 用于跟踪每列的排序状态
 let currentFqStats = []; // 用于存储当前显示的数据
 
