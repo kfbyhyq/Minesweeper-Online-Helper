@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
         chrome.storage.local.get(['perfectValue', 'gemsPrice'], function(result) {
             const perfectValue = result.perfectValue;
-            var perfectNew = [0, 0, 0, 0, 0, 0, 0, 31800, 0, 0];
+            // var perfectNew = [0, 0, 0, 0, 0, 0, 0, 31800, 0, 0];
             const gemsPrice = result.gemsPrice;
             var equipCheap = [['页码', '序号', '名称', '质量', '碎片', '碎片价', '售价']]; // 结果表
             var ecn = 0;
