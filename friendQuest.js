@@ -1,7 +1,8 @@
 /* 页面显示 */
 function displayFriendQuest() {
-    chrome.storage.local.get(['friendQuestInfo', 'activityMap', 'friendQuestDaily'], function(result) {
+    chrome.storage.local.get(['friendQuestInfo', 'activityMap', 'friendQuestDaily', 'contactsList'], function(result) {
         let fqInfoAll = result.friendQuestInfo || {}; // 确保存在数据，防止为 undefined
+        let contactsList = result.contactsList || {};
         // 获取当前月份
         const currentDate = new Date();
         const dateMinus2 = new Date(currentDate);
@@ -38,6 +39,7 @@ function displayFriendQuest() {
             let sumActivity = 0; // 总活跃（用于计算转化率）
             // 按用户分类
             const personStats = {};
+            const fqContactFlag = document.getElementById('fqContactFlag').textContent;
             // 发任务统计
             dataSend.forEach(entry => {
                 const lsMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
@@ -55,11 +57,30 @@ function displayFriendQuest() {
             
                 // 按用户分类
                 if (!personStats[person]) {
+                    var personValid = 1;
+                    if (fqContactFlag == 1) {
+                        personValid = 0;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 1;
+                                break;
+                            }
+                        }
+                    } else if (fqContactFlag == 2) {
+                        personValid = 1;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 0;
+                                break;
+                            }
+                        }
+                    }
                     personStats[person] = {
                         countS: 0,
                         sumLevelS: 0,
                         countR: 0,
-                        sumLevelR: 0
+                        sumLevelR: 0,
+                        valid: personValid
                     };
                 }
                 personStats[person].countS += 1;
@@ -79,11 +100,30 @@ function displayFriendQuest() {
             
                 // 按用户分类
                 if (!personStats[person]) {
+                    var personValid = 1;
+                    if (fqContactFlag == 1) {
+                        personValid = 0;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 1;
+                                break;
+                            }
+                        }
+                    } else if (fqContactFlag == 2) {
+                        personValid = 1;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 0;
+                                break;
+                            }
+                        }
+                    }
                     personStats[person] = {
                         countS: 0,
                         sumLevelS: 0,
                         countR: 0,
-                        sumLevelR: 0
+                        sumLevelR: 0,
+                        valid: personValid
                     };
                 }
                 personStats[person].countR += 1; // 条目数加一
@@ -91,14 +131,29 @@ function displayFriendQuest() {
             });
     
             // 显示表格
-            let fqStats = Object.entries(personStats).map(([name, stats]) => [
-                name, 
-                stats.countS, 
-                stats.sumLevelS, 
-                stats.countR, 
-                stats.sumLevelR,
-                (stats.sumLevelR / stats.sumLevelS).toFixed(3)
-            ]);
+            // let fqStats = Object.entries(personStats).map(([name, stats]) => [
+            //     name, 
+            //     stats.countS, 
+            //     stats.sumLevelS, 
+            //     stats.countR, 
+            //     stats.sumLevelR,
+            //     (stats.sumLevelR / stats.sumLevelS).toFixed(3)
+            // ]);
+            let fqStats = Object.entries(personStats).map(([name, stats]) => {
+                    if (stats.valid == 1) {
+                        return [
+                            name, 
+                            stats.countS, 
+                            stats.sumLevelS, 
+                            stats.countR, 
+                            stats.sumLevelR,
+                            (stats.sumLevelR / stats.sumLevelS).toFixed(3)
+                        ];
+                    } else {
+                        return null;
+                    }
+            })
+            .filter(entry => entry != null);
     
             // 按照 sumLevelR 降序排列
             fqStats.sort((a, b) => {
@@ -247,19 +302,23 @@ document.addEventListener('DOMContentLoaded', function() {
             sortTable(index);
         });
     });
+    // 展开和收起用户分类表
     document.getElementById('detailFq').addEventListener('click', function () {
         if (document.getElementById('detailFlag').textContent == 1) {
             document.getElementById('detailFq').textContent = '展开详情';
             document.getElementById('shortTableFqStats').style.display = "table";
             document.getElementById('tableFqStats').style.display = "none";
             document.getElementById('detailFlag').textContent = 0;
+            document.getElementById('fqShowContact').style.display = "none";
         } else {
             document.getElementById('detailFq').textContent = '收起详情';
             document.getElementById('shortTableFqStats').style.display = "none";
             document.getElementById('tableFqStats').style.display = "table";
             document.getElementById('detailFlag').textContent = 1;
+            document.getElementById('fqShowContact').style.display = "inline";
         }
     });
+    // 手动修改昨日活跃度
     document.getElementById('updateLastAct').addEventListener('click', function () {
         const lastActNew = document.getElementById('lastActNew').value;
         if (lastActNew) {
@@ -271,6 +330,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.storage.local.set({ activityMap: activityMap });
                 displayFriendQuest();
             });
+        }
+    });
+    // 只看和不看好友
+    document.getElementById('fqShowContact').addEventListener('click', function () {
+        const fqContactFlag = document.getElementById('fqContactFlag');
+        if (fqContactFlag.textContent == 0) {
+            fqContactFlag.textContent = 1;
+            document.getElementById('fqShowContact').textContent = '不看好友';
+            displayFriendQuest();
+        } else if (fqContactFlag.textContent == 1) {
+            fqContactFlag.textContent = 2;
+            document.getElementById('fqShowContact').textContent = '查看全部';
+            displayFriendQuest();
+        } else {
+            fqContactFlag.textContent = 0;
+            document.getElementById('fqShowContact').textContent = '只看好友';
+            displayFriendQuest();
         }
     });
 });
