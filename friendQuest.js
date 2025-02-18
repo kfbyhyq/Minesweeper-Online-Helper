@@ -30,10 +30,12 @@ function displayFriendQuest() {
             /* 统计 */
             const dataSend = fqSendMap.slice(1);
             const dataReceive = fqReceiveMap.slice(1);
-            let countS = dataSend.length; // 发任务总数
+            // let countS = dataSend.length; // 发任务总数
+            let countS = 0;
             let sumLevelS = 0; // 发任务总等级
             let sumChangeRate = 0; // 总转化率（新增）
-            let countR = dataReceive.length; // 收任务总数
+            // let countR = dataReceive.length; // 收任务总数
+            let countR = 0;
             let sumLevelR = 0; // 收任务总等级
             let sumRsRate = 0; // 总收发比（新增）
             let sumActivity = 0; // 总活跃（用于计算转化率）
@@ -52,9 +54,6 @@ function displayFriendQuest() {
                     person = '待发送';
                 }
             
-                // 累加等级
-                sumLevelS += levelS;
-            
                 // 按用户分类
                 if (!personStats[person]) {
                     var personValid = 1;
@@ -83,8 +82,14 @@ function displayFriendQuest() {
                         valid: personValid
                     };
                 }
-                personStats[person].countS += 1;
-                personStats[person].sumLevelS += levelS;
+                if (personStats[person].valid == 1) {
+                    countS++;
+                    // 累加等级
+                    sumLevelS += levelS;
+                
+                    personStats[person].countS += 1;
+                    personStats[person].sumLevelS += levelS;
+                }
             });
             // 收任务统计
             dataReceive.forEach(entry => {
@@ -95,9 +100,6 @@ function displayFriendQuest() {
                 }
                 const person = entry[4]; // 用户id
             
-                // 累加等级
-                sumLevelR += levelR;
-            
                 // 按用户分类
                 if (!personStats[person]) {
                     var personValid = 1;
@@ -126,8 +128,14 @@ function displayFriendQuest() {
                         valid: personValid
                     };
                 }
-                personStats[person].countR += 1; // 条目数加一
-                personStats[person].sumLevelR += levelR; // a 列的和加上
+                if (personStats[person].valid == 1) {
+                    countR++;
+                    // 累加等级
+                    sumLevelR += levelR;
+                
+                    personStats[person].countR += 1; // 条目数加一
+                    personStats[person].sumLevelR += levelR; // a 列的和加上
+                }
             });
     
             // 显示表格
@@ -147,7 +155,7 @@ function displayFriendQuest() {
                             stats.sumLevelS, 
                             stats.countR, 
                             stats.sumLevelR,
-                            (stats.sumLevelR / stats.sumLevelS).toFixed(3)
+                            stats.sumLevelS > 0 ? (stats.sumLevelR / stats.sumLevelS).toFixed(3) : 'Inf'
                         ];
                     } else {
                         return null;
@@ -216,12 +224,16 @@ function displayFriendQuest() {
                 }
             });
             sumChangeRate = sumLevelS / sumActivity;
-            sumRsRate = sumLevelR / sumLevelS;
+            if (sumLevelS > 0) {
+                sumRsRate = (sumLevelR / sumLevelS).toFixed(3);
+            } else {
+                sumRsRate = 'Inf';
+            }
             let fqStasTitle = ['id', '发任务数', '发任务等级', '总转化率（新增）', '收任务数', '收任务等级', '总收发比（新增）'];
-            let fqStasTotalNew = ['总计', countS, sumLevelS, sumChangeRate.toFixed(3), countR, sumLevelR, sumRsRate.toFixed(3)];
+            let fqStasTotalNew = ['总计', countS, sumLevelS, sumChangeRate.toFixed(3), countR, sumLevelR, sumRsRate];
             displayMatrixBody([fqStasTotalNew, []], 'shortTableFqStats');
             displayMatrix(fqDailyMap, 'tableFqDaily');
-            let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR, sumRsRate.toFixed(3)];
+            let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR, sumRsRate];
             fqStats.unshift(fqStasTotal);
             displayMatrixBody(fqStats, 'tableFqStats');
             currentFqStats = fqStats;
@@ -281,10 +293,37 @@ function sortTable(colIndex) {
     const totalRow = currentFqStats.shift();
     // currentFqStats = currentFqStats.slice(1);
     currentFqStats.sort((a, b) => {
-        const aValue = a[colIndex];
-        const bValue = b[colIndex];
-        if (aValue === bValue) return 0;
-        return (currentSortOrder[colIndex] ? aValue > bValue : aValue < bValue) ? 1 : -1;
+        var aValue = a[colIndex];
+        var bValue = b[colIndex];
+        if (aValue === bValue) {
+            return 0;
+        }
+        if (currentSortOrder[colIndex]) {
+            if (aValue === 'Inf') {
+                return 1;
+            } else {
+                aValue = Number(aValue);
+            }
+            if (bValue === 'Inf') {
+                return -1;
+            } else {
+                bValue = Number(bValue);
+            }
+            return (aValue > bValue) ? 1 : -1;
+        } else {
+            if (aValue === 'Inf') {
+                return -1;
+            } else {
+                aValue = Number(aValue);
+            }
+            if (bValue === 'Inf') {
+                return 1;
+            } else {
+                bValue = Number(bValue);
+            }
+            return (aValue > bValue) ? -1 : 1;
+        }
+        // return (currentSortOrder[colIndex] ? aValue > bValue : aValue < bValue) ? 1 : -1;
     });
     currentFqStats.unshift(totalRow);
 
