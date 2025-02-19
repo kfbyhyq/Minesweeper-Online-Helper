@@ -32,142 +32,19 @@ function displayFriendQuest() {
             const dataReceive = fqReceiveMap.slice(1);
             // let countS = dataSend.length; // 发任务总数
             let countS = 0;
+            let selectedCountS = 0;
             let sumLevelS = 0; // 发任务总等级
+            let selectedLevelS = 0;
             let sumChangeRate = 0; // 总转化率（新增）
             // let countR = dataReceive.length; // 收任务总数
             let countR = 0;
+            let selectedCountR = 0;
             let sumLevelR = 0; // 收任务总等级
+            let selectedLevelR = 0;
             let sumRsRate = 0; // 总收发比（新增）
+            let selectedRsRate = 0;
             let sumActivity = 0; // 总活跃（用于计算转化率）
-            // 按用户分类
-            const personStats = {};
-            const fqContactFlag = document.getElementById('fqContactFlag').textContent;
-            // 发任务统计
-            dataSend.forEach(entry => {
-                const lsMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
-                let levelS = parseInt(lsMatch[1], 10);
-                if (lsMatch[2]) { // 如果有 E 等级乘3
-                    levelS *= 3;
-                }
-                let person = entry[4]; // 用户id
-                if (person === undefined) {
-                    person = '待发送';
-                }
             
-                // 按用户分类
-                if (!personStats[person]) {
-                    var personValid = 1;
-                    if (fqContactFlag == 1) {
-                        personValid = 0;
-                        for (let id in contactsList) {
-                            if (person.includes(contactsList[id][0])) {
-                                personValid = 1;
-                                break;
-                            }
-                        }
-                    } else if (fqContactFlag == 2) {
-                        personValid = 1;
-                        for (let id in contactsList) {
-                            if (person.includes(contactsList[id][0])) {
-                                personValid = 0;
-                                break;
-                            }
-                        }
-                    }
-                    personStats[person] = {
-                        countS: 0,
-                        sumLevelS: 0,
-                        countR: 0,
-                        sumLevelR: 0,
-                        valid: personValid
-                    };
-                }
-                if (personStats[person].valid == 1) {
-                    countS++;
-                    // 累加等级
-                    sumLevelS += levelS;
-                
-                    personStats[person].countS += 1;
-                    personStats[person].sumLevelS += levelS;
-                }
-            });
-            // 收任务统计
-            dataReceive.forEach(entry => {
-                const lrMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
-                let levelR = parseInt(lrMatch[1], 10);
-                if (lrMatch[2]) { // 如果有 E 等级乘3
-                    levelR *= 3;
-                }
-                const person = entry[4]; // 用户id
-            
-                // 按用户分类
-                if (!personStats[person]) {
-                    var personValid = 1;
-                    if (fqContactFlag == 1) {
-                        personValid = 0;
-                        for (let id in contactsList) {
-                            if (person.includes(contactsList[id][0])) {
-                                personValid = 1;
-                                break;
-                            }
-                        }
-                    } else if (fqContactFlag == 2) {
-                        personValid = 1;
-                        for (let id in contactsList) {
-                            if (person.includes(contactsList[id][0])) {
-                                personValid = 0;
-                                break;
-                            }
-                        }
-                    }
-                    personStats[person] = {
-                        countS: 0,
-                        sumLevelS: 0,
-                        countR: 0,
-                        sumLevelR: 0,
-                        valid: personValid
-                    };
-                }
-                if (personStats[person].valid == 1) {
-                    countR++;
-                    // 累加等级
-                    sumLevelR += levelR;
-                
-                    personStats[person].countR += 1; // 条目数加一
-                    personStats[person].sumLevelR += levelR; // a 列的和加上
-                }
-            });
-    
-            // 显示表格
-            // let fqStats = Object.entries(personStats).map(([name, stats]) => [
-            //     name, 
-            //     stats.countS, 
-            //     stats.sumLevelS, 
-            //     stats.countR, 
-            //     stats.sumLevelR,
-            //     (stats.sumLevelR / stats.sumLevelS).toFixed(3)
-            // ]);
-            let fqStats = Object.entries(personStats).map(([name, stats]) => {
-                    if (stats.valid == 1) {
-                        return [
-                            name, 
-                            stats.countS, 
-                            stats.sumLevelS, 
-                            stats.countR, 
-                            stats.sumLevelR,
-                            stats.sumLevelS > 0 ? (stats.sumLevelR / stats.sumLevelS).toFixed(3) : 'Inf'
-                        ];
-                    } else {
-                        return null;
-                    }
-            })
-            .filter(entry => entry != null);
-    
-            // 按照 sumLevelR 降序排列
-            fqStats.sort((a, b) => {
-                return b[1] - a[1]; // 进行降序比较
-            });
-
             /* 每日统计 */
             let fqDailyMap = [['日期', '昨日活跃度', '发任务数', 'E数', '发任务等级', '转化率', '收任务数', '收任务等级', '收发比']];
             let activityMap = result.activityMap || {}; // 确保存在数据，防止为 undefined
@@ -223,17 +100,155 @@ function displayFriendQuest() {
                     fqDailyMap.push(daylyRow);
                 }
             });
+            // 按用户分类
+            const personStats = {};
+            const fqContactFlag = document.getElementById('fqContactFlag').textContent;
+            // 发任务统计
+            dataSend.forEach(entry => {
+                const lsMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
+                let levelS = parseInt(lsMatch[1], 10);
+                if (lsMatch[2]) { // 如果有 E 等级乘3
+                    levelS *= 3;
+                }
+                let person = entry[4]; // 用户id
+                if (person === undefined) {
+                    person = '待发送';
+                }
+            
+                // 按用户分类
+                if (!personStats[person]) {
+                    var personValid = 1;
+                    if (fqContactFlag == 1) {
+                        personValid = 0;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 1;
+                                break;
+                            }
+                        }
+                    } else if (fqContactFlag == 2) {
+                        personValid = 1;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 0;
+                                break;
+                            }
+                        }
+                    }
+                    personStats[person] = {
+                        countS: 0,
+                        sumLevelS: 0,
+                        countR: 0,
+                        sumLevelR: 0,
+                        valid: personValid
+                    };
+                }
+                countS++;
+                sumLevelS += levelS;
+                if (personStats[person].valid == 1) {
+                    selectedCountS++;
+                    // 累加等级
+                    selectedLevelS += levelS;
+                
+                    personStats[person].countS += 1;
+                    personStats[person].sumLevelS += levelS;
+                }
+            });
+            // 收任务统计
+            dataReceive.forEach(entry => {
+                const lrMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
+                let levelR = parseInt(lrMatch[1], 10);
+                if (lrMatch[2]) { // 如果有 E 等级乘3
+                    levelR *= 3;
+                }
+                const person = entry[4]; // 用户id
+            
+                // 按用户分类
+                if (!personStats[person]) {
+                    var personValid = 1;
+                    if (fqContactFlag == 1) {
+                        personValid = 0;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 1;
+                                break;
+                            }
+                        }
+                    } else if (fqContactFlag == 2) {
+                        personValid = 1;
+                        for (let id in contactsList) {
+                            if (person.includes(contactsList[id][0])) {
+                                personValid = 0;
+                                break;
+                            }
+                        }
+                    }
+                    personStats[person] = {
+                        countS: 0,
+                        sumLevelS: 0,
+                        countR: 0,
+                        sumLevelR: 0,
+                        valid: personValid
+                    };
+                }
+                countR++;
+                sumLevelR += levelR;
+                if (personStats[person].valid == 1) {
+                    selectedCountR++;
+                    // 累加等级
+                    selectedLevelR += levelR;
+                
+                    personStats[person].countR += 1; // 条目数加一
+                    personStats[person].sumLevelR += levelR; // a 列的和加上
+                }
+            });
+    
+            // 显示表格
+            // let fqStats = Object.entries(personStats).map(([name, stats]) => [
+            //     name, 
+            //     stats.countS, 
+            //     stats.sumLevelS, 
+            //     stats.countR, 
+            //     stats.sumLevelR,
+            //     (stats.sumLevelR / stats.sumLevelS).toFixed(3)
+            // ]);
+            let fqStats = Object.entries(personStats).map(([name, stats]) => {
+                    if (stats.valid == 1) {
+                        return [
+                            name,
+                            stats.countS,
+                            stats.sumLevelS,
+                            stats.countR,
+                            stats.sumLevelR,
+                            stats.sumLevelS > 0 ? (stats.sumLevelR / stats.sumLevelS).toFixed(3) : 'Inf'
+                        ];
+                    } else {
+                        return null;
+                    }
+            })
+            .filter(entry => entry != null);
+    
+            // 按照 sumLevelR 降序排列
+            fqStats.sort((a, b) => {
+                return b[1] - a[1]; // 进行降序比较
+            });
+
             sumChangeRate = sumLevelS / sumActivity;
             if (sumLevelS > 0) {
                 sumRsRate = (sumLevelR / sumLevelS).toFixed(3);
             } else {
                 sumRsRate = 'Inf';
             }
+            if (selectedLevelS > 0) {
+                selectedRsRate = (selectedLevelR / selectedLevelS).toFixed(3);
+            } else {
+                selectedRsRate = 'Inf';
+            }
             let fqStasTitle = ['id', '发任务数', '发任务等级', '总转化率（新增）', '收任务数', '收任务等级', '总收发比（新增）'];
             let fqStasTotalNew = ['总计', countS, sumLevelS, sumChangeRate.toFixed(3), countR, sumLevelR, sumRsRate];
             displayMatrixBody([fqStasTotalNew, []], 'shortTableFqStats');
             displayMatrix(fqDailyMap, 'tableFqDaily');
-            let fqStasTotal = ['总计', countS, sumLevelS, countR, sumLevelR, sumRsRate];
+            let fqStasTotal = ['总计', countS, selectedLevelS, countR, selectedLevelR, selectedRsRate];
             fqStats.unshift(fqStasTotal);
             displayMatrixBody(fqStats, 'tableFqStats');
             currentFqStats = fqStats;
