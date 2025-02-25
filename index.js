@@ -90,7 +90,7 @@ window.addEventListener('resize', function() {
 // 初始加载时也应设置最大高度
 window.dispatchEvent(new Event('resize'));
 
-/* 打开页面功能 */
+/* 打开页面与对应的刷新 */
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('statisticPage').addEventListener('click', function () {
         const pId = document.getElementById('pIdNow').innerText;
@@ -101,11 +101,20 @@ document.addEventListener('DOMContentLoaded', function() {
             window.alert('请先设置用户ID');
         }
     });
+    document.getElementById('updateStatistic').addEventListener('click', function () {
+        updateStatistics();
+    });
     document.getElementById('marketPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/marketplace', active: true });
     });
+    document.getElementById('updateMarketPage').addEventListener('click', function () {
+        updateGems();
+    });
     document.getElementById('arenaPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/arena', active: true });
+    });
+    document.getElementById('updateAtPrice').addEventListener('click', function () {
+        updateArenaTickets();
     });
     document.getElementById('playerPage').addEventListener('click', function () {
         const pId = document.getElementById('pIdNow').innerText;
@@ -116,6 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.alert('请先设置用户ID');
         }
     });
+    document.getElementById('updatePersonalData').addEventListener('click', function () {
+        updatePersonalData();
+    });
     document.getElementById('eventPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/events', active: true });
     });
@@ -125,6 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('equipmentPage2').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/equipment', active: true });
     });
+    document.getElementById('updateEquipmentStats').addEventListener('click', function () {
+        updateEquipmentStats();
+    });
     document.getElementById('friendQuestPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/friend-quests', active: true });
     });
@@ -133,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById('personEcoPage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/economy', active: true });
+    });
+    document.getElementById('updateEconomy').addEventListener('click', function () {
+        updateEconomy();
     });
     document.getElementById('myGamePage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/my-games', active: true });

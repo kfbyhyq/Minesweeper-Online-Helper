@@ -38,7 +38,9 @@
         <div id="content">
             <div id="statistic" class="page">
                 <h1>游戏数据</h1>
-                <button id="statisticPage">打开我的数据统计</button><br><br>
+                <button id="statisticPage">打开我的数据统计</button>
+                <span class="blank"></span>
+                <button id="updateStatistic">刷新游戏数据</button><br><br>
                 <div id="flag5" style="display:none;">0</div>
                 <table id="table5"></table>
                 <h1>每日数据</h1>
@@ -47,12 +49,16 @@
             </div>
             <div id="price" class="page">
                 <h1>宝石/竞技场币/碎片价格</h1>
-                <button id="marketPage">打开市场页</button><br><br>
+                <button id="marketPage">打开市场页</button>
+                <span class="blank"></span>
+                <button id="updateMarketPage">刷新价格</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
                 <span class="plainText">所有价格均为上一次刷新的市场最低价，完美碎片价格为价格最低的一类。</span><br><br>
                 <table id="table1" class="noempty"></table>
                 <h1>竞技场门票价格</h1>
-                <button id="arenaPage">打开竞技场页</button><br><br>
+                <button id="arenaPage">打开竞技场页</button>
+                <span class="blank"></span>
+                <button id="updateAtPrice">刷新票价</button><br><br>
                 <div id="flag2" style="display:none;">0</div>
                 <table id="table2" class="ticketTable"></table>
                 <h1>竞技场门票收益参考</h1>
@@ -108,6 +114,8 @@
                 <h1>总资源数</h1>
                 <button id="playerPage">打开我的主页</button>
                 <span class="blank"></span>
+                <button id="updatePersonalData">刷新个人数据</button>
+                <span class="blank"></span>
                 <button id="showPrDaily">展开每日资源变化</button><br><br>
                 <div id="showPrdFlag" style="display:none;">0</div>
                 <div id="flagPe" style="display:none;">0</div>
@@ -118,12 +126,16 @@
                 <table id="prDaily" class="ticketTable" style="display:none;"></table><br>
                 <table id="table3-3" class="ticketTable"></table>
                 <h1>装备加成</h1>
-                <button id="equipmentPage">打开装备页</button><br><br>
+                <button id="equipmentPage">打开装备页</button>
+                <span class="blank"></span>
+                <button id="updateEquipmentStats">刷新装备加成</button><br><br>
                 <div id="flagEquip" style="display:none;">0</div>
                 <span class="plainText">装备加成值已包含初始值，为最终结果（无需再+1）。</span><br><br>
                 <table id="table3-4"></table>
                 <h1>财产估值</h1>
                 <button id="personEcoPage">打开游戏经济页</button>
+                <span class="blank"></span>
+                <button id="updateEconomy">刷新财产估值</button>
                 <span class="blank"></span>
                 <button id="showPeDaily">展开每日财产变化</button><br><br>
                 <div id="showPedFlag" style="display:none;">0</div>
@@ -261,10 +273,13 @@
             <div id="friendQuest" class="page">
                 <h1>总统计</h1>
                 <button id="friendQuestPage">打开友谊任务页</button>
+                <span class="blank"></span>
                 <div id="flagFq" style="display:none;">0</div>
-                <button id="updateFq">刷新首页</button>
+                <button id="updateFq">刷新五页</button>
+                <span class="blank"></span>
                 <div id="flagFqAll" style="display:none;">0</div>
                 <button id="updateFqAll">刷新全部</button>
+                <span class="blank"></span>
                 <div id="detailFlag" style="display:none;">0</div>
                 <button id="detailFq">展开详情</button>
                 <span class="blank"></span>

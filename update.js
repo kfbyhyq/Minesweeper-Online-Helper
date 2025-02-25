@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateEventArenaTickets();
         }
         if ((currentDate.getUTCMonth() + 1) % 4 == 2 && currentDate.getUTCDate() > 3) { // 如果友谊任务开启，刷新任务
-            updateFriendQuest();
+            updateFriendQuest5Pages();
         }
     });
 }); 
