@@ -458,20 +458,20 @@ function displayTables() {
             // 完美线
             var perfectLine = [
                 ['今日/累计', 0, 0],
-                ['完美线', '每日目标', '当日线'],
-                ['3k', 0, 0],
-                ['4.5k', 0, 0],
-                ['6k', 0, 0],
-                ['10k', 0, 0],
-                ['15k', 0, 0],
-                ['20k', 0, 0],
-                ['20.5k', 0, 0],
-                ['21k', 0, 0],
-                ['40k', 0, 0],
-                ['40.5k', 0, 0],
-                ['41k', 0, 0],
-                ['41.5k', 0, 0],
-                ['42k', 0, 0]
+                ['完美线', '平均每日', '当日线', '剩余每日'],
+                ['3k', 0, 0, 0],
+                ['4.5k', 0, 0, 0],
+                ['6k', 0, 0, 0],
+                ['10k', 0, 0, 0],
+                ['15k', 0, 0, 0],
+                ['20k', 0, 0, 0],
+                ['20.5k', 0, 0, 0],
+                ['21k', 0, 0, 0],
+                ['40k', 0, 0, 0],
+                ['40.5k', 0, 0, 0],
+                ['41k', 0, 0, 0],
+                ['41.5k', 0, 0, 0],
+                ['42k', 0, 0, 0]
             ]
             let currentYear = new Date().getUTCFullYear();
             let currentMonth = new Date().getUTCMonth();
@@ -481,10 +481,14 @@ function displayTables() {
             perfectLine[0][2] = personalData[18][7];
             for (let i = 2; i < perfectLine.length; i++) {
                 let epNum = perfectLine[i][0].replace('k', '');
-                perfectLine[i][1] = Number(epNum) * 1000 / (dayNum - 3);
-                perfectLine[i][2] = Number(epNum) * 1000 / (dayNum - 3) * (currentDate - 3);
+                var avg = Number(epNum) * 1000 / (dayNum - 3);
+                perfectLine[i][1] = parseFloat(avg.toFixed(0));
+                var total = Number(epNum) * 1000 / (dayNum - 3) * (currentDate - 3);
+                perfectLine[i][2] = parseFloat(total.toFixed(0));
+                var left = (Number(epNum) * 1000 - personalData[18][7]) / (dayNum - currentDate);
+                perfectLine[i][3] = parseFloat(Math.max(0, left).toFixed(0));
             }
-            displayMatrix(perfectLine, 'tablePerfectLine');
+            displayMatrix(perfectLine, 'tablePerfectLine', 4);
             for (let i = 2; i < perfectLine.length; i++) {
                 if (perfectLine[0][2] < perfectLine[i][2]) {
                     document.getElementById('tablePerfectLine').rows[i].cells[2].style.color = 'rgb(219, 0, 0)';
