@@ -903,7 +903,7 @@ function displayBVPBNew() {
     const isNf = document.getElementById("pbOfBVIsNf").textContent;
     var type = +typeIni + isNf * 7;
     const pbt1 = document.getElementById("pbOfBVTableNew");
-    chrome.storage.local.get('pbOfBVNew', function(result) {
+    chrome.storage.local.get(['pbOfBVNew', 'personalData'], function(result) {
         if (result.pbOfBVNew) {
             let pbOfBV = result.pbOfBVNew.pbOfBV;
             if (pbOfBV[level]) {
@@ -969,7 +969,20 @@ function displayBVPBNew() {
                         }
                     }
                 }
-                /* 左右两个表对比上色 */
+                /* 左右两个表对比上色，计分 */
+                var score0 = 0;
+                var score1 = 0;
+                var solo0 = 0;
+                var solo1 = 0;
+                var pkResult = [
+                    ['', '', ''],
+                    ['分数', '', ''],
+                    ['独占BV', '', '']
+                ];
+                const winColor = 'rgb(91, 213, 107)';
+                const loseColor = 'rgb(251, 170, 120)';
+                const drawColor = 'rgb(212, 235, 249)';
+                const soloColor = 'rgb(169, 239, 180)';
                 const pbt0 = document.getElementById("pbOfBVTable");
                 var rn = Math.max(pbt0.rows.length, pbt1.rows.length);
                 for (let i = 1; i < rn; i++) {
@@ -984,37 +997,56 @@ function displayBVPBNew() {
                         }
                         if (cell0 && cell0.textContent) {
                             if (cell1 && cell1.textContent) {
-                                if (desc) {
-                                    if (cell0.textContent > cell1.textContent) {
-                                        cell0.style.backgroundColor = 'rgb(0, 214, 29)';
-                                        cell1.style.backgroundColor = 'rgb(229, 185, 52)';
-                                    } else if (cell0.textContent < cell1.textContent) {
-                                        cell1.style.backgroundColor = 'rgb(0, 214, 29)';
-                                        cell0.style.backgroundColor = 'rgb(229, 185, 52)';
-                                    } else {
-                                        cell1.style.backgroundColor = 'rgb(107, 193, 243)';
-                                        cell0.style.backgroundColor = 'rgb(107, 193, 243)';
-                                    }
+                                var num0 = 0;
+                                var num1 = 0;
+                                if (type == 5 || type == 12) {
+                                    num0 = Number(cell0.textContent.replace('%', ''));
+                                    num1 = Number(cell1.textContent.replace('%', ''));
+                                } else if (type == 1 || type == 8) {
+                                    num0 = -1 * Number(cell0.textContent);
+                                    num1 = -1 * Number(cell1.textContent);
                                 } else {
-                                    if (cell0.textContent < cell1.textContent) {
-                                        cell0.style.backgroundColor = 'rgb(0, 214, 29)';
-                                        cell1.style.backgroundColor = 'rgb(229, 185, 52)';
-                                    } else if (cell0.textContent > cell1.textContent) {
-                                        cell1.style.backgroundColor = 'rgb(0, 214, 29)';
-                                        cell0.style.backgroundColor = 'rgb(229, 185, 52)';
-                                    } else {
-                                        cell1.style.backgroundColor = 'rgb(107, 193, 243)';
-                                        cell0.style.backgroundColor = 'rgb(107, 193, 243)';
-                                    }
+                                    num0 = Number(cell0.textContent);
+                                    num1 = Number(cell1.textContent);
+                                }
+                                if (num0 > num1) {
+                                    score0 += 1;
+                                    cell0.style.backgroundColor = winColor;
+                                    cell1.style.backgroundColor = loseColor;
+                                } else if (num0 < num1) {
+                                    score1 += 1;
+                                    cell1.style.backgroundColor = winColor;
+                                    cell0.style.backgroundColor = loseColor;
+                                } else {
+                                    score0 += 0.5;
+                                    score1 += 0.5;
+                                    cell1.style.backgroundColor = drawColor;
+                                    cell0.style.backgroundColor = drawColor;
                                 }
                             } else {
-                                cell0.style.backgroundColor = 'rgb(104, 230, 121)';
+                                score0 += 0.25;
+                                solo0++;
+                                cell0.style.backgroundColor = soloColor;
                             }
                         } else if (cell1 && cell1.textContent) {
-                            cell1.style.backgroundColor = 'rgb(104, 230, 121)';
+                            score1 += 0.25;
+                            solo1++;
+                            cell1.style.backgroundColor = soloColor;
                         }
                     }
                 }
+                if (result.personalData[29]) {
+                    pkResult[0][1] = result.personalData[29][0];
+                } else {
+                    window.alert('请先在“个人数据”页“刷新个人数据”提取昵称');
+                }
+                pkResult[0][2] = result.pbOfBVNew.userName;
+                pkResult[1][1] = score0;
+                pkResult[1][2] = score1;
+                pkResult[2][1] = solo0;
+                pkResult[2][2] = solo1;
+                displayMatrix(pkResult, 'pkResult');
+                pbt1.style.width = 'auto';
             } else {
                 document.getElementById("noPbOfBV").style.display = 'block';
                 pbt1.innerHTML = '';

@@ -143,7 +143,7 @@ tr:nth-child(even) {
     /* background-color: #ACD8A7; */
     background-color: #E4EEC9; /* 第一列背景颜色 */
     font-weight: bold;
-    width: 10%;
+    /* width: 10%; */
 }
 .ticketTable tbody tr:first-child {
     background-color: #E4EEC9; /* 第一行背景颜色 */

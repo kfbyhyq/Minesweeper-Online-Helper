@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /* PK功能 */
     document.getElementById("downloadPbofBV").addEventListener('click', function() {
         chrome.storage.local.get(['personalData', 'pbOfBV'], function (result) {
-            if (result.personalData[29][0]) {
+            if (result.personalData[29]) {
                 var downloadJson = {};
                 downloadJson['userName'] = result.personalData[29][0];
                 downloadJson['pbOfBV'] = result.pbOfBV;
@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url); // 释放 URL 对象
             } else {
-                window.alert('请先在“个人数据”页“刷新个人数据”');
+                window.alert('请先在“个人数据”页“刷新个人数据”提取昵称');
             }
         });
     });
