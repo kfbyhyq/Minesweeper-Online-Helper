@@ -1047,6 +1047,7 @@ function displayBVPBNew() {
                 pkResult[2][2] = solo1;
                 displayMatrix(pkResult, 'pkResult');
                 pbt1.style.width = 'auto';
+                document.getElementById('pkRule').style.display = 'inline';
             } else {
                 document.getElementById("noPbOfBV").style.display = 'block';
                 pbt1.innerHTML = '';
