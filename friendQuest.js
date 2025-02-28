@@ -65,7 +65,7 @@ function displayFriendQuest() {
             dates.forEach(date => {
                 if (date.includes(newMonth) && (date.slice(-2) == '04' || activityMap[date])) {
                     if (activityMap[date]) {
-                        sumActivity += activityMap[date];
+                        sumActivity += Number(activityMap[date]);
                     }
                     let countS = Object.keys(fqDaily[date].fqSend).length; // 发任务总数
                     let dailyLevelS = 0; // 发任务总等级

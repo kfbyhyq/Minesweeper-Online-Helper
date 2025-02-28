@@ -183,7 +183,7 @@
                 <span id="noContacts" class="plainText" style="display:none;">暂无好友</span>
                 <br><br>
                 <div id="contactsArea">
-                    <span class="plainText">点击好友昵称或uid可直接复制</span><br><br>
+                    <span class="plainText">点击好友昵称或uid可直接复制。</span><br><br>
                     <button id="sortFriendName">昵称排序</button><div id="friendNameDesc" style="display:none;">0</div>
                     <button id="sortFriendUid">uid排序</button><div id="friendUidDesc" style="display:none;">0</div>
                     <button id="sortFriendDefalt">默认排序</button><div id="sortFriendMethod" style="display:none;">0</div>
@@ -196,8 +196,18 @@
                 </div>
             </div>
             <div id="pbOfBV" class="page">
-                <button id="myGamePage">打开我的游戏页</button><span class="blank"></span>
-                <button id="updatePbofBV">重新统计</button><br><br>
+                <button id="myGamePage">打开我的游戏页</button>
+                <span class="blank"></span>
+                <button id="updatePbofBV">重新统计</button>
+                <span class="blank"></span>
+                <button id="downloadPbofBV">生成PK文件</button>
+                <span class="blank"></span>
+                <button id="uploadPbofBV">PK!</button>
+                <input type="file" id="pbofBVInput" style="display:none" accept=".json" />
+                <span id="pkStatus" style="display:none;">0</span>
+                <span class="blank"></span>
+                <span id="pkOpponent" class="plainText"></span>
+                <br><br>
                 <span id="pbOfBVLevel" style="display:none;">3</span>
                 <span id="pbOfBVType" style="display:none;">1</span>
                 <span id="pbOfBVIsNf" style="display:none;">0</span>
@@ -211,8 +221,18 @@
                 </button><span class="blank"></span>
                 <button id="pbOfBV-nf" class="pbOfBVButton">盲扫</button>
                 <br><br>
-                <span id="noPbOfBV" class="plainText" style="display:none;">暂无各BV的PB数据，可在“我的游戏”页面通过插件弹出页“统计我的游戏”收集</span>
-                <table id="pbOfBVTable" class="ticketTable"></table>
+                <span id="noPbOfBV" class="plainText" style="display:none;">暂无各BV的PB数据，可在“我的游戏”页面通过插件弹出页“统计我的游戏”收集。</span>
+                <div class="flexContent">
+                    <div class="flexContentSon">
+                        <table id="pbOfBVTable" class="ticketTable"></table>
+                    </div>
+                    <div class="flexContentSon">
+                        <table id="pbOfBVTableNew" class="ticketTable"></table>
+                    </div>
+                    <div class="flexContentSon">
+                        <table id="pkResult" class="ticketTable"></table>
+                    </div>
+                </div>
             </div>
             <div id="eventArena" class="page">
                 <h1>活动竞技场门票价格</h1>
@@ -221,7 +241,7 @@
                 <div id="flagEa" style="display:none;">0</div>
                 <span class="blank"></span>
                 <button id="updateEa2">手动刷新价格</button><br><br>
-                <span class="plainText">点击票价可手动修改，按enter或点击“手动刷新价格”保存</span><br><br>
+                <span class="plainText">点击票价可手动修改，按enter或点击“手动刷新价格”保存。</span><br><br>
                 <div class="divSet eaSet">
                     <div class="eaText">等级</div>
                     <div class="eaText">L1</div>
@@ -316,7 +336,7 @@
                 <input id="lastActNew" class="inputBox inputBlank">
                 <button id="updateLastAct">修改昨日活跃度</button>
                 <span class="blank"></span>
-                <span class="plainText">如果昨日最后一次提取后活跃度有变化可在此修改</span>
+                <span class="plainText">如果昨日最后一次提取后活跃度有变化可在此修改。</span>
                 <br><br>
                 <table id="tableFqDaily" class="ticketTable"></table>
                 <div class="flexContent">
@@ -350,7 +370,7 @@
                 <span class="plainText">金币/活动物品</span><br>
                 <span class="plainText">功勋点估价（默认56.6）：</span><input id="hp2mc" class="inputBox inputBlank">
                 <span class="blank"></span>
-                <span class="plainText">默认以转换完美碎片的价格为准</span><br>
+                <span class="plainText">默认以转换完美碎片的价格为准。</span><br>
                 <h1>自动刷新</h1>
                 <div class="inRow">
                     <span class="plainText">自动刷新数据</span>
@@ -405,8 +425,8 @@
                 <span class="plainText">秒</span>
                 <br>
                 <h1>竞技场用时系数</h1>
-                <span class="plainText">完成各竞技场的用时与参考值的比例，默认值均为1，设置系数右侧的列为当前系数下各等级的估计用时（不包括罚时和休息）</span><br>
-                <span class="plainText">不同等级竞技场的估计用时会有偏差（低等级偏少），建议以最常打的等级为准计算系数</span><br><br>
+                <span class="plainText">完成各竞技场的用时与参考值的比例，默认值均为1，设置系数右侧的列为当前系数下各等级的估计用时（不包括罚时和休息）。</span><br>
+                <span class="plainText">不同等级竞技场的估计用时会有偏差（低等级偏少），建议以最常打的等级为准计算系数。</span><br><br>
                 <table id="arenaCoefSettingTable" class="implicitTable">
                     <tr>
                         <td>类型</td><td>设置系数</td><td>L1</td><td>L2</td><td>L3</td><td>L4</td><td>L5</td><td>L6</td><td>L7</td><td>L8</td>

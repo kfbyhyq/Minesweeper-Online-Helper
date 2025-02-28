@@ -480,12 +480,12 @@ function displayTables() {
             perfectLine[0][1] = stDaily[1][12];
             perfectLine[0][2] = personalData[18][7];
             for (let i = 2; i < perfectLine.length; i++) {
-                let epNum = perfectLine[i][0].replace('k', '');
-                var avg = Number(epNum) * 1000 / (dayNum - 3);
+                let epNum = Number(perfectLine[i][0].replace('k', ''));
+                var avg = epNum * 1000 / (dayNum - 3);
                 perfectLine[i][1] = parseFloat(avg.toFixed(0));
-                var total = Number(epNum) * 1000 / (dayNum - 3) * (currentDate - 3);
+                var total = epNum * 1000 / (dayNum - 3) * Math.max(currentDate - 3, 0);
                 perfectLine[i][2] = parseFloat(total.toFixed(0));
-                var left = (Number(epNum) * 1000 - personalData[18][7]) / (dayNum - currentDate);
+                var left = (epNum * 1000 - personalData[18][7]) / Math.max(dayNum - currentDate + 1, dayNum - 3);
                 perfectLine[i][3] = parseFloat(Math.max(0, left).toFixed(0));
             }
             displayMatrix(perfectLine, 'tablePerfectLine', 4);
@@ -890,6 +890,138 @@ function displayBVPB() {
         } else {
             document.getElementById("noPbOfBV").style.display = 'block';
             pbt.innerHTML = '';
+        }
+    });
+}
+/* BVPB PK用 */
+function displayBVPBNew() {
+    // 初级1 中级2 高级3
+    const level = document.getElementById("pbOfBVLevel").textContent;
+    // 局数0 时间1 bvs3 效率5
+    const typeIni = document.getElementById("pbOfBVType").textContent;
+    // // 0全部 1盲扫
+    const isNf = document.getElementById("pbOfBVIsNf").textContent;
+    var type = +typeIni + isNf * 7;
+    const pbt1 = document.getElementById("pbOfBVTableNew");
+    chrome.storage.local.get('pbOfBVNew', function(result) {
+        if (result.pbOfBVNew) {
+            let pbOfBV = result.pbOfBVNew.pbOfBV;
+            if (pbOfBV[level]) {
+                document.getElementById("noPbOfBV").style.display = 'none';
+                var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
+                var bvRange = [[], [0, 6], [2, 13], [10, 26]];
+                for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
+                    pbOfBVTable[i + 1] = [(i + bvRange[level][0]) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
+                }
+                // var valueArray = [];
+                var indexArray = [];
+                var itemNum = 0;
+                for (let bv in pbOfBV[level]) {
+                    if (bv < bvRange[level][0]) {
+                        continue;
+                    }
+                    if ((bv / 10 | 0) - bvRange[level][0] + 1 >= pbOfBVTable.length) {
+                        for (; (bv / 10 | 0) - bvRange[level][0] + 1 >= pbOfBVTable.length; ) {
+                            pbOfBVTable[pbOfBVTable.length] = [(pbOfBVTable.length + bvRange[level][0] - 1) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
+                        }
+                    }
+                    if (isNf == 0) {
+                        if (type == 0 || type == 3) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            // valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 1) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
+                            // valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 5) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            // valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                        }
+                        indexArray[itemNum] = bv;
+                        itemNum++;
+                    } else if (pbOfBV[level][bv][7]) {
+                        if (type == 7 || type == 10) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            // valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 8) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = (+pbOfBV[level][bv][type]).toFixed(2);
+                            // valueArray[itemNum] = pbOfBV[level][bv][type];
+                        } else if (type == 12) {
+                            pbOfBVTable[(bv / 10 | 0) - bvRange[level][0] + 1][bv % 10 + 1] = pbOfBV[level][bv][type];
+                            // valueArray[itemNum] = pbOfBV[level][bv][type].replace('%', '');
+                        }
+                        indexArray[itemNum] = bv;
+                        itemNum++;
+                    }
+                }
+                displayMatrix(pbOfBVTable, 'pbOfBVTableNew');
+                var desc = 1;
+                if (type == 1 || type == 8) {
+                    desc = 0;
+                }
+                // var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
+                for (let i = 0; i < itemNum; i++) {
+                    const cell = pbt1.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
+                    // cell.style.backgroundColor = colorArray[i];
+                    if (type != 0 && type != 7) {
+                        cell.style.cursor = 'pointer';
+                        cell.onclick = function() {
+                            window.open('https://minesweeper.online/cn/game/' + pbOfBV[level][indexArray[i]][+type + 1]);
+                        }
+                    }
+                }
+                /* 左右两个表对比上色 */
+                const pbt0 = document.getElementById("pbOfBVTable");
+                var rn = Math.max(pbt0.rows.length, pbt1.rows.length);
+                for (let i = 1; i < rn; i++) {
+                    for (let j = 1; j <= 10; j++) {
+                        var cell0 = null;
+                        var cell1 = null;
+                        if (pbt0.rows[i]) {
+                            cell0 = pbt0.rows[i].cells[j];
+                        }
+                        if (pbt1.rows[i]) {
+                            cell1 = pbt1.rows[i].cells[j];
+                        }
+                        if (cell0 && cell0.textContent) {
+                            if (cell1 && cell1.textContent) {
+                                if (desc) {
+                                    if (cell0.textContent > cell1.textContent) {
+                                        cell0.style.backgroundColor = 'rgb(0, 214, 29)';
+                                        cell1.style.backgroundColor = 'rgb(229, 185, 52)';
+                                    } else if (cell0.textContent < cell1.textContent) {
+                                        cell1.style.backgroundColor = 'rgb(0, 214, 29)';
+                                        cell0.style.backgroundColor = 'rgb(229, 185, 52)';
+                                    } else {
+                                        cell1.style.backgroundColor = 'rgb(107, 193, 243)';
+                                        cell0.style.backgroundColor = 'rgb(107, 193, 243)';
+                                    }
+                                } else {
+                                    if (cell0.textContent < cell1.textContent) {
+                                        cell0.style.backgroundColor = 'rgb(0, 214, 29)';
+                                        cell1.style.backgroundColor = 'rgb(229, 185, 52)';
+                                    } else if (cell0.textContent > cell1.textContent) {
+                                        cell1.style.backgroundColor = 'rgb(0, 214, 29)';
+                                        cell0.style.backgroundColor = 'rgb(229, 185, 52)';
+                                    } else {
+                                        cell1.style.backgroundColor = 'rgb(107, 193, 243)';
+                                        cell0.style.backgroundColor = 'rgb(107, 193, 243)';
+                                    }
+                                }
+                            } else {
+                                cell0.style.backgroundColor = 'rgb(104, 230, 121)';
+                            }
+                        } else if (cell1 && cell1.textContent) {
+                            cell1.style.backgroundColor = 'rgb(104, 230, 121)';
+                        }
+                    }
+                }
+            } else {
+                document.getElementById("noPbOfBV").style.display = 'block';
+                pbt1.innerHTML = '';
+            }
+        } else {
+            document.getElementById("noPbOfBV").style.display = 'block';
+            pbt1.innerHTML = '';
         }
     });
 }

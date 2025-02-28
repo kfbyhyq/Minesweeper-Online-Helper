@@ -43,7 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ['奖杯', 0, '排名', ''],
                                 ['Time', '效率', '经验', '装备', '动态胜率', '连胜', '竞技场', '难度', '开速', '成就'],
                                 ['', '', '', '', '', '', '', '', '', ''],
-                                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                ['昵称'],
+                                ['']
                             ];
                             var row = 0;        // 当前录入行
                             try {
@@ -221,6 +223,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         }
                                     }
                                 });
+                                row += 5;
+                                
+                                /* 读昵称 */
+                                let userName = document.querySelector("#PlayerBlock > h2 > div.pull-left > span").textContent;
+                                personalData[row][0] = userName;
         
                                 console.log(personalData);
         

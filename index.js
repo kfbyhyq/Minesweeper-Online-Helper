@@ -300,6 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* BVPB */
 document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.local.remove('pbOfBVNew');
     displayBVPB();
     const level = document.getElementById("pbOfBVLevel");
     const type = document.getElementById("pbOfBVType");
@@ -325,6 +326,9 @@ document.addEventListener('DOMContentLoaded', function() {
         int.style.backgroundColor = '#D8F1EE';
         exp.style.backgroundColor = '#D8F1EE';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     int.addEventListener('click', function() {
         level.textContent = 2;
@@ -332,6 +336,9 @@ document.addEventListener('DOMContentLoaded', function() {
         int.style.backgroundColor = '#8fc4ef';
         exp.style.backgroundColor = '#D8F1EE';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     exp.addEventListener('click', function() {
         level.textContent = 3;
@@ -339,6 +346,9 @@ document.addEventListener('DOMContentLoaded', function() {
         int.style.backgroundColor = '#D8F1EE';
         exp.style.backgroundColor = '#8fc4ef';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     wins.addEventListener('click', function() {
         type.textContent = 0;
@@ -347,6 +357,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bvs.style.backgroundColor = '#D8F1EE';
         eff.style.backgroundColor = '#D8F1EE';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     time.addEventListener('click', function() {
         type.textContent = 1;
@@ -355,6 +368,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bvs.style.backgroundColor = '#D8F1EE';
         eff.style.backgroundColor = '#D8F1EE';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     bvs.addEventListener('click', function() {
         type.textContent = 3;
@@ -363,6 +379,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bvs.style.backgroundColor = '#8fc4ef';
         eff.style.backgroundColor = '#D8F1EE';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     eff.addEventListener('click', function() {
         type.textContent = 5;
@@ -371,6 +390,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bvs.style.backgroundColor = '#D8F1EE';
         eff.style.backgroundColor = '#8fc4ef';
         displayBVPB();
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
+        }
     });
     nf.addEventListener('click', function() {
         if (isNf.textContent == 0) {
@@ -381,6 +403,9 @@ document.addEventListener('DOMContentLoaded', function() {
             isNf.textContent = 0;
             nf.style.backgroundColor = '#D8F1EE';
             displayBVPB();
+        }
+        if (document.getElementById('pkStatus').textContent == 1) {
+            displayBVPBNew();
         }
     });
     /* 重新统计功能 */
@@ -461,6 +486,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         });
     });
+    /* PK功能 */
+    document.getElementById("downloadPbofBV").addEventListener('click', function() {
+        chrome.storage.local.get(['personalData', 'pbOfBV'], function (result) {
+            if (result.personalData[29][0]) {
+                var downloadJson = {};
+                downloadJson['userName'] = result.personalData[29][0];
+                downloadJson['pbOfBV'] = result.pbOfBV;
+                const jsonData = JSON.stringify(downloadJson, null, 2); // 格式化 JSON
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'BVPB_' + result.personalData[29][0] + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url); // 释放 URL 对象
+            } else {
+                window.alert('请先在“个人数据”页“刷新个人数据”');
+            }
+        });
+    });
+    document.getElementById('uploadPbofBV').addEventListener('click', function () {
+        document.getElementById('pbofBVInput').click(); // 点击button触发input
+    });
+    document.getElementById('pbofBVInput').onchange = function(event) {
+        const file = event.target.files[0]; // 获取选中的文件
+        const reader = new FileReader();
+        // 成功读取后解析文件
+        reader.onload = function (event) {
+            try {
+                const pbNew = JSON.parse(event.target.result);
+                console.log(pbNew);
+                chrome.storage.local.set({ pbOfBVNew: pbNew });
+                document.getElementById('pkOpponent').textContent = '当前对阵账号：' + pbNew.userName;
+                document.getElementById('pkStatus').textContent = 1;
+                displayBVPBNew();
+            } catch (e) {
+                console.error('导入pb数据失败', e);
+                window.alert('导入pb数据失败');
+            }
+        };
+        reader.readAsText(file);
+    }
 });
 
 const arenaExpectTime = [

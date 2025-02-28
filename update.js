@@ -596,7 +596,9 @@ function updatePersonalData() {
                         ['奖杯', 0, '排名', ''],
                         ['Time', '效率', '经验', '装备', '动态胜率', '连胜', '竞技场', '难度', '开速', '成就'],
                         ['', '', '', '', '', '', '', '', '', ''],
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        ['昵称'],
+                        ['']
                     ];
                     var row = 0;        // 当前录入行
                     var t0 = 100;
@@ -780,7 +782,12 @@ function updatePersonalData() {
                                         }
                                     }
                                 });
-        
+                                row += 5;
+                                
+                                /* 读昵称 */
+                                let userName = document.querySelector("#PlayerBlock > h2 > div.pull-left > span").textContent;
+                                personalData[row][0] = userName;
+                
                                 console.log(personalData);
         
                                 chrome.runtime.sendMessage({ action: 'sendPersonalData', personalData: personalData });
