@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /* PK功能 */
     document.getElementById("downloadPbofBV").addEventListener('click', function() {
         chrome.storage.local.get(['personalData', 'pbOfBV'], function (result) {
-            if (result.personalData[29]) {
+            if (result.personalData && result.personalData[29]) {
                 var downloadJson = {};
                 downloadJson['userName'] = result.personalData[29][0];
                 downloadJson['pbOfBV'] = result.pbOfBV;

@@ -530,3 +530,14 @@ option {
 #tablePerfectLine tr:hover {
     background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
 }
+
+/* 树状图 */
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 12px;
+}

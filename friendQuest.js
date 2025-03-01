@@ -155,15 +155,40 @@ function displayFriendQuest() {
                 }
             });
             // 收任务统计
+            var qrClassify = [
+                ['自定义', '场币', '竞技场', '宝石', '金币', '功勋', 
+                    '初盲', '中盲', '高盲', '困盲', '地盲', 
+                    '初效', '中效', '高效', '初连', '中连', '高连', 
+                    '初局', '中局', '高局', '中等', '困难', '地狱'],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ];
+            const qrcKeyWords = [['自定义'], ['竞技场币'], ['竞技场'], ['宝石'], ['金币'], ['功勋'], 
+                ['初级', '盲扫'], ['中级', '盲扫'], ['高级', '盲扫'], ['困难', '盲扫'], ['地狱', '盲扫'], 
+                ['初级', '效率'], ['中级', '效率'], ['高级', '效率'], ['初级', '连胜'], ['中级', '连胜'], ['高级', '连胜'], 
+                ['初级'], ['中级'], ['高级'], ['中等'], ['困难'], ['地狱']];
             dataReceive.forEach(entry => {
                 const lrMatch = entry[0].match(/L(\d+)(E)?/); // 提取 L 后面的数字和 E
                 let levelR = parseInt(lrMatch[1], 10);
                 if (lrMatch[2]) { // 如果有 E 等级乘3
                     levelR *= 3;
                 }
-                const person = entry[4]; // 用户id
+                // 按类型分类
+                for (let cl = 0; cl < qrClassify[0].length; cl++) {
+                    var match = 1;
+                    for (let it = 0; it < qrcKeyWords[cl].length; it++) {
+                        if (!entry[1].includes(qrcKeyWords[cl][it])) {
+                            match = 0;
+                            break;
+                        }
+                    }
+                    if (match == 1) {
+                        qrClassify[1][cl] += levelR;
+                        break;
+                    }
+                }
             
                 // 按用户分类
+                const person = entry[4]; // 用户id
                 if (!personStats[person]) {
                     var personValid = 1;
                     if (fqContactFlag == 1) {
@@ -252,6 +277,105 @@ function displayFriendQuest() {
             fqStats.unshift(fqStasTotal);
             displayMatrixBody(fqStats, 'tableFqStats');
             currentFqStats = fqStats;
+            
+            // 转换数据格式
+            const data = qrClassify[0].map((title, index) => ({
+                title: title,
+                value: qrClassify[1][index]
+            }));
+
+            // 设置尺寸
+            const width = 900;
+            const height = 500;
+
+            // 创建容器
+            const svg = d3.select("#questReceivedClassifyTreemap")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            // 创建tooltip
+            const tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            // 创建层级结构
+            const root = d3.hierarchy({ children: data })
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
+
+            // 创建树状图布局
+            d3.treemap()
+                .size([width, height])
+                .tile(d3.treemapSquarify)
+                .round(true)
+                (root);
+
+            // 创建颜色比例尺
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            // 绘制节点
+            const nodes = svg.selectAll("g")
+                .data(root.leaves())
+                .enter().append("g")
+                .attr("transform", d => `translate(${d.x0},${d.y0})`);
+
+            // 绘制矩形
+            nodes.append("rect")
+                .attr("width", d => d.x1 - d.x0)
+                .attr("height", d => d.y1 - d.y0)
+                .attr("fill", (d, i) => color(i))
+                .on("mouseover", showTooltip)
+                .on("mouseout", hideTooltip);
+
+            // 添加文本
+            nodes.each(function (d) {
+                const node = d3.select(this);
+                const rectWidth = d.x1 - d.x0;
+                const rectHeight = d.y1 - d.y0;
+
+                // 根据矩形尺寸决定显示内容
+                if (rectWidth > 40 && rectHeight > 30) {
+                    addMultiLineText(node, d, rectWidth, rectHeight);
+                } else if (rectWidth > 30 && rectHeight > 20) {
+                    addSingleLineText(node, d, rectWidth, rectHeight);
+                }
+            });
+
+            function addMultiLineText(node, d, width, height) {
+                node.append("text")
+                    .attr("fill", "white")
+                    .attr("x", 10)
+                    .attr("y", 20)
+                    .html(`${d.data.title}<tspan x="10" dy="20">${d.data.value}</tspan>`)
+                    .style("font-size", Math.min(16, Math.min(width / 5, height / 3)) + "px");
+            }
+
+            function addSingleLineText(node, d, width, height) {
+                node.append("text")
+                    .attr("fill", "white")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("text-anchor", "middle")
+                    .text(d.data.title)
+                    .style("font-size", Math.min(12, Math.min(width / 4, height / 2)) + "px");
+            }
+
+            function showTooltip(event, d) {
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", 0.9);
+                tooltip.html(`${d.data.title}: ${d.data.value}`)
+                    .style("left", (event.pageX + 5) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            }
+
+            function hideTooltip() {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            }
         }
     });
 }

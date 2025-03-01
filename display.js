@@ -167,6 +167,7 @@ function displayTables() {
     var lm = 8; // 最大等级
     var tm = 10; // 多少种竞技场
     var hp2mc = 56.6; // 功勋点折算金币
+    var stDaily = [['日期', '总局数', '胜局数', '总耗时', '完成的任务', '完成的竞技场', '已解决3BV', '经验', '金币', '宝石', '竞技场门票', '活跃度', '活动物品', '竞技场币']];
     /* 读取数据 */
     chrome.storage.local.get(null, function(result) {
         if (result.configurableCoef) { // 读取功勋点设置
@@ -197,7 +198,6 @@ function displayTables() {
             const dates = Object.keys(stMap);
             if (dates.length > 1) {
                 dates.sort((a, b) => Number(b) - Number(a));
-                var stDaily = [['日期', '总局数', '胜局数', '总耗时', '完成的任务', '完成的竞技场', '已解决3BV', '经验', '金币', '宝石', '竞技场门票', '活跃度', '活动物品', '竞技场币']];
                 for (let i = 1; i < dates.length; i++) {
                     const st1 = stMap[dates[i-1]];
                     const st2 = stMap[dates[i]];
@@ -219,7 +219,7 @@ function displayTables() {
             console.log('个人数据:', result.personalData);
             displayMatrix(personalData.slice(17, 19), 'table3-1');    // 显示总资源数
             displayMatrix(personalData.slice(0, 4), 'table3-2');    // 显示宝石和场币明细
-            if (personalData[15][0]) {
+            if (personalData[15] && personalData[15][0]) {
                 displayMatrix(personalData.slice(4, 16), 'table3-3');    // 显示门票明细（有活动门票）
             } else {
                 displayMatrix(personalData.slice(4, 15), 'table3-3');    // 显示门票明细
@@ -477,16 +477,28 @@ function displayTables() {
             let currentMonth = new Date().getUTCMonth();
             let currentDate = new Date().getUTCDate();
             let dayNum = new Date(currentYear, currentMonth + 1, 0).getDate();
-            perfectLine[0][1] = stDaily[1][12];
-            perfectLine[0][2] = personalData[18][7];
+            if (stDaily[1] && stDaily[1][12]) {
+                perfectLine[0][1] = stDaily[1][12];
+            } else {
+                perfectLine[0][1] = '暂无数据';
+            }
+            if (personalData[18]) {
+                perfectLine[0][2] = personalData[18][7];
+            } else {
+                perfectLine[0][2] = '暂无数据';
+            }
             for (let i = 2; i < perfectLine.length; i++) {
                 let epNum = Number(perfectLine[i][0].replace('k', ''));
                 var avg = epNum * 1000 / (dayNum - 3);
                 perfectLine[i][1] = parseFloat(avg.toFixed(0));
                 var total = epNum * 1000 / (dayNum - 3) * Math.max(currentDate - 3, 0);
                 perfectLine[i][2] = parseFloat(total.toFixed(0));
-                var left = (epNum * 1000 - personalData[18][7]) / Math.max(dayNum - currentDate + 1, dayNum - 3);
-                perfectLine[i][3] = parseFloat(Math.max(0, left).toFixed(0));
+                if (personalData[18]) {
+                    var left = (epNum * 1000 - personalData[18][7]) / Math.max(dayNum - currentDate + 1, dayNum - 3);
+                    perfectLine[i][3] = parseFloat(Math.max(0, left).toFixed(0));
+                } else {
+                    perfectLine[i][3] = '';
+                }
             }
             displayMatrix(perfectLine, 'tablePerfectLine', 4);
             for (let i = 2; i < perfectLine.length; i++) {
@@ -954,10 +966,10 @@ function displayBVPBNew() {
                     }
                 }
                 displayMatrix(pbOfBVTable, 'pbOfBVTableNew');
-                var desc = 1;
-                if (type == 1 || type == 8) {
-                    desc = 0;
-                }
+                // var desc = 1;
+                // if (type == 1 || type == 8) {
+                //     desc = 0;
+                // }
                 // var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
                 for (let i = 0; i < itemNum; i++) {
                     const cell = pbt1.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
@@ -1035,7 +1047,7 @@ function displayBVPBNew() {
                         }
                     }
                 }
-                if (result.personalData[29]) {
+                if (result.personalData && result.personalData[29]) {
                     pkResult[0][1] = result.personalData[29][0];
                 } else {
                     window.alert('请先在“个人数据”页“刷新个人数据”提取昵称');
