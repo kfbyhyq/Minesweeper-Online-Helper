@@ -532,6 +532,100 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsText(file);
     }
 });
+/* 收集我的游戏数据 */
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === 'sendBVDistribution') {
+        let BVDistribution = request.BVDistribution;
+        let level = request.level;
+        console.log('收到我的游戏数据：', BVDistribution);   // 在控制台打出结果
+        // document.getElementById('buttonDistributionBV').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        if (level) { // 不考虑自定义
+            chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
+                const BVMap = result.BVMap || {};
+                const pbOfBV = result.pbOfBV || {};
+                const pbOfBVMap = result.pbOfBVMap || {};
+                // const BVMap = {};
+                // const pbOfBV = {};
+                if (!BVMap[level]) {
+                    BVMap[level] = {};
+                }
+                if (!pbOfBV[level]) {
+                    pbOfBV[level] = {};
+                }
+                for (let i = 1; i < BVDistribution.length; i++) {
+                    if (BVDistribution[i][9]) {
+                        const id = BVDistribution[i][7];
+                        const bv = BVDistribution[i][3];
+                        if (!BVMap[level][id]) {
+                            BVMap[level][id] = BVDistribution[i].slice(1);
+                            if (pbOfBV[level][bv]) {
+                                pbOfBV[level][bv][0]++;
+                                if (+BVDistribution[i][1] < +pbOfBV[level][bv][1]) {
+                                    pbOfBV[level][bv][1] = BVDistribution[i][1];
+                                    pbOfBV[level][bv][2] = id;
+                                }
+                                if (+BVDistribution[i][4] > +pbOfBV[level][bv][3]) {
+                                    pbOfBV[level][bv][3] = BVDistribution[i][4];
+                                    pbOfBV[level][bv][4] = id;
+                                }
+                                if (+(BVDistribution[i][5].replace('%','')) > +(pbOfBV[level][bv][5].replace('%',''))) {
+                                    pbOfBV[level][bv][5] = BVDistribution[i][5];
+                                    pbOfBV[level][bv][6] = id;
+                                }
+                                if (BVDistribution[i][2] == 1) { // 是盲扫
+                                    if (pbOfBV[level][bv][7]) {
+                                        pbOfBV[level][bv][7]++;
+                                        if (+BVDistribution[i][1] < +pbOfBV[level][bv][8]) {
+                                            pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                            pbOfBV[level][bv][9] = id;
+                                        }
+                                        if (+BVDistribution[i][4] > +pbOfBV[level][bv][10]) {
+                                            pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                            pbOfBV[level][bv][11] = id;
+                                        }
+                                        if (+(BVDistribution[i][5].replace('%','')) > +(pbOfBV[level][bv][12].replace('%',''))) {
+                                            pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                            pbOfBV[level][bv][13] = id;
+                                        }
+                                    } else {
+                                        pbOfBV[level][bv][7] = 1;
+                                        pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                        pbOfBV[level][bv][9] = id;
+                                        pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                        pbOfBV[level][bv][11] = id;
+                                        pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                        pbOfBV[level][bv][13] = id;
+                                    }
+                                }
+                            } else {
+                                pbOfBV[level][bv] = [1, BVDistribution[i][1], id, BVDistribution[i][4], id, BVDistribution[i][5], id];
+                                if (BVDistribution[i][2] == 1) {
+                                    pbOfBV[level][bv][7] = 1;
+                                    pbOfBV[level][bv][8] = BVDistribution[i][1];
+                                    pbOfBV[level][bv][9] = id;
+                                    pbOfBV[level][bv][10] = BVDistribution[i][4];
+                                    pbOfBV[level][bv][11] = id;
+                                    pbOfBV[level][bv][12] = BVDistribution[i][5];
+                                    pbOfBV[level][bv][13] = id;
+                                }
+                            }
+                        }
+                    }
+                }
+                const currentDate = new Date();
+                const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
+                pbOfBVMap[newDate] = pbOfBV;
+
+                console.log(BVMap);
+                console.log(pbOfBV);
+                console.log(pbOfBVMap);
+                chrome.storage.local.set({ BVMap: BVMap });
+                chrome.storage.local.set({ pbOfBV: pbOfBV });
+                chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
+            });
+        }
+    }
+});
 
 const arenaExpectTime = [
     [37.5, 90, 165, 300, 462.5, 675, 910, 1200],
