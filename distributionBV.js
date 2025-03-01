@@ -272,7 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         const firstInd = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(1)").textContent;
                                         if (+firstInd == (pageNum + iniPage) * 10 - 9) { // 确认页码正确，防延迟
                                             for (let i = 1; i <= maxI; i++) {
-                                                const ind = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(1)`).textContent;
+                                                var indRaw = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(1)`).textContent;
+                                                var ind = Number(indRaw) - (iniPage - 1) * maxI;
                                                 if (ind > 0) {
                                                     if (!BVDistribution[ind]) {
                                                         BVDistribution[ind] = ['', '', '', '', '', '', '', ''];
