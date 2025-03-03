@@ -1087,19 +1087,21 @@ function displayBVPBNew() {
 function displayPriceDaily() {
     var pdCategory = ['宝石', '竞技场币', 
         '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
-        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
+        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票', '装备碎片'];
     const pdc = document.getElementById("priceDailySelect").value;
     const esd = document.getElementById("editSelectDiv");
     const eg = document.getElementById("editGems");
     const eac = document.getElementById("editAcs");
     const eat = document.getElementById("editAt");
     const eal = document.getElementById("editAl");
+    const ept = document.getElementById("editParts");
     const confirm = document.getElementById("confirmEdit");
     esd.style.display = 'none';
     eg.style.display = 'none';
     eac.style.display = 'none';
     eat.style.display = 'none';
     eal.style.display = 'none';
+    ept.style.display = 'none';
     confirm.style.display = 'none';
     chrome.storage.local.get(['gemsPriceMap', 'ticketPriceMap'], function (result) {
         const gpMap = result.gemsPriceMap || {};
@@ -1114,6 +1116,7 @@ function displayPriceDaily() {
                 eac.style.display = 'none';
                 eat.style.display = 'none';
                 eal.style.display = 'none';
+                ept.style.display = 'none';
                 confirm.style.display = 'inline-block';
                 document.getElementById('noPriceDaily').style.display = 'none';
                 const title = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
@@ -1131,6 +1134,7 @@ function displayPriceDaily() {
                 eac.style.display = 'inline-block';
                 eat.style.display = 'none';
                 eal.style.display = 'none';
+                ept.style.display = 'none';
                 confirm.style.display = 'inline-block';
                 document.getElementById('noPriceDaily').style.display = 'none';
                 const title = ['金竞技场币', '铜竞技场币', '银竞技场币', '镍竞技场币', '钢竞技场币', '铁竞技场币', '钯竞技场币', '钛竞技场币', '锌竞技场币', '铂竞技场币'];
@@ -1148,6 +1152,7 @@ function displayPriceDaily() {
                 eac.style.display = 'none';
                 eat.style.display = 'none';
                 eal.style.display = 'inline-block';
+                ept.style.display = 'none';
                 confirm.style.display = 'inline-block';
                 document.getElementById('noPriceDaily').style.display = 'none';
                 const title = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
@@ -1171,6 +1176,7 @@ function displayPriceDaily() {
                 eac.style.display = 'none';
                 eat.style.display = 'inline-block';
                 eal.style.display = 'none';
+                ept.style.display = 'none';
                 confirm.style.display = 'inline-block';
                 document.getElementById('noPriceDaily').style.display = 'none';
                 const title = ['速度', '速度NG', '盲扫', '效率', '高难度', '随机难度', '硬核', '硬核NG', '耐力', '噩梦'];
@@ -1184,6 +1190,24 @@ function displayPriceDaily() {
                     }
                 }
                 priceDailyOutput(dataMap, title, 'priceDailyTable', eat.value);
+            } else {
+                document.getElementById('noPriceDaily').style.display = 'block';
+            }
+        } else if (pdc == 21) {
+            if (gpMap) {
+                esd.style.display = 'inline-block';
+                eg.style.display = 'none';
+                eac.style.display = 'none';
+                eat.style.display = 'none';
+                eal.style.display = 'none';
+                ept.style.display = 'inline-block';
+                confirm.style.display = 'inline-block';
+                document.getElementById('noPriceDaily').style.display = 'none';
+                const title = ['稀有', '史诗', '传说', '完美T', '完美R', '完美S', '完美A', '完美O', '完美Q', '完美E', '完美G', '完美J', '完美D'];
+                for (const date in gpMap) {
+                    dataMap[date] = gpMap[date][5].slice(0, 3).concat(gpMap[date][7]);
+                }
+                priceDailyOutput(dataMap, title, 'priceDailyTable', ept.value);
             } else {
                 document.getElementById('noPriceDaily').style.display = 'block';
             }

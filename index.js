@@ -490,17 +490,19 @@ function showDisassemblePriceGap(qMin, qMax) {
 document.addEventListener('DOMContentLoaded', function() {
     var pdCategory = ['', '宝石', '竞技场币', 
         '速度门票', '速度NG门票', '盲扫门票', '效率门票', '高难度门票', '随机难度门票', '硬核门票', '硬核NG门票', '耐力门票', '噩梦门票', 
-        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票'];
+        'L1门票', 'L2门票', 'L3门票', 'L4门票', 'L5门票', 'L6门票', 'L7门票', 'L8门票', '装备碎片'];
     var gemsCategory = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
     var acCategory = ['金竞技场币', '铜竞技场币', '银竞技场币', '镍竞技场币', '钢竞技场币', '铁竞技场币', '钯竞技场币', '钛竞技场币', '锌竞技场币', '铂竞技场币'];
     var atCategory = ['速度', '速度NG', '盲扫', '效率', '高难度', '随机难度', '硬核', '硬核NG', '耐力', '噩梦'];
     var alCategory = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
+    var partsCategory = ['稀有', '史诗', '传说', '完美T', '完美R', '完美S', '完美A', '完美O', '完美Q', '完美E', '完美G', '完美J', '完美D'];
     const pds = document.getElementById("priceDailySelect");
     const eDate = document.getElementById('editPriceDate');
     const eg = document.getElementById("editGems");
     const eac = document.getElementById("editAcs");
     const eat = document.getElementById("editAt");
     const eal = document.getElementById("editAl");
+    const ept = document.getElementById("editParts");
     /* 初始化界面 */
     for (let i = 0; i < pdCategory.length; i++) {
         let op = document.createElement("option");
@@ -528,6 +530,12 @@ document.addEventListener('DOMContentLoaded', function() {
         opal.textContent = alCategory[i];
         eal.appendChild(opal);
     }
+    for (let i = 0; i < partsCategory.length; i++) {
+        let op = document.createElement("option");
+        op.value = i;
+        op.textContent = partsCategory[i];
+        ept.appendChild(op);
+    }
     const currentDate = new Date();
     const newDate = currentDate.getUTCFullYear() + '-' + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getUTCDate()).padStart(2, '0');
     eDate.value = newDate;
@@ -550,6 +558,9 @@ document.addEventListener('DOMContentLoaded', function() {
         displayPriceDaily();
     });
     eDate.addEventListener('change', function() {
+        displayPriceDaily();
+    });
+    ept.addEventListener('change', function() {
         displayPriceDaily();
     });
     /* 修改单条数据 */
