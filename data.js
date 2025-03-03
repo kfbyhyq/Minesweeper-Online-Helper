@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('pId', function (result) {
         const pId = result.pId;
         chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-            if (tab1[0].url == 'https://minesweeper.online/cn/player/' + pId || tab1[0].url == 'https://minesweeper.online/player/' + pId) {
+            if (tab1[0].url.includes('https://minesweeper.online/') && tab1[0].url.includes('player/' + pId)) {
                 button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
                 button.style.cursor = 'pointer'; // 鼠标指针样式
                 button.addEventListener('click', function () {

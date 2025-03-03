@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const button = document.getElementById('buttonFq');
     const buttonFqAll = document.getElementById('buttonFqAll');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-        if (tab1[0].url == 'https://minesweeper.online/cn/friend-quests' || tab1[0].url == 'https://minesweeper.online/friend-quests') {
+        if (tab1[0].url.includes('https://minesweeper.online/') && tab1[0].url.includes('friend-quests')) {
             button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
             button.style.cursor = 'pointer'; // 鼠标指针样式
             button.addEventListener('click', function () {

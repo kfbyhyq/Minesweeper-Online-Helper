@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const button = document.getElementById('buttonEq');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
-        if (tab1[0].url == 'https://minesweeper.online/cn/event-quests' || tab1[0].url == 'https://minesweeper.online/event-quests') {
+        if (tab1[0].url.includes('https://minesweeper.online/') && tab1[0].url.includes('event-quests')) {
             button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
             button.style.cursor = 'pointer'; // 鼠标指针样式
             button.addEventListener('click', function () {
