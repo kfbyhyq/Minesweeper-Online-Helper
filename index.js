@@ -57,6 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('saveSucc').style.display = "none";
         showPage('setting');
     });
+    document.getElementById('nav-help').addEventListener('click', function(event) {
+        showPage('help');
+    });
 
     const currentDate = new Date();
     const dateMinus2 = new Date(currentDate);
@@ -185,6 +188,303 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+/* 装备拆解价 */
+document.addEventListener('DOMContentLoaded', function() {
+    const dpgSelectMin = document.getElementById("dpgSelectMin");
+    const dpgSelectMax = document.getElementById("dpgSelectMax");
+    // 下拉菜单默认值为空，选项为10%到100%
+    for (let quality = 10; quality <= 100; quality++) {
+        let qMin = document.createElement("option");
+        qMin.value = quality;
+        qMin.textContent = quality + '%';
+        dpgSelectMin.appendChild(qMin);
+        let qMax = document.createElement("option");
+        qMax.value = quality;
+        qMax.textContent = quality + '%';
+        dpgSelectMax.appendChild(qMax);
+    }
+    // 下界改变
+    dpgSelectMin.addEventListener('change', function() {
+        var qMaxValue = dpgSelectMax.value;
+        dpgSelectMax.innerHTML = '';
+        for (let quality = dpgSelectMin.value; quality <= 100; quality++) { // 上界不能低于下界
+            let qMax = document.createElement("option");
+            qMax.value = quality;
+            qMax.textContent = quality + '%';
+            dpgSelectMax.appendChild(qMax);
+        }
+        if (qMaxValue <= 100) { // 如果之前上界有值，保持不变
+            dpgSelectMax.value = qMaxValue;
+        } else {
+            dpgSelectMin.remove(0);
+            dpgSelectMax.value = dpgSelectMin.value;
+        }
+        showDisassemblePriceGap(dpgSelectMin.value, dpgSelectMax.value);
+    });
+    // 上界改变
+    dpgSelectMax.addEventListener('change', function() {
+        var qMinValue = dpgSelectMin.value;
+        dpgSelectMin.innerHTML = '';
+        for (let quality = 10; quality <= dpgSelectMax.value; quality++) { // 下界不能高于上界
+            let qMin = document.createElement("option");
+            qMin.value = quality;
+            qMin.textContent = quality + '%';
+            dpgSelectMin.appendChild(qMin);
+        }
+        if (qMinValue > 9) {
+            dpgSelectMin.value = qMinValue;
+        } else {
+            dpgSelectMax.remove(0);
+            dpgSelectMin.value = dpgSelectMax.value;
+        }
+        showDisassemblePriceGap(dpgSelectMin.value, dpgSelectMax.value);
+    });
+    document.getElementById("showDisPriceGap").addEventListener('click', function() {
+        if (document.getElementById("showDPGFlag").textContent == 1) {
+            document.getElementById("showDPGFlag").textContent = 2;
+            document.getElementById("dpgDiv").style.display = 'none';
+            document.getElementById("showDisPriceGap").textContent = '查看拆解收益';
+        } else if (document.getElementById("showDPGFlag").textContent == 2) {
+            document.getElementById("showDPGFlag").textContent = 1;
+            document.getElementById("dpgDiv").style.display = 'inline';
+            document.getElementById("showDisPriceGap").textContent = '收起拆解收益';
+        } else if (document.getElementById("showDPGFlag").textContent == 0) {
+            // var qMin = document.getElementById("dpgSelectMin").value;
+            // var qMax = document.getElementById("dpgSelectMax").value;
+            // showDisassemblePriceGap(qMin, qMax);
+            document.getElementById("showDPGFlag").textContent = 1;
+            document.getElementById("dpgDiv").style.display = 'inline';
+            document.getElementById("showDisPriceGap").textContent = '收起拆解收益';
+        }
+    });
+})
+// 显示分解价格主函数
+function showDisassemblePriceGap(qMin, qMax) {
+    if (qMin < 10) { qMin = 10; }
+    if (qMax > 100) { qMax = 100; }
+    chrome.storage.local.get('gemsPrice', function(result) {
+        if (result.gemsPrice) {
+            var gemsPrice = result.gemsPrice;
+            var commonThreshold = 10; // 普通装备质量下界
+            var commonStats = [
+                [850, 1000, 1150, 1300, 1550, 1800, 2100, 2400, 2700, 3000], // 制造所需金币
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 制造所需宝石
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 制造所需场币
+                [10, 12, 14, 16, 18, 20, 22, 24, 26, 28],  // 强化所需功勋
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 升级碎片数
+                [5, 6, 7, 8, 10, 12, 14, 16, 18, 20], // 拆解碎片数
+            ];
+            var rareThreshold = 20; // 稀有装备质量下界
+            var rareStats = [
+                [2000, 2000, 2500, 2500, 3000, 3000, 3500, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000],
+                [3, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 28, 32],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87],
+                [5, 5, 5, 5, 5, 5, 5, 10, 10, 10, 15, 15, 20, 20, 20, 20, 25, 25, 25, 0],
+                [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 25, 27, 30, 35, 40, 45]
+            ];
+            var uniqueThreshold = 40; // 史诗装备质量下界
+            var uniqueStats = [
+                [14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000, 27000, 28000, 
+                    30000, 32000, 35000, 37000, 40000, 42000, 45000, 47000, 50000, 52000, 55000, 60000, 65000, 70000, 75000],
+                [30, 34, 38, 42, 46, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 
+                    100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 220, 240, 260, 280],
+                [60, 68, 76, 84, 92, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 
+                    200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 440, 480, 520, 560],
+                [90, 94, 98, 102, 106, 110, 114, 118, 122, 126, 130, 134, 138, 142, 146, 
+                    150, 154, 158, 162, 166, 170, 174, 178, 182, 186, 190, 194, 198, 202, 206],
+                [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 
+                    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 40, 40, 40, 50, 0],
+                [5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 12, 13, 14,
+                    15, 16, 17, 18, 19, 20, 21, 22, 24, 26, 28, 30, 33, 36, 40]
+            ];
+            var legendThreshold = 70; // 传说装备质量下界
+            // 0 -> 70%; 1 -> 71%; 以此类推
+            var legendStats = [
+                [80000, 85000, 90000, 100000, 110000, 120000, 130000, 140000, 150000, 160000, 170000, 185000, 200000, 215000, 230000, 
+                    250000, 270000, 300000, 350000, 400000, 450000, 500000, 550000, 600000, 650000, 700000, 750000, 800000, 850000, 900000],
+                [300, 325, 350, 375, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 
+                    1000, 1100, 1300, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4500],
+                [600, 650, 700, 750, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
+                    2000, 2200, 2600, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 9000],
+                [210, 213, 216, 219, 222, 225, 228, 231, 234, 237, 240, 243, 246, 249, 252, 
+                    255, 258, 261, 264, 267, 270, 273, 276, 279, 282, 285, 288, 291, 294, 297],
+                [5, 5, 7, 7, 10, 10, 10, 10, 10, 10, 12, 12, 12, 12, 20, 
+                    20, 40, 40, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 100, 0],
+                [5, 5, 6, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 20, 24, 28, 32, 36, 40, 45, 50, 55, 60, 65, 70, 75, 85]
+            ];
+            var perfectThreshold = 100;
+            var perfectStats = [1000000, 5000, 10000, 300, 100, 100];
+            var disPriceGap = [
+                ['种类', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石']
+            ]
+            // var qMin = document.getElementById("dpgSelectMin").value;
+            // var qMax = document.getElementById("dpgSelectMax").value;
+            if (qMin == qMax) {
+                disPriceGap = [
+                    ['种类', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'],
+                    ['造价', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    ['拆解碎片数', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    ['拆解价', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    ['拆解收益', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                ]
+                var q = qMin;
+                if (q < rareThreshold) {
+                    for (let j = 1; j < disPriceGap[0].length; j++) {
+                        disPriceGap[1][j] = commonStats[0][q - commonThreshold]
+                            + commonStats[1][q - commonThreshold] * gemsPrice[1][j - 1]
+                            + commonStats[2][q - commonThreshold] * gemsPrice[3][j - 1];
+                        disPriceGap[2][j] = commonStats[5][q - commonThreshold];
+                        disPriceGap[3][j] = commonStats[5][q - commonThreshold] * gemsPrice[5][0];
+                        disPriceGap[4][j] = disPriceGap[3][j] - disPriceGap[1][j];
+                    }
+                } else if (q < uniqueThreshold) {
+                    for (let j = 1; j < disPriceGap[0].length; j++) {
+                        disPriceGap[1][j] = rareStats[0][q - rareThreshold]
+                            + rareStats[1][q - rareThreshold] * gemsPrice[1][j - 1]
+                            + rareStats[2][q - rareThreshold] * gemsPrice[3][j - 1];
+                        disPriceGap[2][j] = rareStats[5][q - rareThreshold];
+                        disPriceGap[3][j] = rareStats[5][q - rareThreshold] * gemsPrice[5][1];
+                        disPriceGap[4][j] = disPriceGap[3][j] - disPriceGap[1][j];
+                    }
+                } else if (q < legendThreshold) {
+                    for (let j = 1; j < disPriceGap[0].length; j++) {
+                        disPriceGap[1][j] = uniqueStats[0][q - uniqueThreshold]
+                            + uniqueStats[1][q - uniqueThreshold] * gemsPrice[1][j - 1]
+                            + uniqueStats[2][q - uniqueThreshold] * gemsPrice[3][j - 1];
+                        disPriceGap[2][j] = uniqueStats[5][q - uniqueThreshold];
+                        disPriceGap[3][j] = uniqueStats[5][q - uniqueThreshold] * gemsPrice[5][2];
+                        disPriceGap[4][j] = disPriceGap[3][j] - disPriceGap[1][j];
+                    }
+                } else if (q < perfectThreshold) {
+                    for (let j = 1; j < disPriceGap[0].length; j++) {
+                        disPriceGap[1][j] = legendStats[0][q - legendThreshold]
+                            + legendStats[1][q - legendThreshold] * gemsPrice[1][j - 1]
+                            + legendStats[2][q - legendThreshold] * gemsPrice[3][j - 1];
+                        disPriceGap[2][j] = legendStats[5][q - legendThreshold];
+                        disPriceGap[3][j] = legendStats[5][q - legendThreshold] * gemsPrice[7][j - 1];
+                        disPriceGap[4][j] = disPriceGap[3][j] - disPriceGap[1][j];
+                    }
+                } else if (q == perfectThreshold) {
+                    for (let j = 1; j < disPriceGap[0].length; j++) {
+                        disPriceGap[1][j] = perfectStats[0]
+                            + perfectStats[1] * gemsPrice[1][j - 1]
+                            + perfectStats[2] * gemsPrice[3][j - 1];
+                        disPriceGap[2][j] = perfectStats[5];
+                        disPriceGap[3][j] = perfectStats[5] * gemsPrice[7][j - 1];
+                        disPriceGap[4][j] = disPriceGap[3][j] - disPriceGap[1][j];
+                    }
+                }
+                displayMatrix(disPriceGap, 'disPriceGap');
+            } else {
+                var dataPositive = [];
+                var dataNegative = [];
+                var di = 0;
+                var dpi = [];
+                var dni = [];
+                for (let q = qMin; q <= qMax; q++) {
+                    var dpgRow = [q + '%', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    if (q < rareThreshold) {
+                        for (let j = 1; j < dpgRow.length; j++) {
+                            dpgRow[j] = commonStats[5][q - commonThreshold] * gemsPrice[5][0] // gemsPrice[5][0] 稀有碎片
+                                - commonStats[0][q - commonThreshold] // 造装备金币数
+                                - commonStats[1][q - commonThreshold] * gemsPrice[1][j - 1] // 造装备宝石数（普通没有）
+                                - commonStats[2][q - commonThreshold] * gemsPrice[3][j - 1]; // 造装备场币数（普通没有）
+                            if (dpgRow[j] <= 0) {
+                                dataNegative.push(dpgRow[j]);
+                                dni.push(di);
+                                di++;
+                            } else {
+                                dataPositive.push(dpgRow[j]);
+                                dpi.push(di);
+                                di++;
+                            }
+                        }
+                    } else if (q < uniqueThreshold) {
+                        for (let j = 1; j < dpgRow.length; j++) {
+                            dpgRow[j] = rareStats[5][q - rareThreshold] * gemsPrice[5][1] // gemsPrice[5][1] 史诗碎片
+                                - rareStats[0][q - rareThreshold]
+                                - rareStats[1][q - rareThreshold] * gemsPrice[1][j - 1]
+                                - rareStats[2][q - rareThreshold] * gemsPrice[3][j - 1];
+                            if (dpgRow[j] <= 0) {
+                                dataNegative.push(dpgRow[j]);
+                                dni.push(di);
+                                di++;
+                            } else {
+                                dataPositive.push(dpgRow[j]);
+                                dpi.push(di);
+                                di++;
+                            }
+                        }
+                    } else if (q < legendThreshold) {
+                        for (let j = 1; j < dpgRow.length; j++) {
+                            dpgRow[j] = uniqueStats[5][q - uniqueThreshold] * gemsPrice[5][2] // gemsPrice[5][2] 传说碎片
+                                - uniqueStats[0][q - uniqueThreshold]
+                                - uniqueStats[1][q - uniqueThreshold] * gemsPrice[1][j - 1]
+                                - uniqueStats[2][q - uniqueThreshold] * gemsPrice[3][j - 1];
+                            if (dpgRow[j] <= 0) {
+                                dataNegative.push(dpgRow[j]);
+                                dni.push(di);
+                                di++;
+                            } else {
+                                dataPositive.push(dpgRow[j]);
+                                dpi.push(di);
+                                di++;
+                            }
+                        }
+                    } else if (q < perfectThreshold) {
+                        for (let j = 1; j < dpgRow.length; j++) {
+                            dpgRow[j] = legendStats[5][q - legendThreshold] * gemsPrice[7][j - 1] // gemsPrice[7] 完美碎片
+                                - legendStats[0][q - legendThreshold]
+                                - legendStats[1][q - legendThreshold] * gemsPrice[1][j - 1]
+                                - legendStats[2][q - legendThreshold] * gemsPrice[3][j - 1];
+                            if (dpgRow[j] <= 0) {
+                                dataNegative.push(dpgRow[j]);
+                                dni.push(di);
+                                di++;
+                            } else {
+                                dataPositive.push(dpgRow[j]);
+                                dpi.push(di);
+                                di++;
+                            }
+                        }
+                    } else if (q == perfectThreshold) {
+                        for (let j = 1; j < dpgRow.length; j++) {
+                            dpgRow[j] = perfectStats[5] * gemsPrice[7][j - 1] // gemsPrice[7] 完美碎片
+                                - perfectStats[0]
+                                - perfectStats[1] * gemsPrice[1][j - 1]
+                                - perfectStats[2] * gemsPrice[3][j - 1];
+                            if (dpgRow[j] <= 0) {
+                                dataNegative.push(dpgRow[j]);
+                                dni.push(di);
+                                di++;
+                            } else {
+                                dataPositive.push(dpgRow[j]);
+                                dpi.push(di);
+                                di++;
+                            }
+                        }
+                    }
+                    disPriceGap.push(dpgRow);
+                }
+                displayMatrix(disPriceGap, 'disPriceGap');
+                // var levelColorNegative = setLevelColor(dataNegative, 1, 2, 0, -Infinity, 1, '#F8696B', '#FFEB84', '#63BE7B');
+                var levelColorPositive = setLevelColor(dataPositive, 1, 2, Infinity, 0);
+                const dpgTable = document.getElementById("disPriceGap");
+                // for (let i = 0; i < levelColorNegative.length; i++) {
+                //     dpgTable.rows[1 + (dni[i] / 10) | 0].cells[dni[i] % 10 + 1].style.backgroundColor = levelColorNegative[i];
+                // }
+                for (let i = 0; i < levelColorPositive.length; i++) {
+                    dpgTable.rows[1 + (dpi[i] / 10) | 0].cells[dpi[i] % 10 + 1].style.backgroundColor = levelColorPositive[i];
+                }
+            }
+        } else {
+            document.getElementById("noPriceNotify").style.display = 'inline';
+        }
+    });
+}
 
 /* 历史价格 */
 document.addEventListener('DOMContentLoaded', function() {
@@ -1155,6 +1455,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
+/* 帮助页 */
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('README.md')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`文件加载失败: ${response.status}`);
+            }
+            return response.text(); // 获取文本内容
+          })
+          .then(markdownText => {
+            // 3. 使用 marked.js 将 Markdown 转换为 HTML
+            const htmlContent = marked.parse(markdownText);
+            
+            // 4. 将结果插入到页面中
+            document.getElementById('helpMarkDown').innerHTML = htmlContent;
+          })
+          .catch(error => {
+            // 处理错误（如文件不存在、网络问题）
+            console.error('Error:', error);
+            document.getElementById('helpMarkDown').innerHTML = 
+              `<p style="color: red">加载失败: ${error.message}</p>`;
+          });
+});
  /* 每日更新数据 */
 function dailyTaskUpdate() {
     const now = new Date();

@@ -121,8 +121,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         console.log('收到装备出售信息：', equipmentInfo);   // 在控制台打出结果
         document.getElementById('buttonCheapEquip').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
 
-        chrome.storage.local.get(['perfectValue', 'gemsPrice'], function(result) {
-            const perfectValue = result.perfectValue;
+        chrome.storage.local.get(['gemsPrice'], function(result) {
+            // const perfectValue = result.perfectValue;
             // var perfectNew = [0, 0, 0, 0, 0, 0, 0, 31800, 0, 0];
             const gemsPrice = result.gemsPrice;
             var equipCheap = [['页码', '序号', '名称', '质量', '碎片', '碎片价', '售价']]; // 结果表
@@ -130,13 +130,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             for (let i = 1; i < equipmentInfo.length; i++) {
                 var quality = equipmentInfo[i][2].replace(/%/g, ""); // 装备质量 多少个百分点
                 if (quality == pt) { // 完美
-                    var disPrice = perfectValue[1][equipmentInfo[i][1] + 1]; // 直接用估价比较
+                    // var disPrice = perfectValue[1][equipmentInfo[i][1] + 1]; // 直接用估价比较
+                    var disPrice = gemsPrice[7][equipmentInfo[i][1]]
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;
                         equipCheap[ecn] = [equipmentInfo[i][4], (equipmentInfo[i][5] - 1) % 10 + 1, equipmentInfo[i][0], equipmentInfo[i][2], 100, disPrice, equipmentInfo[i][3]];
                     }
                 } else if (quality >= lt && quality < pt) { // 传说
-                    var disPrice = legendEquipment[quality - lt] * perfectValue[1][equipmentInfo[i][1] + 1] / 100; // 碎片个数乘以对应碎片估价
+                    // var disPrice = legendEquipment[quality - lt] * perfectValue[1][equipmentInfo[i][1] + 1] / 100; // 碎片个数乘以对应碎片估价
+                    var disPrice = legendEquipment[quality - lt] * gemsPrice[7][equipmentInfo[i][1]] / 100;
                     // var disPrice = legendEquipment[quality - lt] * perfectNew[equipmentInfo[i][1]];
                     if (disPrice >= +equipmentInfo[i][3]) {
                         ecn++;

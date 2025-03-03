@@ -101,11 +101,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                     }, t0);
                                 }, t0 * 2);
                             }
-                            let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
-                            choice1.click(); // 选择竞技场门票分类
-                            setTimeout(() => {
-                                queryProgress(0, 0);
-                            }, t0 * 10);
+                            startAtQuery = setInterval(() => {
+                                let choice1 = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(4) > a");
+                                if (choice1) {
+                                    clearInterval(startAtQuery);
+                                    choice1.click(); // 选择竞技场门票分类
+                                    atCategoryInterval = setInterval(() => {
+                                        let firstItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span")
+                                        if (firstItem.textContent.includes('L')) {
+                                            clearInterval(atCategoryInterval);
+                                            queryProgress(0, 0);
+                                        }
+                                    }, t0);
+                                }
+                            }, t0);
                         } catch (e) {
                             console.log(e);
                             window.alert('错误页面');

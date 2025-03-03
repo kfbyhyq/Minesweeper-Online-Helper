@@ -250,7 +250,7 @@ function displayTables() {
             pdDate.sort((a, b) => b.localeCompare(a)); // 降序排列
             let dnow = pdDate[0];
             tableTrophy[0][5] = dnow.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-            var tablePrDaily = [['日期', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石', 
+            var tablePrDaily = [['日期', '黄', '红', '蓝', '紫', '缟', '海', '绿', '榴', '碧', '钻', 
                 '金', '铜', '银', '镍', '钢', '铁', '钯', '钛', '锌', '铂',
                 '金币', '功勋']];
             for (let i = 0; i < pdDate.length; i++) {
@@ -527,7 +527,7 @@ function displayTables() {
                     perfect[4][t + 1] = coin + (gems - personalData[1][t]) * gemsPrice[1][t] + (ac - personalData[3][t]) * gemsPrice[3][t];
                 }
                 displayMatrix(perfect, 'table4');
-                chrome.storage.local.set({ perfectValue: perfect });
+                // chrome.storage.local.set({ perfectValue: perfect });
                 var levelColorPerfect1 = setLevelColor(perfect[1].slice(1));
                 var levelColorPerfect2 = setLevelColor(perfect[4].slice(1));
                 const tablePerfect = document.getElementById('table4');
@@ -835,7 +835,7 @@ function displayBVPB() {
             if (pbOfBV[level]) {
                 document.getElementById("noPbOfBV").style.display = 'none';
                 var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
-                var bvRange = [[], [0, 6], [2, 13], [10, 26]];
+                var bvRange = [[], [0, 6], [2, 13], [9, 26]];
                 for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
                     pbOfBVTable[i + 1] = [(i + bvRange[level][0]) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
                 }
@@ -878,6 +878,18 @@ function displayBVPB() {
                         indexArray[itemNum] = bv;
                         itemNum++;
                     }
+                }
+                if (type == 0 || type == 7) {
+                    pbOfBVTable[0][11] = '总计';
+                    var sumRow = ['总计', '', '', '', '', '', '', '', '', '', '', 0];
+                    for (let i = 1; i < pbOfBVTable.length; i++) {
+                        pbOfBVTable[i][11] = 0;
+                        for (let j = 1; j < pbOfBVTable[i].length - 1; j++) {
+                            pbOfBVTable[i][11] += Number(pbOfBVTable[i][j]);
+                        }
+                        sumRow[11] += pbOfBVTable[i][11];
+                    }
+                    pbOfBVTable.push(sumRow);
                 }
                 displayMatrix(pbOfBVTable, 'pbOfBVTable');
                 var desc = 1;

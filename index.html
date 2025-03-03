@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper Online Helper</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="github-markdown.min.css">
 </head>
 <body>
 
@@ -29,6 +30,7 @@
             <a href="#" id="nav-eventQuest" class="event" style="display: none;">全球任务</a>
             <a href="#" id="update">刷新数据</a>
             <a href="#" id="nav-setting">设置</a>
+            <a href="#" id="nav-help">帮助</a>
             <a href="#" id="github">@GitHub</a>
         </div>
         <!-- 占位符 -->
@@ -54,7 +56,18 @@
                 <button id="updateMarketPage">刷新价格</button><br><br>
                 <div id="flag1" style="display:none;">0</div>
                 <span class="plainText">所有价格均为上一次刷新的市场最低价，完美碎片价格为价格最低的一类。</span><br><br>
-                <table id="table1" class="noempty"></table>
+                <table id="table1" class="noempty"></table><br>
+                <button id="showDisPriceGap">查看拆解收益</button>
+                <span id="showDPGFlag" style="display: none;">0</span>
+                <div id="dpgDiv" style="display: none;">
+                    <span class="blank"></span>
+                    <span class="plainText">质量从</span>
+                    <select id="dpgSelectMin" class="inputBox wideInputBox2"><option value=9></option></select>
+                    <span class="plainText">至</span>
+                    <select id="dpgSelectMax" class="inputBox wideInputBox2"><option value=101></option></select><br><br>
+                    <table id="disPriceGap" class="ticketTable"></table>
+                    <span id="noPriceNotify" class="plainText" style="display: none;">暂无市场价信息，点击“刷新价格”提取</span>
+                </div>
                 <h1>竞技场门票价格</h1>
                 <button id="arenaPage">打开竞技场页</button>
                 <span class="blank"></span>
@@ -502,6 +515,9 @@
                 <button id="restoreButton">恢复数据</button>
                 <input type="file" id="restoreInput" style="display:none" accept=".json" /><br>
             </div>
+            <div id="help" class="page">
+                <div id="helpMarkDown" class="markdown-body"></div>
+            </div>
         </div>
     </div>
     
@@ -512,5 +528,6 @@
     <script src="friendQuest.js"></script>
     <script src="contacts.js"></script>
     <script src="d3.v7.min.js"></script>
+    <script src="marked.min.js"></script>
 </body>
 </html>

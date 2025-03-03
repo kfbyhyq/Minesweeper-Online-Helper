@@ -70,73 +70,64 @@ function updateGems() {
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                         // ['Rare parts', 'Unique parts', 'Legendary parts', 'Perfect parts'],
                         ['稀有碎片', '史诗碎片', '传说碎片', '完美碎片'],
-                        [0, 0, 0, 0]
+                        [0, 0, 0, 0],
+                        ['完美T', '完美R', '完美S', '完美A', '完美O', '完美Q', '完美E', '完美G', '完美J', '完美D'],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    ];
+                    var chsGemName = ['黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'];
+                    var enGemName = [
+                        ['Topaz', 'Ruby', 'Sapphire', 'Amethyst', 'Onyx', 'Aquamarine', 'Emerald', 'Garnet', 'Jade', 'Diamond'],
+                        ['topaz', 'ruby', 'sapphire', 'amethyst', 'onyx', 'aquamarine', 'emerald', 'garnet', 'jade', 'diamond']
                     ];
                     var t0 = 100;
+                    var tm = 10;
                     try {
-                        startGemsQuery = setInterval(() => {
-                            let firstItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                            if (firstItem) {
-                                clearInterval(startGemsQuery);
-                                var Topaz = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
-                                priceMap[1][0] = Topaz.textContent;
-                                var Ruby = document.querySelector("#stat_table_body > tr:nth-child(2) > td:nth-child(3)");
-                                priceMap[1][1] = Ruby.textContent;
-                                var Sapphire = document.querySelector("#stat_table_body > tr:nth-child(3) > td:nth-child(3)");
-                                priceMap[1][2] = Sapphire.textContent;
-                                var Amethyst = document.querySelector("#stat_table_body > tr:nth-child(4) > td:nth-child(3)");
-                                priceMap[1][3] = Amethyst.textContent;
-                                var Onyx = document.querySelector("#stat_table_body > tr:nth-child(5) > td:nth-child(3)");
-                                priceMap[1][4] = Onyx.textContent;
-                                var Aquamarine = document.querySelector("#stat_table_body > tr:nth-child(6) > td:nth-child(3)");
-                                priceMap[1][5] = Aquamarine.textContent;
-                                var Emerald = document.querySelector("#stat_table_body > tr:nth-child(7) > td:nth-child(3)");
-                                priceMap[1][6] = Emerald.textContent;
-                                var Garnet = document.querySelector("#stat_table_body > tr:nth-child(8) > td:nth-child(3)");
-                                priceMap[1][7] = Garnet.textContent;
-                                var Jade = document.querySelector("#stat_table_body > tr:nth-child(9) > td:nth-child(3)");
-                                priceMap[1][8] = Jade.textContent;
-                                var Diamond = document.querySelector("#stat_table_body > tr:nth-child(10) > td:nth-child(3)");
-                                priceMap[1][9] = Diamond.textContent;
-        
-                                var Gold = document.querySelector("#stat_table_body > tr:nth-child(11) > td:nth-child(3)");
-                                priceMap[3][0] = Gold.textContent;
-                                var Copper = document.querySelector("#stat_table_body > tr:nth-child(12) > td:nth-child(3)");
-                                priceMap[3][1] = Copper.textContent;
-                                var Silver = document.querySelector("#stat_table_body > tr:nth-child(13) > td:nth-child(3)");
-                                priceMap[3][2] = Silver.textContent;
-                                var Nickel = document.querySelector("#stat_table_body > tr:nth-child(14) > td:nth-child(3)");
-                                priceMap[3][3] = Nickel.textContent;
-                                var Steel = document.querySelector("#stat_table_body > tr:nth-child(15) > td:nth-child(3)");
-                                priceMap[3][4] = Steel.textContent;
-                                var Iron = document.querySelector("#stat_table_body > tr:nth-child(16) > td:nth-child(3)");
-                                priceMap[3][5] = Iron.textContent;
-                                var Palladium = document.querySelector("#stat_table_body > tr:nth-child(17) > td:nth-child(3)");
-                                priceMap[3][6] = Palladium.textContent;
-                                var Titanium = document.querySelector("#stat_table_body > tr:nth-child(18) > td:nth-child(3)");
-                                priceMap[3][7] = Titanium.textContent;
-                                var Zinc = document.querySelector("#stat_table_body > tr:nth-child(19) > td:nth-child(3)");
-                                priceMap[3][8] = Zinc.textContent;
-                                var Platinum = document.querySelector("#stat_table_body > tr:nth-child(20) > td:nth-child(3)");
-                                priceMap[3][9] = Platinum.textContent;
-        
-                                var Rare = document.querySelector("#stat_table_body > tr:nth-last-child(4) > td:nth-child(3)");
-                                priceMap[5][0] = Rare.textContent.replace(/ /g, "");
-                                var Unique = document.querySelector("#stat_table_body > tr:nth-last-child(3) > td:nth-child(3)");
-                                priceMap[5][1] = Unique.textContent.replace(/ /g, "");
-                                var Legendary = document.querySelector("#stat_table_body > tr:nth-last-child(2) > td:nth-child(3)");
-                                priceMap[5][2] = Legendary.textContent.replace(/ /g, "");
-                                var Perfect = document.querySelector("#stat_table_body > tr:nth-last-child(1) > td:nth-child(3)");
-                                priceMap[5][3] = Perfect.textContent.replace(/ /g, "");
-        
-                                console.log(priceMap);
-                                chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
+                        loadQuery = setInterval(() => {
+                            let testItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                            if (testItem) {
+                                clearInterval(loadQuery);
+                                queryGems();
                             }
                         }, t0);
                     } catch (e) {
                         console.error('错误页面', e);
                     }
-
+                    // 查询宝石场币碎片
+                    function queryGems() {
+                        for (let t = 0; t < tm; t++) {
+                            priceMap[1][t] = document.querySelector(`#stat_table_body > tr:nth-child(${t + 1}) > td:nth-child(3)`).textContent;
+                            priceMap[3][t] = document.querySelector(`#stat_table_body > tr:nth-child(${t + 11}) > td:nth-child(3)`).textContent;
+                        }
+                        for (let i = 0; i < 4; i++) {
+                            priceMap[5][i] = document.querySelector(`#stat_table_body > tr:nth-last-child(${4 - i}) > td:nth-child(3)`).textContent.replace(/ /g, "");
+                        }
+                        setTimeout(() => {
+                            let liParts = document.querySelector("#market_search_filters_left > span > ul > li:nth-child(6) > a");
+                            liParts.click();
+                            let liPerParts = document.querySelector("#market_search_filters_left > span:nth-child(4) > ul > li:nth-child(5) > a");
+                            liPerParts.click();
+                            queryPerPartsProgress(0);
+                        }, t0);
+                    }
+                    // 递归查询完美碎片
+                    function queryPerPartsProgress(type) {
+                        let liType = document.querySelector(`#market_search_filters_left > span:nth-child(5) > ul > li:nth-child(${type + 2}) > a`);
+                        liType.click();
+                        perPartsTypeQuery = setInterval(() => {
+                            let itemName = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(2) > span > span");
+                            if (itemName && (itemName.textContent.includes(chsGemName[type]) || itemName.textContent.includes(enGemName[1][type]))) {
+                                clearInterval(perPartsTypeQuery);
+                                let itemPrice = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3)");
+                                priceMap[7][type] = itemPrice.textContent.replace(/ /g, "");
+                                if (type < tm - 1) { // 查找下一个
+                                    queryPerPartsProgress(type + 1);
+                                } else { // type == 9 为最后一个，输出结果
+                                    console.log(priceMap);
+                                    chrome.runtime.sendMessage({ action: 'sendGemsPrice', gemsPrice: priceMap });
+                                }
+                            }
+                        }, t0);
+                    }
                 }
             });
         }
