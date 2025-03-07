@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav-friendQuest').addEventListener('click', function(event) {
         showPage('friendQuest');
     });
+    document.getElementById('nav-wheel').addEventListener('click', function(event) {
+        showPage('wheel');
+    });
     document.getElementById('nav-eventQuest').addEventListener('click', function(event) {
         showPage('eventQuest');
     });
@@ -75,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nav-friendQuest').style.display = 'block';
             break;
         case 3:
+            document.getElementById('nav-wheel').style.display = 'block';
             break;
     }
 });
@@ -132,6 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePersonalData();
     });
     document.getElementById('eventPage').addEventListener('click', function () {
+        chrome.tabs.create({ url: 'https://minesweeper.online/cn/events', active: true });
+    });
+    document.getElementById('eventPage2').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/events', active: true });
     });
     document.getElementById('equipmentPage').addEventListener('click', function () {
@@ -261,6 +268,8 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 // 显示分解价格主函数
 function showDisassemblePriceGap(qMin, qMax) {
+    qMin = Number(qMin);
+    qMax = Number(qMax);
     if (qMin < 10) { qMin = 10; }
     if (qMax > 100) { qMax = 100; }
     chrome.storage.local.get('gemsPrice', function(result) {

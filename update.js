@@ -1089,3 +1089,219 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+/* 分析转盘选项 */
+document.addEventListener('DOMContentLoaded', function () {
+    const button = document.getElementById('updateWheel');
+    button.addEventListener('click', function () {
+        button.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+        document.getElementById('flagWheel').textContent = 0;
+        const pId = document.getElementById('pIdNow').innerText;
+        document.getElementById('flag3').textContent = 0;
+        const uw = 'https://minesweeper.online/cn/quests/' + pId;
+        chrome.tabs.create({ url: uw, active: true }, function (tab) {
+            const ti = tab.id;
+            var t1 = 1000;
+            analyseWheel(ti);
+            var flag;
+            var count = 1;
+            var countMax = 120;
+            checkIntervalWh = setInterval(() => {
+                flag = document.getElementById('flagWheel').textContent;
+                if (flag == 1 || count > countMax) {
+                    clearInterval(checkIntervalWh);
+                    chrome.tabs.remove(ti, function() {});
+                } else {
+                    count++;
+                }
+            }, t1);
+
+            function analyseWheel(tabId) {
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        try {
+                            var allQuests = [
+                                ['序号', '发起时间', '月', '日', '任务种类', '任务内容', '活动任务类型']
+                            ];
+                            var itemPerPage = 5; // 每页5条
+                            var pageNum = 1;
+                            var t1 = 10;
+                            var t0 = 100;
+                            wheelInterval = setInterval(() => {
+                                let testItem = document.querySelector("#stat_table_body > tr:nth-child(1) > td:nth-child(3) > div");
+                                if (testItem) {
+                                    clearInterval(wheelInterval);
+                                    pageInterval = setInterval(() => {
+                                        const pageActive = document.querySelector("#stat_pagination > li.page.active");
+                                        if (pageActive) {
+                                            if (pageActive.textContent == pageNum) {
+                                                const statTable = document.querySelector("#stat_table");
+                                                if (!statTable.classList.contains('stat-loading')) {
+                                                    for (let i = 1; i <= itemPerPage; i++) {
+                                                        var itemNum = (pageNum - 1) * itemPerPage + i;
+                                                        allQuests[itemNum] = [];
+                                                        allQuests[itemNum][0] = itemNum;
+                                                        const startTime = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(1)`).textContent;
+                                                        allQuests[itemNum][1] = startTime;
+                                                        let date;
+                                                        // “今天08:00”或“Today 08:00”
+                                                        if (startTime.includes("今天") || startTime.includes("Today")) {
+                                                            const timePart = startTime.match(/\d{1,2}:\d{2}/)[0];
+                                                            const [hours, minutes] = timePart.split(':');
+                                                            date = new Date();
+                                                            date.setHours(parseInt(hours, 10));
+                                                            date.setMinutes(parseInt(minutes, 10));
+                                                        }
+                                                        // “03月 06日08:00”或“6 March08:00”
+                                                        else {
+                                                            const matchChs = startTime.match(/(\d{1,2})月\s*(\d{1,2})日\s*(\d{1,2}):(\d{2})/);
+                                                            const matchEn = startTime.match(/(\d{1,2})\s+([A-Za-z]+)\s*(\d{1,2}):(\d{2})/);
+                                                            if (matchChs) {
+                                                                const [, month, day, hours, minutes] = matchChs;
+                                                                date = new Date();
+                                                                date.setMonth(parseInt(month, 10) - 1);
+                                                                date.setDate(parseInt(day, 10));
+                                                                date.setHours(parseInt(hours, 10));
+                                                                date.setMinutes(parseInt(minutes, 10));
+                                                            } else if (matchEn) {
+                                                                const [, day, monthStr, hours, minutes] = matchEn;
+                                                                const monthMap = {
+                                                                    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+                                                                    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
+                                                                };
+                                                                const month = monthMap[monthStr];
+                                                                date = new Date();
+                                                                date.setMonth(parseInt(month, 10));
+                                                                date.setDate(parseInt(day, 10));
+                                                                date.setHours(parseInt(hours, 10));
+                                                                date.setMinutes(parseInt(minutes, 10));
+                                                            }
+                                                        }
+                                                        if (date) {
+                                                            if (date.getUTCDate() < 4 || (itemNum > 1 && date.getUTCMonth() + 1 != allQuests[itemNum - 1][2])) {
+                                                                clearInterval(pageInterval);
+                                                                console.log(allQuests);
+                                                                chrome.runtime.sendMessage({ action: 'sendWheelQuest', allQuests: allQuests });
+                                                            }
+                                                            allQuests[itemNum][2] = date.getUTCMonth() + 1;
+                                                            allQuests[itemNum][3] = date.getUTCDate();
+                                                        } else {
+                                                            console.log('匹配日期失败：', startTime);
+                                                            clearInterval(pageInterval);
+                                                            console.log(allQuests);
+                                                        }
+                                                        const type = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2) > span`).textContent;
+                                                        allQuests[itemNum][4] = type;
+                                                        const questContent = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3) > div`).textContent;
+                                                        allQuests[itemNum][5] = questContent;
+                                                        const eventType = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5) > span > span > span > span:nth-child(2) > img`);
+                                                        if (eventType && eventType.className.includes('shard')) {
+                                                            allQuests[itemNum][6] = eventType.className.match(/shard\d+/)[0];
+                                                        } else {
+                                                            allQuests[itemNum][6] = '';
+                                                        }
+                                                    }
+                                                    pageNum++;
+                                                    const pageLastDisabled = document.querySelector("#stat_pagination > li.last.disabled");
+                                                    if (pageLastDisabled) {
+                                                        clearInterval(pageInterval);
+                                                        console.log(allQuests);
+                                                        chrome.runtime.sendMessage({ action: 'sendWheelQuest', allQuests: allQuests });
+                                                    } else {
+                                                        setTimeout(() => {
+                                                            const pageNext = document.querySelector("#stat_pagination > li.next");
+                                                            pageNext.click();
+                                                        }, t1);
+                                                    }
+                                                }
+                                            } else if (pageActive.textContent < pageNum) {
+                                                setTimeout(() => {
+                                                    const pageNext = document.querySelector("#stat_pagination > li.next");
+                                                    pageNext.click();
+                                                }, t1);
+                                            } else if (pageActive.textContent > pageNum) {
+                                                setTimeout(() => {
+                                                    const pageFirst = document.querySelector("#stat_pagination > li.first");
+                                                    pageFirst.click();
+                                                }, t1);
+                                            }
+                                        } else {
+                                            for (let i = 1; i <= itemPerPage; i++) {
+                                                var itemNum = (pageNum - 1) * itemPerPage + i;
+                                                allQuests[itemNum] = [];
+                                                allQuests[itemNum][0] = itemNum;
+                                                const startTime = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(1)`).textContent;
+                                                allQuests[itemNum][1] = startTime;
+                                                let date;
+                                                // “今天08:00”或“Today 08:00”
+                                                if (startTime.includes("今天") || startTime.includes("Today")) {
+                                                    const timePart = startTime.match(/\d{1,2}:\d{2}/)[0];
+                                                    const [hours, minutes] = timePart.split(':');
+                                                    date = new Date();
+                                                    date.setHours(parseInt(hours, 10));
+                                                    date.setMinutes(parseInt(minutes, 10));
+                                                } else { // “03月 06日08:00”或“6 March08:00”
+                                                    const matchChs = startTime.match(/(\d{1,2})月\s*(\d{1,2})日\s*(\d{1,2}):(\d{2})/);
+                                                    const matchEn = startTime.match(/(\d{1,2})\s+([A-Za-z]+)\s*(\d{1,2}):(\d{2})/);
+                                                    if (matchChs) {
+                                                        const [, month, day, hours, minutes] = matchChs;
+                                                        date = new Date();
+                                                        date.setMonth(parseInt(month, 10) - 1);
+                                                        date.setDate(parseInt(day, 10));
+                                                        date.setHours(parseInt(hours, 10));
+                                                        date.setMinutes(parseInt(minutes, 10));
+                                                    } else if (matchEn) {
+                                                        const [, day, monthStr, hours, minutes] = matchEn;
+                                                        const monthMap = {
+                                                            January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
+                                                            July: 6, August: 7, September: 8, October: 9, November: 10, December: 11
+                                                        };
+                                                        const month = monthMap[monthStr];
+                                                        date = new Date();
+                                                        date.setMonth(parseInt(month, 10));
+                                                        date.setDate(parseInt(day, 10));
+                                                        date.setHours(parseInt(hours, 10));
+                                                        date.setMinutes(parseInt(minutes, 10));
+                                                    }
+                                                }
+                                                if (date) {
+                                                    if (date.getUTCDate() < 4 || (itemNum > 1 && date.getUTCMonth() + 1 != allQuests[itemNum - 1][2])) {
+                                                        clearInterval(pageInterval);
+                                                        console.log(allQuests);
+                                                        chrome.runtime.sendMessage({ action: 'sendWheelQuest', allQuests: allQuests });
+                                                    }
+                                                    allQuests[itemNum][2] = date.getUTCMonth() + 1;
+                                                    allQuests[itemNum][3] = date.getUTCDate();
+                                                } else {
+                                                    console.log('匹配日期失败：', startTime);
+                                                    clearInterval(pageInterval);
+                                                    console.log(allQuests);
+                                                }
+                                                const type = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(2) > span`).textContent;
+                                                allQuests[itemNum][4] = type;
+                                                const questContent = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(3) > div`).textContent;
+                                                allQuests[itemNum][5] = questContent;
+                                                const eventType = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5) > span > span > span > span:nth-child(2) > img`);
+                                                if (eventType && eventType.className.includes('shard')) {
+                                                    allQuests[itemNum][6] = eventType.className.match(/shard\d+/)[0];
+                                                } else {
+                                                    allQuests[itemNum][6] = '';
+                                                }
+                                            }
+                                            clearInterval(pageInterval);
+                                            console.log(allQuests);
+                                            chrome.runtime.sendMessage({ action: 'sendWheelQuest', allQuests: allQuests });
+                                        }
+                                    }, t0);
+                                }
+                            }, t0)
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                });
+            }
+        });
+    });
+});

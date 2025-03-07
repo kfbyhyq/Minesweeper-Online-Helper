@@ -8,7 +8,119 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     const minutes = String(currentDate.getMinutes()).padStart(2, '0');
     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
     const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    if (request.action === 'eventQuest') { // 活动任务
+    if (request.action === 'sendWheelQuest') { // 命运转盘
+        let allQuests = request.allQuests;
+        console.log('收到任务数据：', allQuests);
+        document.getElementById('updateWheel').style.backgroundColor = '#4caf50';
+        document.getElementById('flagWheel').textContent = 1;   // 设置成功标记
+        var wheelType = {
+            'shard387': '效率',
+            'shard388': '竞速',
+            'shard390': '连胜',
+            'shard391': '高难',
+            'shard392': '无猜',
+            'shard393': '局数',
+            'shard394': '命运任务',
+            'shard395': '竞技场'
+        }
+        var wheelQuests = [['月', '日', '任务内容', '活动任务类型']];
+        for (let i = 1; i < allQuests.length; i++) {
+            if (allQuests[i][4] == 'Wheel') {
+                if (i > 1 && allQuests[i][6] == 'shard394' && allQuests[i - 1][6] == 'shard394') {
+                    continue;
+                } else {
+                    var wheelRow = [allQuests[i][2], allQuests[i][3], allQuests[i][5], wheelType[allQuests[i][6]]];
+                    wheelQuests.push(wheelRow);
+                }
+            }
+        }
+        console.log(wheelQuests);
+        var questsLeft = [
+            ['效率', '竞速', '连胜', '高难', '无猜', '局数', '命运任务', '竞技场'],
+            [0, 0, 0, 0, 0, 0, 0, 0], // 0为每日剩余
+            [0, 0, 0, 0, 0, 0, 0, 0] // 0为周期剩余
+        ];
+        var dailyNum = 0;
+        var roundNum = 0;
+        const currentDate = new Date();
+        const date = currentDate.getUTCDate();
+        for (let i = 1; i < wheelQuests.length; i++) {
+            if (wheelQuests[i][1] == date) {
+                for (let j = 0; j < questsLeft[0].length; j++) {
+                    if (questsLeft[0][j] == wheelQuests[i][3]) {
+                        questsLeft[1][j] = 1;
+                        break;
+                    }
+                }
+                dailyNum++;
+            } else {
+                break;
+            }
+        }
+        for (let i = 1; i <= (wheelQuests.length - 1) % 8; i++) {
+            for (let j = 0; j < questsLeft[0].length; j++) {
+                if (questsLeft[0][j] == wheelQuests[i][3]) {
+                    questsLeft[2][j] = 1;
+                    break;
+                }
+            }
+            roundNum++;
+        }
+        console.log(questsLeft);
+        var wheelOutput = '';
+        if (dailyNum == 8) {
+            wheelOutput += '今日转盘已转满 ';
+            if (roundNum == 0) {
+            wheelOutput += '\n明日无优先任务';
+            } else {
+                wheelOutput += '\n明日优先任务：';
+                for (let i = 0; i < 8; i++) {
+                    if (questsLeft[2][i] == 0) {
+                        wheelOutput += questsLeft[0][i] + ' ';
+                    }
+                }
+            }
+        } else if (dailyNum >= roundNum) {
+            wheelOutput += '今日剩余任务：';
+            for (let i = 0; i < 8; i++) {
+                if (questsLeft[1][i] == 0) {
+                    wheelOutput += questsLeft[0][i] + ' ';
+                }
+            }
+            if (roundNum == 0) {
+            wheelOutput += '\n如果今日不转，明日无优先任务';
+            } else {
+                wheelOutput += '\n如果今日不转，明日优先任务：';
+                for (let i = 0; i < 8; i++) {
+                    if (questsLeft[2][i] == 0) {
+                        wheelOutput += questsLeft[0][i] + ' ';
+                    }
+                }
+            }
+        } else if (dailyNum < roundNum) {
+            wheelOutput += '今日优先任务：';
+            for (let i = 0; i < 8; i++) {
+                if (questsLeft[2][i] == 0) {
+                    questsLeft[1][i] = 2;
+                    wheelOutput += questsLeft[0][i] + ' ';
+                }
+            }
+            wheelOutput += '\n今日后续任务：';
+            for (let i = 0; i < 8; i++) {
+                if (questsLeft[1][i] == 0) {
+                    wheelOutput += questsLeft[0][i] + ' ';
+                }
+            }
+            wheelOutput += '\n如果今日不转，明日优先任务：';
+            for (let i = 0; i < 8; i++) {
+                if (questsLeft[2][i] == 0) {
+                    wheelOutput += questsLeft[0][i] + ' ';
+                }
+            }
+        }
+        console.log(wheelOutput);
+        document.getElementById("wheelResult").innerHTML = wheelOutput.replaceAll('\n', '<br>');
+    } else if (request.action === 'eventQuest') { // 全球任务
         let eqInfo = request.eqInfo;
         console.log(timeStr, '活动任务信息:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
@@ -1237,7 +1349,9 @@ function priceDailyOutput(dataMap, title, tableId, highlightRow = -1) {
     for (let j = 0; j < title.length; j++) {
         const levelColor = setLevelColor(levelValue[j], 0, 3);
         for (let i = 0; i < dates.length; i++) {
-            outputTable.rows[i + 1].cells[j + 1].style.backgroundColor = levelColor[i];
+            if (levelColor[i]) {
+                outputTable.rows[i + 1].cells[j + 1].style.backgroundColor = levelColor[i];
+            }
         }
     }
     if (matchDate >= 0 && highlightRow >= 0) {
@@ -1318,7 +1432,21 @@ function displayTextMatrix(matrix, tableId, width = 0) {
 }
 
 /* 根据值设置色阶 */
-function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, averageMid = true, firstColor = '#63BE7B', secondColor = '#FFEB84', thirdColor = '#F8696B') {
+function setLevelColor(arrayIni, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, averageMid = true, firstColor = '#63BE7B', secondColor = '#FFEB84', thirdColor = '#F8696B') {
+    var array = [];
+    var arrayInd = [];
+    var noneFlag = 0;
+    var validNum = 0;
+    for (let i = 0; i < arrayIni.length; i++) {
+        if (arrayIni[i]) {
+            array[validNum] = arrayIni[i];
+            arrayInd[i] = validNum;
+            validNum++;
+        } else {
+            arrayInd[i] = -1;
+            noneFlag = 1;
+        }
+    }
     var maxColor;
     var minColor;
     var medColor;
@@ -1418,6 +1546,17 @@ function setLevelColor(array, descend = false, colorNum = 2, maxSet = Infinity, 
             }
         }
     }
+    if (noneFlag == 1) {
+        var levelColorIni = [];
+        for (let i = 0; i < arrayIni.length; i++) {
+            if (arrayInd[i] < 0) {
+                levelColorIni[i] = '';
+            } else {
+                levelColorIni[i] = levelColor[arrayInd[i]];
+            }
+        }
+        return levelColorIni;
+    }
     // console.log(levelColor);
-    return(levelColor);
+    return levelColor;
 }
