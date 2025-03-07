@@ -165,6 +165,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('myGamePage').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://minesweeper.online/cn/my-games', active: true });
     });
+    document.getElementById('allQuestPage').addEventListener('click', function () {
+        const pId = document.getElementById('pIdNow').innerText;
+        if (pId) {
+            const u = 'https://minesweeper.online/cn/quests/' + pId;
+            chrome.tabs.create({ url: u, active: true });
+        } else {
+            window.alert('请先设置用户ID');
+        }
+    });
     document.getElementById('github').addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://github.com/kfbyhyq/Minesweeper-Online-Helper', active: true });
     });
