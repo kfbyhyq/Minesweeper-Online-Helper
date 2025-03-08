@@ -149,7 +149,7 @@ function updateArenaTickets() {
             extractAt(ti2);
             var flag;
             var count = 1;
-            var countMax = 300;
+            var countMax = 600;
             checkIntervalAt = setInterval(() => {
                 flag = document.getElementById('flag2').textContent;
                 if (flag == 1 || count > countMax) {

@@ -1343,134 +1343,167 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dataIn = JSON.parse(event.target.result);
                 chrome.storage.local.get(null, function(result) {
                     /* 宝石场币 */
-                    const gpMap = result.gemsPriceMap || {};
+                    let gpMap = result.gemsPriceMap || {};
                     const gpMapIn = dataIn['gemsPriceMap'];
-                    for (const key in gpMapIn) {
-                        gpMap[key] = gpMapIn[key];
+                    if (gpMapIn) {
+                        for (const key in gpMapIn) {
+                            gpMap[key] = gpMapIn[key];
+                        }
+                        chrome.storage.local.set({ gemsPriceMap: gpMap });
                     }
-                    chrome.storage.local.set({ gemsPriceMap: gpMap });
                     /* 竞技场门票 */
-                    const tpMap = result.ticketPriceMap || {};
+                    let tpMap = result.ticketPriceMap || {};
                     const tpMapIn = dataIn['ticketPriceMap'];
-                    for (const key in tpMapIn) {
-                        tpMap[key] = tpMapIn[key];
+                    if (tpMapIn) {
+                        for (const key in tpMapIn) {
+                            tpMap[key] = tpMapIn[key];
+                        }
+                        chrome.storage.local.set({ ticketPriceMap: tpMap });
                     }
-                    chrome.storage.local.set({ ticketPriceMap: tpMap });
                     /* 装备加成 */
-                    const equipStatsMap = result.equipStatsMap || {};
+                    let equipStatsMap = result.equipStatsMap || {};
                     const equipStatsMapIn = dataIn['equipStatsMap'];
-                    for (const key in equipStatsMapIn) {
-                        equipStatsMap[key] = equipStatsMapIn[key];
+                    if (equipStatsMapIn) {
+                        for (const key in equipStatsMapIn) {
+                            equipStatsMap[key] = equipStatsMapIn[key];
+                        }
+                        chrome.storage.local.set({ equipStatsMap: equipStatsMap });
                     }
-                    chrome.storage.local.set({ equipStatsMap: equipStatsMap });
                     /* 游戏数据 */
-                    const stMap = result.statisticsMap || {};
+                    let stMap = result.statisticsMap || {};
                     const stMapIn = dataIn['statisticsMap'];
-                    for (const key in stMapIn) {
-                        stMap[key] = stMapIn[key];
+                    if (stMapIn) {
+                        for (const key in stMapIn) {
+                            stMap[key] = stMapIn[key];
+                        }
+                        chrome.storage.local.set({ statisticsMap: stMap });
                     }
-                    chrome.storage.local.set({ statisticsMap: stMap });
                     /* 个人数据 */
-                    const pdMap = result.personalDataMap || {};
+                    let pdMap = result.personalDataMap || {};
                     const pdMapIn = dataIn['personalDataMap'];
-                    for (const key in pdMapIn) {
-                        pdMap[key] = pdMapIn[key];
+                    if (pdMapIn) {
+                        for (const key in pdMapIn) {
+                            pdMap[key] = pdMapIn[key];
+                        }
+                        chrome.storage.local.set({ personalDataMap: pdMap });
                     }
-                    chrome.storage.local.set({ personalDataMap: pdMap });
                     /* 财产数据 */
-                    const peMap = result.personalEcoMap || {};
+                    let peMap = result.personalEcoMap || {};
                     const peMapIn = dataIn['personalEcoMap'];
-                    for (const key in peMapIn) {
-                        peMap[key] = peMapIn[key];
+                    if (peMapIn) {
+                        for (const key in peMapIn) {
+                            peMap[key] = peMapIn[key];
+                        }
+                        chrome.storage.local.set({ personalEcoMap: peMap });
                     }
                     /* 好友 */
-                    const contactsList = result.contactsList || {};
+                    let contactsList = result.contactsList || {};
                     const contactsListIn = dataIn['contactsList'];
-                    for (const uid in contactsListIn) {
-                        if (!contactsList[uid]) {
-                            contactsList[uid] = [contactsListIn[uid][0], Object.keys(contactsList).length];
+                    if (contactsListIn) {
+                        for (const uid in contactsListIn) {
+                            if (!contactsList[uid]) {
+                                contactsList[uid] = [contactsListIn[uid][0], Object.keys(contactsList).length];
+                            }
                         }
+                        chrome.storage.local.set({ contactsList: contactsList });
                     }
-                    chrome.storage.local.set({ contactsList: contactsList });
                     /* BVPB */
-                    const BVMap = result.BVMap || {};
+                    let BVMap = result.BVMap || {};
                     const BVMapIn = dataIn['BVMap'];
-                    for (let i = 1; i <= 3; i++) {
-                        if (BVMap[i]) {
-                            for (const id in BVMapIn[i]) {
-                                BVMap[i][id] = BVMapIn[i][id];
+                    if (BVMapIn) {
+                        for (let i = 1; i <= 3; i++) {
+                            if (BVMapIn[i]) {
+                                if (BVMap[i]) {
+                                    for (const id in BVMapIn[i]) {
+                                        BVMap[i][id] = BVMapIn[i][id];
+                                    }
+                                } else {
+                                    BVMap[i] = BVMapIn[i];
+                                }
                             }
-                        } else {
-                            BVMap[i] = BVMapIn[i];
                         }
+                        chrome.storage.local.set({ BVMap: BVMap });
                     }
-                    const pbOfBVMap = result.pbOfBVMap || {};
+                    let pbOfBVMap = result.pbOfBVMap || {};
                     const pbOfBVMapIn = dataIn['pbOfBVMap'];
-                    for (const date in pbOfBVMapIn) {
-                        pbOfBVMap[date] = pbOfBVMapIn[date];
-                    }
-                    chrome.storage.local.set({ BVMap: BVMap });
-                    chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
-                    /* 活动竞技场 */
-                    const eapMap = result.eaPriceMap || {};
-                    const eapMapIn = dataIn['eaPriceMap'];
-                    for (const key in eapMapIn) {
-                        eapMap[key] = eapMapIn[key];
-                    }
-                    chrome.storage.local.set({ eaPriceMap: eapMap });
-                    /* 友谊任务 */
-                    const fqInfo = result.friendQuestInfo || {};
-                    const fqInfoIn = dataIn['friendQuestInfo'];
-                    for (const month in fqInfoIn) {
-                        if (!fqInfo[month]) {
-                            fqInfo[month] = fqInfoIn[month];
-                        } else {
-                            for (const qsid in fqInfoIn[month].fqSend) {
-                                fqInfo[month].fqSend[qsid] = fqInfoIn[month].fqSend[qsid];
-                            }
-                            for (const qrid in fqInfoIn[month].fqReceive) {
-                                fqInfo[month].fqReceive[qrid] = fqInfoIn[month].fqReceive[qrid];
-                            }
-                            // fqInfo[month].fqSend = { ...fqInfoIn[month].fqSend, ...fqInfo[month].fqSend };
-                            // fqInfo[month].fqReceive = { ...fqInfoIn[month].fqReceive, ...fqInfo[month].fqReceive };
+                    if (pbOfBVMapIn) {
+                        for (const date in pbOfBVMapIn) {
+                            pbOfBVMap[date] = pbOfBVMapIn[date];
                         }
+                        chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
                     }
-                    chrome.storage.local.set({ friendQuestInfo: fqInfo });
+                    /* 活动竞技场 */
+                    let eapMap = result.eaPriceMap || {};
+                    const eapMapIn = dataIn['eaPriceMap'];
+                    if (eapMapIn) {
+                        for (const key in eapMapIn) {
+                            eapMap[key] = eapMapIn[key];
+                        }
+                        chrome.storage.local.set({ eaPriceMap: eapMap });
+                    }
+                    /* 友谊任务 */
+                    let fqInfo = result.friendQuestInfo || {};
+                    const fqInfoIn = dataIn['friendQuestInfo'];
+                    if (fqInfoIn) {
+                        for (const month in fqInfoIn) {
+                            if (!fqInfo[month]) {
+                                fqInfo[month] = fqInfoIn[month];
+                            } else {
+                                for (const qsid in fqInfoIn[month].fqSend) {
+                                    fqInfo[month].fqSend[qsid] = fqInfoIn[month].fqSend[qsid];
+                                }
+                                for (const qrid in fqInfoIn[month].fqReceive) {
+                                    fqInfo[month].fqReceive[qrid] = fqInfoIn[month].fqReceive[qrid];
+                                }
+                                // fqInfo[month].fqSend = { ...fqInfoIn[month].fqSend, ...fqInfo[month].fqSend };
+                                // fqInfo[month].fqReceive = { ...fqInfoIn[month].fqReceive, ...fqInfo[month].fqReceive };
+                            }
+                        }
+                        chrome.storage.local.set({ friendQuestInfo: fqInfo });
+                    }
 
                     let acMap = result.activityMap || {};
                     const acMapIn = dataIn['activityMap'];
-                    for (const date in acMapIn) {
-                        acMap[date] = acMapIn[date]
+                    if (acMapIn) {
+                        for (const date in acMapIn) {
+                            acMap[date] = acMapIn[date]
+                        }
+                        chrome.storage.local.set({ activityMap: acMap });
                     }
-                    chrome.storage.local.set({ activityMap: acMap });
 
                     let fqDaily = result.friendQuestDaily || {};
                     const fqDailyIn = dataIn['friendQuestDaily'];
-                    for (const date in fqDailyIn) {
-                        if (!fqDaily[date]) {
-                            fqDaily[date] = fqDailyIn[date];
-                        } else {
-                            fqDaily[date].fqSend = { ...fqDailyIn[date].fqSend, ...fqDaily[date].fqSend };
-                            fqDaily[date].fqReceive = { ...fqDailyIn[date].fqReceive, ...fqDaily[date].fqReceive };
+                    if (fqDailyIn) {
+                        for (const date in fqDailyIn) {
+                            if (!fqDaily[date]) {
+                                fqDaily[date] = fqDailyIn[date];
+                            } else {
+                                fqDaily[date].fqSend = { ...fqDailyIn[date].fqSend, ...fqDaily[date].fqSend };
+                                fqDaily[date].fqReceive = { ...fqDailyIn[date].fqReceive, ...fqDaily[date].fqReceive };
+                            }
                         }
+                        chrome.storage.local.set({ friendQuestDaily: fqDaily });
                     }
-                    chrome.storage.local.set({ friendQuestDaily: fqDaily });
                     /* 设置 */
-                    const pId = result.pId;
-                    if (pId) {
-                        chrome.storage.local.set({ pId: pId });
+                    let pId = result.pId;
+                    const pIdIn = dataIn['pId'];
+                    if (pIdIn) {
+                        chrome.storage.local.set({ pId: pIdIn });
                     }
-                    const autoUpdate = result.autoUpdate;
-                    if (autoUpdate) {
-                        chrome.storage.local.set({ autoUpdate: autoUpdate });
+                    let autoUpdate = result.autoUpdate;
+                    const autoUpdateIn = dataIn['autoUpdate'];
+                    if (autoUpdateIn) {
+                        chrome.storage.local.set({ autoUpdate: autoUpdateIn });
                     }
-                    const configurableCoef = result.configurableCoef;
-                    if (configurableCoef) {
-                        chrome.storage.local.set({ configurableCoef: configurableCoef });
+                    let configurableCoef = result.configurableCoef;
+                    const configurableCoefIn = dataIn['configurableCoef'];
+                    if (configurableCoefIn) {
+                        chrome.storage.local.set({ configurableCoef: configurableCoefIn });
                     }
-                    const advancedMode = result.advancedMode;
-                    if (advancedMode) {
-                        chrome.storage.local.set({ advancedMode: advancedMode });
+                    let advancedMode = result.advancedMode;
+                    const advancedModeIn = dataIn['advancedMode'];
+                    if (advancedModeIn) {
+                        chrome.storage.local.set({ advancedMode: advancedModeIn });
                     }
                 });
                 // location.reload();
