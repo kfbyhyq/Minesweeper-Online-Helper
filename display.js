@@ -182,7 +182,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             displayPriceDaily();
             displayTables();
         }, 10);
-    } else if (request.action === 'sendEquipStats') {
+    } else if (request.action === 'sendEquipStats') { // 装备加成
         let equipStats = request.equipStats;
         console.log(timeStr, '收到装备加成：', equipStats);
         chrome.storage.local.set({ equipStats: equipStats });

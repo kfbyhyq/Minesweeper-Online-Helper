@@ -1578,6 +1578,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         updateStatistics();
         updatePersonalData();
         updateEconomy();
+        updateEquipmentStats();
         // 重新调度下一天的任务
         dailyTaskUpdate();
     }
