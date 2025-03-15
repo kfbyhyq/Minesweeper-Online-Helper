@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const button = document.getElementById('buttonCountBV');
+    const button = document.getElementById('buttonBvsLine');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
         if (tab1[0].url.includes('https://minesweeper.online/cn/game/') || tab1[0].url.includes('https://minesweeper.online/game/')) {
             button.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
@@ -20,22 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
                             var bvMap = {};
                             var clickNum = 0;
-                            var clickEffMap = [[], []]; // 存点击数和效率
+                            var bvsData = []; // 存每一秒的bvs
 
                             var bvResult = countBV();
                             bvMap[bvResult.join('')] = 1;
-                            console.log('已完成3BV上限：', bvResult[0], ' 总3BV估计：', bvResult[1]);
-                            chrome.runtime.sendMessage({ action: 'count3BVResult', bvResult: bvResult });
-                            
-                            let game = document.querySelector("#GameBlock > table");
-                            let displayTextNew = document.createElement('div'); // 创建显示bv区域
-                            displayTextNew.id = 'displayText';
-                            game.insertAdjacentElement('afterend', displayTextNew);
                             let chartEleNew = document.createElement('canvas'); // 创建折线图区域
                             chartEleNew.id = 'displayChart';
                             chartEleNew.style.width = '800px';
                             chartEleNew.style.height = '400px';
-                            displayTextNew.insertAdjacentElement('afterend', chartEleNew);
+                            game.insertAdjacentElement('afterend', chartEleNew);
 
                             const area = document.querySelector("#AreaBlock");
                             // 配置观察选项:
@@ -48,26 +41,44 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 bvMap[bvResult.join('')] = 1;
                                 clickNum = Object.keys(bvMap).length - 1;
-                                var outputText = '点击次数：' + clickNum + ' 效率上限：' + (bvResult[0] / clickNum * 100).toFixed(2) + '%';
-                                console.log('已完成3BV上限：', bvResult[0], ' 总3BV估计：', bvResult[1]);
-                                console.log(outputText);
-                                chrome.runtime.sendMessage({ action: 'count3BVResult', bvResult: bvResult, clickNum: clickNum });
-                                let displayText = document.querySelector("#displayText");
-                                displayText.textContent = outputText;
                                 let chart = document.querySelector("#displayChart");
                                 if (bvResult[0] == 0) {
-                                    clickEffMap = [[], []];;
+                                    bvsData = [];
                                     const ctx = chart.getContext('2d');
                                     ctx.fillStyle = 'rgb(255,255,255)';
                                     ctx.fillRect(0, 0, chart.width, chart.height);
                                 } else {
-                                    var i = clickEffMap[0].length;
-                                    if (clickEffMap[0][i - 1] != clickNum) {
-                                        clickEffMap[0][i] = clickNum;
-                                        clickEffMap[1][i] = (bvResult[0] / clickNum * 100).toFixed(0);
+                                    var timeNum = 0;
+                                    const timeNum100 = document.querySelector("#top_area_time_100").className;
+                                    const match100 = timeNum100.match(/top-area-num(\d+)$/);
+                                    if (match100) {
+                                        timeNum += parseInt(match100[1].slice(-1))*100;
                                     }
-                                    if (i > 0) {
-                                        drawLineChart(chart, clickEffMap);
+                                    const timeNum10 = document.querySelector("#top_area_time_10").className;
+                                    const match10 = timeNum10.match(/top-area-num(\d+)$/);
+                                    if (match10) {
+                                        timeNum += parseInt(match10[1].slice(-1))*10;
+                                    }
+                                    const timeNum1 = document.querySelector("#top_area_time_1").className;
+                                    const match1 = timeNum1.match(/top-area-num(\d+)$/);
+                                    if (match1) {
+                                        timeNum += parseInt(match1[1].slice(-1));
+                                    }
+                                    if (timeNum > 0 && !bvsData[timeNum - 1]) {
+                                        if (timeNum > bvsData.length) {
+                                            for (let i = bvsData.length; i < timeNum - 1; i++) {
+                                                bvsData[i] = bvsData[i - 1];
+                                            }
+                                        }
+                                        bvsData[timeNum - 1] = bvResult[0];
+                                    }
+                                    if (bvsData.length > 0) {
+                                        var data = [
+                                            Array.from({ length: bvsData.length }, (_, t) => t + 1),
+                                            bvsData.map((bv, t) => bv / (t + 1))
+                                        ];
+                                        console.log(data);
+                                        drawLineChart(chart, data);
                                     }
                                 }
                             };
@@ -168,11 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }
                             var BVPred = Math.round(BVNow / (1 - (closeNum - mineNum) / (rows * cols - mineNum)));
-                            // var BVPred = Math.round(BVNow / (1 - (closeNum - mineNum) / (rows * cols - mineNum - opCellNum + ops)));
-                            // const avgBVExp = 173.56;
-                            // var BVPred = Math.round(BVNow + avgBVExp * (closeNum - mineNum) / (rows * cols - mineNum));
-                            // var BVPred = Math.round(BVNow + avgBVExp * (closeNum - mineNum) / (rows * cols - mineNum - opCellNum + ops));
-                            // var BVPred = Math.round(rows * cols - mineNum - (opCellNum - ops) / (rows * cols - closeNum) * (rows * cols - mineNum));
                             return [BVNow, BVPred, flagNum];
                         }
                         function judgeCell(i, j, recur) {
@@ -233,10 +239,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             const padding = 40; // 边距
 
                             // 计算比例
-                            const maxY = Math.max(...dataY);
-                            const minY = Math.min(...dataY);
+                            const maxValue = Math.max(...dataY);
                             const xScale = (width - padding * 2) / (dataY.length - 1);
-                            const yScale = (height - padding * 2) / (maxY - minY);
+                            const yScale = (height - padding * 2) / maxValue;
                             
                             ctx.font = '16px Arial';
                             ctx.fillStyle = 'rgb(0, 0, 0)';
@@ -244,14 +249,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             var strideSetting = 40;
                             var stride = Math.floor((dataX.length / strideSetting)) + 1; // 步幅
                             ctx.beginPath();
-                            ctx.moveTo(padding, height - padding - (dataY[0] - minY) * yScale); // 起点
+                            ctx.moveTo(padding, height - padding - dataY[0] * yScale); // 起点
                             dataY.forEach((value, index) => {
                                 const x = padding + index * xScale;
-                                const y = height - padding - (value - minY) * yScale;
+                                const y = height - padding - value * yScale;
                                 ctx.lineTo(x, y); // 画线
                                 if (dataX[index] % stride == 0) {
                                     ctx.fillText(dataX[index], x, height - padding + 15); // 标签
-                                    ctx.fillText(value, x - 10, y - 10); // 数据点值
+                                    ctx.fillText(value.toFixed(2), x - 10, y - 10); // 数据点值
                                 }
                             });
                             ctx.strokeStyle = 'rgb(0, 76, 255)';
@@ -267,8 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             ctx.strokeStyle = 'rgb(24, 24, 24)';
                             ctx.lineWidth = 2; // 坐标轴线条宽度
                             ctx.stroke();
-                            ctx.fillText('有效点击', width - padding * 2, height - padding * 0.2);
-                            ctx.fillText('最高效率', padding * 0.3, padding * 0.4);
+                            ctx.fillText('秒', width - padding / 2, height - padding * 0.2);
+                            ctx.fillText('3BV/秒', padding * 0.3, padding * 0.4);
                         }
                     }
                 });
@@ -277,17 +282,5 @@ document.addEventListener('DOMContentLoaded', function() {
             button.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
         }
     });
-});
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.action === 'count3BVResult') {
-        var outputHtml = '已完成3BV上限：' + request.bvResult[0] + '<br>总3BV估计：' + request.bvResult[1];
-        if (request.clickNum) {
-            outputHtml += '<br>效率上限：' + (request.bvResult[0] / request.clickNum * 100).toFixed(2) + '%';
-        }
-        document.getElementById('countBVResult').innerHTML = outputHtml;
-        document.getElementById('countBVResult').style.display = 'block';
-        document.getElementById('buttonCountBV').style.backgroundColor = '#4caf50';
-    }
 });
 
