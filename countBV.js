@@ -48,12 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 bvMap[bvResult.join('')] = 1;
                                 clickNum = Object.keys(bvMap).length - 1;
-                                var outputText = '点击次数：' + clickNum + ' 效率上限：' + (bvResult[0] / clickNum * 100).toFixed(2) + '%';
-                                console.log('已完成3BV上限：', bvResult[0], ' 总3BV估计：', bvResult[1]);
-                                console.log(outputText);
+                                var outputText1 = '已完成3BV上限：' + bvResult[0] + ' 总3BV估计：' + bvResult[1];
+                                var outputText2 = '点击次数：' + clickNum + ' 效率上限：' + (bvResult[0] / clickNum * 100).toFixed(2) + '%';
+                                console.log(outputText1);
+                                console.log(outputText2);
                                 chrome.runtime.sendMessage({ action: 'count3BVResult', bvResult: bvResult, clickNum: clickNum });
                                 let displayText = document.querySelector("#displayText");
-                                displayText.textContent = outputText;
+                                displayText.innerHTML = outputText1 + '<br>' + outputText2;
                                 let chart = document.querySelector("#displayChart");
                                 if (bvResult[0] == 0) {
                                     clickEffMap = [[], []];;
