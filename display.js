@@ -606,7 +606,7 @@ function displayTables() {
                 var total = epNum * 1000 / (dayNum - 3) * Math.max(currentDate - 3, 0);
                 perfectLine[i][2] = parseFloat(total.toFixed(0));
                 if (personalData[18]) {
-                    var left = (epNum * 1000 - personalData[18][7]) / Math.max(dayNum - currentDate + 1, dayNum - 3);
+                    var left = (epNum * 1000 - personalData[18][7]) / Math.min(dayNum - currentDate + 1, dayNum - 3);
                     perfectLine[i][3] = parseFloat(Math.max(0, left).toFixed(0));
                 } else {
                     perfectLine[i][3] = '';
