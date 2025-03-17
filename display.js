@@ -583,7 +583,9 @@ function displayTables() {
                 ['40.5k', 0, 0, 0],
                 ['41k', 0, 0, 0],
                 ['41.5k', 0, 0, 0],
-                ['42k', 0, 0, 0]
+                ['42k', 0, 0, 0],
+                ['自定义', '', '', ''],
+                [0, 0, 0, 0]
             ]
             let currentYear = new Date().getUTCFullYear();
             let currentMonth = new Date().getUTCMonth();
@@ -599,7 +601,7 @@ function displayTables() {
             } else {
                 perfectLine[0][2] = '暂无数据';
             }
-            for (let i = 2; i < perfectLine.length; i++) {
+            for (let i = 2; i < perfectLine.length - 2; i++) {
                 let epNum = Number(perfectLine[i][0].replace('k', ''));
                 var avg = epNum * 1000 / (dayNum - 3);
                 perfectLine[i][1] = parseFloat(avg.toFixed(0));
@@ -612,12 +614,65 @@ function displayTables() {
                     perfectLine[i][3] = '';
                 }
             }
+            if (result.customEpLine) {
+                perfectLine[16][0] = result.customEpLine;
+            }
+            var avg = perfectLine[16][0] / (dayNum - 3);
+            perfectLine[16][1] = parseFloat(avg.toFixed(0));
+            var total = perfectLine[16][0] / (dayNum - 3) * Math.max(currentDate - 3, 0);
+            perfectLine[16][2] = parseFloat(total.toFixed(0));
+            if (personalData[18]) {
+                var left = (perfectLine[16][0] - personalData[18][7]) / Math.min(dayNum - currentDate + 1, dayNum - 3);
+                perfectLine[16][3] = parseFloat(Math.max(0, left).toFixed(0));
+            } else {
+                perfectLine[16][3] = '';
+            }
             displayMatrix(perfectLine, 'tablePerfectLine', 4);
             for (let i = 2; i < perfectLine.length; i++) {
                 if (perfectLine[0][2] < perfectLine[i][2]) {
                     document.getElementById('tablePerfectLine').rows[i].cells[2].style.color = 'rgb(219, 0, 0)';
                 }
             }
+            let customLine = document.getElementById('tablePerfectLine').rows[16].cells[0];
+            var oldLine = customLine.textContent;
+            customLine.addEventListener('click', function(event) {
+                // 创建输入框
+                const inputBox = document.createElement('input');
+                inputBox.id = 'setCustomLine';
+                // inputBox.type = 'number';
+                inputBox.placeholder = oldLine;
+                inputBox.style.backgroundColor = 'transparent';
+                inputBox.style.outline = '0px';
+                // inputBox.style.width = '100%';
+                // inputBox.style.height = '100%';
+                // inputBox.style.boxSizing = 'border-box';
+                inputBox.style.textAlign = 'center';
+                inputBox.style.fontSize = '14px';
+                customLine.style.padding = '0px';
+                customLine.textContent = '';
+                customLine.appendChild(inputBox);
+                // 聚焦输入框
+                inputBox.focus();
+                // 按下回车键保存 按下esc退出
+                inputBox.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        let newLine = Number(inputBox.value);
+                        if (!isNaN(newLine) && newLine >= 0) {
+                            chrome.storage.local.set({ customEpLine: inputBox.value });
+                            customLine.textContent = inputBox.value;
+                            displayTables();
+                        }
+                    } else if (e.key === 'Escape') {
+                        customLine.textContent = oldLine;
+                    }
+                });
+                // 监听输入框的失去焦点事件
+                inputBox.addEventListener('blur', function() {
+                    // 更新单元格内容为输入框的值
+                    customLine.textContent = oldLine;
+                });
+
+            });
         }
         /* 完美装备花费 */
         {

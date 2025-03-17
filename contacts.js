@@ -137,10 +137,6 @@ function displayContacts() {
             let sfm = document.getElementById('sortFriendMethod').innerText;
             let fud = document.getElementById('friendUidDesc').innerText;
             let fnd = document.getElementById('friendNameDesc').innerText;
-            const copyNotify = document.createElement('div');
-            copyNotify.id = 'copyNotify';
-            copyNotify.innerText = '已复制';
-            document.body.appendChild(copyNotify);
             if (sfm == 0) { // 默认排序
                 for (const uid in contactsList) {
                     uidRank[contactsList[uid][1]] = uid;
@@ -313,6 +309,10 @@ function clickCopyText(ele) {
         const textToCopy = ele.innerText.trim();
         navigator.clipboard.writeText(textToCopy).then(() => {
             // 显示提示框在点击位置
+            const copyNotify = document.createElement('div');
+            copyNotify.id = 'copyNotify';
+            copyNotify.innerText = '已复制';
+            document.body.appendChild(copyNotify);
             copyNotify.style.left = `${mouseX}px`; // 设置提示框的横坐标
             copyNotify.style.top = `${mouseY}px`; // 设置提示框的纵坐标
             copyNotify.style.display = 'block'; // 显示提示框
