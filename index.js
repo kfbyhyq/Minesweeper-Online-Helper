@@ -595,24 +595,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 const gpMap = result.gemsPriceMap || {};
                 const tpMap = result.ticketPriceMap || {};
                 try {
-                    if (pdc == 0) {
+                    if (pdc == 1) {
                         const dateKey = date.replace(/-/g, '');
                         gpMap[dateKey][1][egv] = newPrice;
                         chrome.storage.local.set({ gemsPriceMap: gpMap });
                         displayPriceDaily();
-                    } else if (pdc == 1) {
+                    } else if (pdc == 2) {
                         const dateKey = date.replace(/-/g, '');
                         gpMap[dateKey][3][eacv] = newPrice;
                         chrome.storage.local.set({ gemsPriceMap: gpMap });
                         displayPriceDaily();
-                    } else if (pdc < 12) {
+                    } else if (pdc < 13) {
                         const dateKey = date.replace(/-/g, '');
-                        tpMap[dateKey][pdc - 1][+ealv + 1] = newPrice;
+                        tpMap[dateKey][pdc - 2][+ealv + 1] = newPrice;
                         chrome.storage.local.set({ ticketPriceMap: tpMap });
                         displayPriceDaily();
-                    } else if (pdc < 20) {
+                    } else if (pdc < 21) {
                         const dateKey = date.replace(/-/g, '');
-                        tpMap[dateKey][+eatv + 1][pdc - 11] = newPrice;
+                        tpMap[dateKey][+eatv + 1][pdc - 12] = newPrice;
                         chrome.storage.local.set({ ticketPriceMap: tpMap });
                         displayPriceDaily();
                     }
