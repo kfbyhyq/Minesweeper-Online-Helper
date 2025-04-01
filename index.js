@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showPage('eventQuest');
     });
     document.getElementById('nav-setting').addEventListener('click', function(event) {
-        document.getElementById('saveSucc').style.display = "none";
+        document.getElementById('saveSucc').style.display = 'none';
         showPage('setting');
     });
     document.getElementById('nav-help').addEventListener('click', function(event) {
@@ -184,22 +184,22 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('showPeDaily').addEventListener('click', function () {
         if (document.getElementById('showPedFlag').textContent == 1) {
             document.getElementById('showPeDaily').textContent = '展开每日财产变化';
-            document.getElementById('peDaily').style.display = "none";
+            document.getElementById('peDaily').style.display = 'none';
             document.getElementById('showPedFlag').textContent = 0;
         } else {
             document.getElementById('showPeDaily').textContent = '收起每日财产变化';
-            document.getElementById('peDaily').style.display = "table";
+            document.getElementById('peDaily').style.display = 'table';
             document.getElementById('showPedFlag').textContent = 1;
         }
     });
     document.getElementById('showPrDaily').addEventListener('click', function () {
         if (document.getElementById('showPrdFlag').textContent == 1) {
             document.getElementById('showPrDaily').textContent = '展开每日资源变化';
-            document.getElementById('prDaily').style.display = "none";
+            document.getElementById('prDaily').style.display = 'none';
             document.getElementById('showPrdFlag').textContent = 0;
         } else {
             document.getElementById('showPrDaily').textContent = '收起每日资源变化';
-            document.getElementById('prDaily').style.display = "table";
+            document.getElementById('prDaily').style.display = 'table';
             document.getElementById('showPrdFlag').textContent = 1;
         }
     });
@@ -207,15 +207,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* 装备拆解价 */
 document.addEventListener('DOMContentLoaded', function() {
-    const dpgSelectMin = document.getElementById("dpgSelectMin");
-    const dpgSelectMax = document.getElementById("dpgSelectMax");
+    const dpgSelectMin = document.getElementById('dpgSelectMin');
+    const dpgSelectMax = document.getElementById('dpgSelectMax');
     // 下拉菜单默认值为空，选项为10%到100%
     for (let quality = 10; quality <= 100; quality++) {
-        let qMin = document.createElement("option");
+        let qMin = document.createElement('option');
         qMin.value = quality;
         qMin.textContent = quality + '%';
         dpgSelectMin.appendChild(qMin);
-        let qMax = document.createElement("option");
+        let qMax = document.createElement('option');
         qMax.value = quality;
         qMax.textContent = quality + '%';
         dpgSelectMax.appendChild(qMax);
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var qMaxValue = dpgSelectMax.value;
         dpgSelectMax.innerHTML = '';
         for (let quality = dpgSelectMin.value; quality <= 100; quality++) { // 上界不能低于下界
-            let qMax = document.createElement("option");
+            let qMax = document.createElement('option');
             qMax.value = quality;
             qMax.textContent = quality + '%';
             dpgSelectMax.appendChild(qMax);
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var qMinValue = dpgSelectMin.value;
         dpgSelectMin.innerHTML = '';
         for (let quality = 10; quality <= dpgSelectMax.value; quality++) { // 下界不能高于上界
-            let qMin = document.createElement("option");
+            let qMin = document.createElement('option');
             qMin.value = quality;
             qMin.textContent = quality + '%';
             dpgSelectMin.appendChild(qMin);
@@ -256,22 +256,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         showDisassemblePriceGap(dpgSelectMin.value, dpgSelectMax.value);
     });
-    document.getElementById("showDisPriceGap").addEventListener('click', function() {
-        if (document.getElementById("showDPGFlag").textContent == 1) {
-            document.getElementById("showDPGFlag").textContent = 2;
-            document.getElementById("dpgDiv").style.display = 'none';
-            document.getElementById("showDisPriceGap").textContent = '查看拆解收益';
-        } else if (document.getElementById("showDPGFlag").textContent == 2) {
-            document.getElementById("showDPGFlag").textContent = 1;
-            document.getElementById("dpgDiv").style.display = 'inline';
-            document.getElementById("showDisPriceGap").textContent = '收起拆解收益';
-        } else if (document.getElementById("showDPGFlag").textContent == 0) {
-            // var qMin = document.getElementById("dpgSelectMin").value;
-            // var qMax = document.getElementById("dpgSelectMax").value;
+    document.getElementById('showDisPriceGap').addEventListener('click', function() {
+        if (document.getElementById('showDPGFlag').textContent == 1) {
+            document.getElementById('showDPGFlag').textContent = 2;
+            document.getElementById('dpgDiv').style.display = 'none';
+            document.getElementById('showDisPriceGap').textContent = '查看拆解收益';
+        } else if (document.getElementById('showDPGFlag').textContent == 2) {
+            document.getElementById('showDPGFlag').textContent = 1;
+            document.getElementById('dpgDiv').style.display = 'inline';
+            document.getElementById('showDisPriceGap').textContent = '收起拆解收益';
+        } else if (document.getElementById('showDPGFlag').textContent == 0) {
+            // var qMin = document.getElementById('dpgSelectMin').value;
+            // var qMax = document.getElementById('dpgSelectMax').value;
             // showDisassemblePriceGap(qMin, qMax);
-            document.getElementById("showDPGFlag").textContent = 1;
-            document.getElementById("dpgDiv").style.display = 'inline';
-            document.getElementById("showDisPriceGap").textContent = '收起拆解收益';
+            document.getElementById('showDPGFlag').textContent = 1;
+            document.getElementById('dpgDiv').style.display = 'inline';
+            document.getElementById('showDisPriceGap').textContent = '收起拆解收益';
         }
     });
 })
@@ -338,8 +338,8 @@ function showDisassemblePriceGap(qMin, qMax) {
             var disPriceGap = [
                 ['种类', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石']
             ]
-            // var qMin = document.getElementById("dpgSelectMin").value;
-            // var qMax = document.getElementById("dpgSelectMax").value;
+            // var qMin = document.getElementById('dpgSelectMin').value;
+            // var qMax = document.getElementById('dpgSelectMax').value;
             if (qMin == qMax) {
                 disPriceGap = [
                     ['种类', '黄玉', '红宝石', '蓝宝石', '紫水晶', '缟玛瑙', '海蓝宝石', '祖母绿', '石榴石', '碧玉', '钻石'],
@@ -490,7 +490,7 @@ function showDisassemblePriceGap(qMin, qMax) {
                 displayMatrix(disPriceGap, 'disPriceGap');
                 // var levelColorNegative = setLevelColor(dataNegative, 1, 2, 0, -Infinity, 1, '#F8696B', '#FFEB84', '#63BE7B');
                 var levelColorPositive = setLevelColor(dataPositive, 1, 2, Infinity, 0);
-                const dpgTable = document.getElementById("disPriceGap");
+                const dpgTable = document.getElementById('disPriceGap');
                 // for (let i = 0; i < levelColorNegative.length; i++) {
                 //     dpgTable.rows[1 + (dni[i] / 10) | 0].cells[dni[i] % 10 + 1].style.backgroundColor = levelColorNegative[i];
                 // }
@@ -499,7 +499,7 @@ function showDisassemblePriceGap(qMin, qMax) {
                 }
             }
         } else {
-            document.getElementById("noPriceNotify").style.display = 'inline';
+            document.getElementById('noPriceNotify').style.display = 'inline';
         }
     });
 }
@@ -514,42 +514,42 @@ document.addEventListener('DOMContentLoaded', function() {
     var atCategory = ['速度', '速度NG', '盲扫', '效率', '高难度', '随机难度', '硬核', '硬核NG', '耐力', '噩梦'];
     var alCategory = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8'];
     var partsCategory = ['稀有', '史诗', '传说', '完美T', '完美R', '完美S', '完美A', '完美O', '完美Q', '完美E', '完美G', '完美J', '完美D'];
-    const pds = document.getElementById("priceDailySelect");
+    const pds = document.getElementById('priceDailySelect');
     const eDate = document.getElementById('editPriceDate');
-    const eg = document.getElementById("editGems");
-    const eac = document.getElementById("editAcs");
-    const eat = document.getElementById("editAt");
-    const eal = document.getElementById("editAl");
-    const ept = document.getElementById("editParts");
+    const eg = document.getElementById('editGems');
+    const eac = document.getElementById('editAcs');
+    const eat = document.getElementById('editAt');
+    const eal = document.getElementById('editAl');
+    const ept = document.getElementById('editParts');
     /* 初始化界面 */
     for (let i = 0; i < pdCategory.length; i++) {
-        let op = document.createElement("option");
+        let op = document.createElement('option');
         op.value = i;
         op.textContent = pdCategory[i];
         pds.appendChild(op);
     }
     for (let i = 0; i < gemsCategory.length; i++) {
-        let opg = document.createElement("option");
+        let opg = document.createElement('option');
         opg.value = i;
         opg.textContent = gemsCategory[i];
         eg.appendChild(opg);
-        let opac = document.createElement("option");
+        let opac = document.createElement('option');
         opac.value = i;
         opac.textContent = acCategory[i];
         eac.appendChild(opac);
-        let opat = document.createElement("option");
+        let opat = document.createElement('option');
         opat.value = i;
         opat.textContent = atCategory[i];
         eat.appendChild(opat);
     }
     for (let i = 0; i < alCategory.length; i++) {
-        let opal = document.createElement("option");
+        let opal = document.createElement('option');
         opal.value = i;
         opal.textContent = alCategory[i];
         eal.appendChild(opal);
     }
     for (let i = 0; i < partsCategory.length; i++) {
-        let op = document.createElement("option");
+        let op = document.createElement('option');
         op.value = i;
         op.textContent = partsCategory[i];
         ept.appendChild(op);
@@ -585,12 +585,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('saveEditPrice').addEventListener('click', function () {
         const newPrice = document.getElementById('editNewPrice').value;
         if (newPrice > 0) {
-            const pdc = document.getElementById("priceDailySelect").value;
+            const pdc = document.getElementById('priceDailySelect').value;
             const date = document.getElementById('editPriceDate').value;
-            const egv = document.getElementById("editGems").value;
-            const eacv = document.getElementById("editAcs").value;
-            const eatv = document.getElementById("editAt").value;
-            const ealv = document.getElementById("editAl").value;
+            const egv = document.getElementById('editGems').value;
+            const eacv = document.getElementById('editAcs').value;
+            const eatv = document.getElementById('editAt').value;
+            const ealv = document.getElementById('editAl').value;
             chrome.storage.local.get(['gemsPriceMap', 'ticketPriceMap'], function (result) {
                 const gpMap = result.gemsPriceMap || {};
                 const tpMap = result.ticketPriceMap || {};
@@ -631,17 +631,17 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.remove('pbOfBVNew');
     displayBVPB();
-    const level = document.getElementById("pbOfBVLevel");
-    const type = document.getElementById("pbOfBVType");
-    const isNf = document.getElementById("pbOfBVIsNf");
-    const beg = document.getElementById("pbOfBV-beg");
-    const int = document.getElementById("pbOfBV-int");
-    const exp = document.getElementById("pbOfBV-exp");
-    const wins = document.getElementById("pbOfBV-wins");
-    const time = document.getElementById("pbOfBV-time");
-    const bvs = document.getElementById("pbOfBV-bvs");
-    const eff = document.getElementById("pbOfBV-eff");
-    const nf = document.getElementById("pbOfBV-nf");
+    const level = document.getElementById('pbOfBVLevel');
+    const type = document.getElementById('pbOfBVType');
+    const isNf = document.getElementById('pbOfBVIsNf');
+    const beg = document.getElementById('pbOfBV-beg');
+    const int = document.getElementById('pbOfBV-int');
+    const exp = document.getElementById('pbOfBV-exp');
+    const wins = document.getElementById('pbOfBV-wins');
+    const time = document.getElementById('pbOfBV-time');
+    const bvs = document.getElementById('pbOfBV-bvs');
+    const eff = document.getElementById('pbOfBV-eff');
+    const nf = document.getElementById('pbOfBV-nf');
     // 默认为高级时间
     level.textContent = 3;
     exp.style.backgroundColor = '#8fc4ef';
@@ -738,14 +738,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     /* 重新统计功能 */
-    document.getElementById("updatePbofBV").addEventListener('click', function() {
-        chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
+    document.getElementById('updatePbofBV').addEventListener('click', function() {
+        chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap', 'dailyPB'], function(result) {
             const BVMap = result.BVMap || {};
-            console.log('旧统计', result.pbOfBV)
+            console.log('BVPB旧统计', result.pbOfBV)
             const pbOfBV = {1:{}, 2:{}, 3:{}};
             const pbOfBVMap = result.pbOfBVMap || {};
+            const dailyPB = {1:{}, 2:{}, 3:{}};
             for (let level = 1; level <= 3; level++) {
                 for (let id in BVMap[level]) {
+                    // 和同bv的记录比较，更新BVPB
                     const bv = BVMap[level][id][2];
                     if (pbOfBV[level][bv]) {
                         pbOfBV[level][bv][0]++;
@@ -798,6 +800,50 @@ document.addEventListener('DOMContentLoaded', function() {
                             pbOfBV[level][bv][13] = id;
                         }
                     }
+                    // 和当日记录比较，更新dailyPB
+                    const dateParts = BVMap[level][id][5].split(/[/ :]/); // 解析日期
+                    const year = parseInt(dateParts[0]);
+                    const month = parseInt(dateParts[1]) - 1;
+                    const day = parseInt(dateParts[2]);
+                    const hours = parseInt(dateParts[3]);
+                    const minutes = parseInt(dateParts[4]);
+                    const localDate = new Date(year, month, day, hours, minutes); // 自动使用浏览器时区
+                    const utcYear = localDate.getUTCFullYear();
+                    const utcMonth = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+                    const utcDay = String(localDate.getUTCDate()).padStart(2, '0');
+                    const dateStr = `${utcYear}-${utcMonth}-${utcDay}`; // 日期关键词
+                    if (dailyPB[level][dateStr]) {
+                        dailyPB[level][dateStr][0]++;
+                        if (+BVMap[level][id][0] < +dailyPB[level][dateStr][1]) {
+                            dailyPB[level][dateStr][1] = BVMap[level][id][0];
+                            dailyPB[level][dateStr][2] = id;
+                        }
+                        if (+BVMap[level][id][3] > +dailyPB[level][dateStr][3]) {
+                            dailyPB[level][dateStr][3] = BVMap[level][id][3];
+                            dailyPB[level][dateStr][4] = id;
+                        }
+                        if (+(BVMap[level][id][4].replace('%','')) > +(dailyPB[level][dateStr][5].replace('%',''))) {
+                            dailyPB[level][dateStr][5] = BVMap[level][id][4];
+                            dailyPB[level][dateStr][6] = id;
+                        }
+                        if (BVMap[level][id][1] == 1) { // 是盲扫
+                            if (dailyPB[level][dateStr][7]) {
+                                if (+BVMap[level][id][0] < +dailyPB[level][dateStr][7]) {
+                                    dailyPB[level][dateStr][7] = BVMap[level][id][0];
+                                    dailyPB[level][dateStr][8] = id;
+                                }
+                            } else {
+                                dailyPB[level][dateStr][7] = BVMap[level][id][0];
+                                dailyPB[level][dateStr][8] = id;
+                            }
+                        }
+                    } else {
+                        dailyPB[level][dateStr] = [1, BVMap[level][id][0], id, BVMap[level][id][3], id, BVMap[level][id][4], id];
+                        if (BVMap[level][id][1] == 1) {
+                            dailyPB[level][dateStr][7] = BVMap[level][id][0];
+                            dailyPB[level][dateStr][8] = id;
+                        }
+                    }
                 }
             }
 
@@ -805,18 +851,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const newDate = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0') + String(currentDate.getUTCDate()).padStart(2, '0');
             pbOfBVMap[newDate] = pbOfBV;
             
-            console.log('新统计', pbOfBV);
+            console.log('BVPB新统计', pbOfBV);
             console.log(pbOfBVMap);
+            console.log('每日PB', dailyPB);
 
             chrome.storage.local.set({ pbOfBV: pbOfBV });
             chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
+            chrome.storage.local.set({ dailyPB: dailyPB });
             setTimeout(() => {
                 displayBVPB();
+                displayDailyPB();
             }, 100);
         });
     });
+
     /* PK功能 */
-    document.getElementById("downloadPbofBV").addEventListener('click', function() {
+    document.getElementById('downloadPbofBV').addEventListener('click', function() {
         chrome.storage.local.get(['personalData', 'pbOfBV'], function (result) {
             if (result.personalData && result.personalData[29]) {
                 var downloadJson = {};
@@ -861,6 +911,413 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsText(file);
     }
 });
+/* 每日PB */
+document.addEventListener('DOMContentLoaded', function() {
+    displayDailyPB();
+    // 等级按钮
+    const levelButtons = document.querySelectorAll('.dailyPBLevelButton');
+    levelButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            levelButtons.forEach(btn => { // 先移除所有按钮的activeButton类
+                btn.classList.remove('activeButton');
+            });
+            this.classList.add('activeButton'); // 为当前点击的按钮添加activeButton类
+            var match = this.id.match(/\d+$/);
+            document.getElementById('dailyPBLevel').textContent = parseInt(match[0]);
+            displayDailyPB();
+        });
+    });
+    // 类别按钮
+    const typeButtons = document.querySelectorAll('.dailyPBTypeButton');
+    typeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            typeButtons.forEach(btn => { // 先移除所有按钮的activeButton类
+                btn.classList.remove('activeButton');
+            });
+            this.classList.add('activeButton'); // 为当前点击的按钮添加activeButton类
+            var match = this.id.match(/\d+$/);
+            document.getElementById('dailyPBType').textContent = parseInt(match[0]);
+            displayDailyPB();
+        });
+    });
+    // 年份按钮
+    chrome.storage.local.get('dailyPB', function(result) {
+        let dailyPB = result.dailyPB;
+        if (dailyPB) {
+            const today = new Date();
+            var currentYear = today.getUTCFullYear();
+            var beginYear = currentYear
+            if (dailyPB[1]) {
+                const date1 = Object.keys(dailyPB[1]).reduce((earliest, current) => {
+                    return new Date(current) < new Date(earliest) ? current : earliest;
+                });
+                if (Number(date1.slice(0, 4)) < beginYear) {
+                    beginYear = Number(date1.slice(0, 4));
+                }
+            }
+            if (dailyPB[2]) {
+                const date2 = Object.keys(dailyPB[2]).reduce((earliest, current) => {
+                    return new Date(current) < new Date(earliest) ? current : earliest;
+                });
+                if (Number(date2.slice(0, 4)) < beginYear) {
+                    beginYear = Number(date2.slice(0, 4));
+                }
+            }
+            if (dailyPB[3]) {
+                const date3 = Object.keys(dailyPB[3]).reduce((earliest, current) => {
+                    return new Date(current) < new Date(earliest) ? current : earliest;
+                });
+                if (Number(date3.slice(0, 4)) < beginYear) {
+                    beginYear = Number(date3.slice(0, 4));
+                }
+            }
+            for (let year = beginYear; year <= currentYear; year++) {
+                let yearButton = document.createElement('button');
+                yearButton.id = `dailyPB-${year}`;
+                yearButton.className = 'pbOfBVButton dailyPBYearButton';
+                yearButton.textContent = `${year}`;
+                document.getElementById('dailyPB-lastYear').insertAdjacentElement('afterend', yearButton);
+            }
+            const yearButtons = document.querySelectorAll('.dailyPBYearButton');
+            yearButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    yearButtons.forEach(btn => { // 先移除所有按钮的activeButton类
+                        btn.classList.remove('activeButton');
+                    });
+                    this.classList.add('activeButton'); // 为当前点击的按钮添加activeButton类
+                    var match = this.id.match(/\d+$/);
+                    document.getElementById('dailyPBYear').textContent = match ? parseInt(match[0]) : 0;
+                    displayDailyPB();
+                });
+            });
+        }
+    })
+});
+function displayDailyPB() {
+    // 初级1 中级2 高级3
+    const level = document.getElementById('dailyPBLevel').textContent;
+    // 局数0 时间1 bvs3 效率5 盲扫7
+    const type = document.getElementById('dailyPBType').textContent;
+    // 0为近一年
+    const year = document.getElementById('dailyPBYear').textContent;
+    chrome.storage.local.get('dailyPB', function(result) {
+        if (result.dailyPB) {
+            let dailyPB = result.dailyPB;
+            if (dailyPB[level]) {
+                document.getElementById('nodailyPB').style.display = 'none';
+                generateDailyPBTableArea();
+                // 选择日期范围
+                const today = new Date(); // 当前日期，显示结束日
+                if (year == 0) {
+                    const endDate = new Date(today);
+                    endDate.setDate(endDate.getDate() + (7 - today.getDay()) % 7); // 表格结束日：本周周日
+                    const startDate = new Date(endDate);
+                    startDate.setDate(startDate.getDate() - 53  * 7 + 1); // 表格起始日：52周前的周一
+                    generateDateCell(startDate, startDate, today, dailyPB[level], level, type);
+                } else {
+                    const startDate = new Date(year, 0, 1);
+                    const firstDate = new Date(startDate);
+                    firstDate.setDate(firstDate.getDate() - (firstDate.getDay() - 1) % 7);
+                    const endDate = new Date(year, 11, 31);
+                    if (endDate < today) {
+                        generateDateCell(firstDate, startDate, endDate, dailyPB[level], level, type);
+                    } else {
+                        generateDateCell(firstDate, startDate, today, dailyPB[level], level, type);
+                    }
+                }
+                initDailyPBTooltip();
+            } else {
+                document.getElementById('nodailyPB').style.display = 'block';
+                // document.getElementById('dailyPBTable').innerHTML = '';
+            }
+        } else {
+            document.getElementById('nodailyPB').style.display = 'block';
+            // document.getElementById('dailyPBTable').innerHTML = '';
+        }
+    });
+
+}
+function generateDailyPBTableArea() { // 生成表格区域
+    const dailyPBTable = document.getElementById('dailyPBTable');
+    // var weekNum = 53;
+    // var dayNum = 7;
+    let tableHtml = '<tbody>';
+    var weekDayLabel = ['一', '二', '三', '四', '五', '六', '日'];
+    for (let i = 0; i < 7; i++) {
+        tableHtml += '<tr>';
+        for (let j = 0; j < 53; j++) {
+            tableHtml += '<td class="dailyPBDayCell"></td>';
+        }
+        tableHtml += `<td class="dailyPBLabel">${weekDayLabel[i]}</td></tr>`;
+    }
+    for (let j = 0; j < 53; j++) {
+        tableHtml += '<td class="dailyPBLabel"></td>';
+    }
+    tableHtml += '<td class="dailyPBLabel">月份</td>';
+    tableHtml += '</tbody>';
+    dailyPBTable.innerHTML = tableHtml;
+}
+function generateDateCell(firstDate, startDate, endDate, data, level, type) { // 生成每日显示
+    const dailyPBTable = document.getElementById('dailyPBTable');
+    var dataMin = null; // 最小数据
+    var dataMax = null; // 最大数据
+    // 先过一遍算极值，把数据存入格子
+    for (let week = 0; week < 53; week++) { // 第几周
+        for (let weekday = 0; weekday < 7; weekday++) { // 周一到周日
+            // 计算当前日期
+            const currentDate = new Date(firstDate);
+            currentDate.setDate(currentDate.getDate() + week * 7 + weekday);
+            if (currentDate.getDate() == 1) {
+                dailyPBTable.rows[7].cells[week].textContent = currentDate.getMonth() + 1;
+            }
+            // 定位日期格子
+            const cell = dailyPBTable.rows[weekday].cells[week];
+            if (currentDate < startDate || currentDate > endDate) { // 日期范围以外的格子去掉底色
+                cell.style.backgroundColor = 'transparent';
+            } else {
+                const dateStr = formatDate(currentDate); // 格式化日期
+                var pbData = 0;
+                if (data[[dateStr]]) {
+                    if (type == 5 && Number(data[dateStr][type].replace('%', '')) >= 100) { // 只记录达到100的效率
+                        pbData = Number(data[dateStr][type].replace('%', ''));
+                    } else {
+                        pbData = Number(data[dateStr][type] || 0);
+                    }
+                }
+                if (pbData > 0) {
+                    // 更新极值
+                    if (!dataMin || pbData < dataMin) {
+                        dataMin = pbData;
+                    }
+                    if (!dataMax || pbData > dataMax) {
+                        dataMax = pbData;
+                    }
+                    // 设置数据属性
+                    cell.setAttribute('cellDate', dateStr);
+                    cell.setAttribute('cellValue', pbData);
+                    if (type > 0) {
+                        cell.style.cursor = 'pointer';
+                        cell.onclick = function() {
+                            window.open('https://minesweeper.online/cn/game/' + data[dateStr][+type + 1]);
+                        }
+                    }
+                }
+            }
+        }        
+    }
+    // 第二遍过刷颜色
+    for (let week = 0; week < 53; week++) { // 第几周
+        for (let weekday = 0; weekday < 7; weekday++) { // 周一到周日
+            const cell = dailyPBTable.rows[weekday].cells[week];
+            if (cell.getAttribute('cellValue')) {
+                cell.style.backgroundColor = getColorForDateCell(cell, dataMin, dataMax, level, type); // 设置格子颜色
+            }
+        }
+    }
+}
+function getColorForDateCell(cell, dataMin, dataMax, level, type) { // 颜色选择
+    // var desc = 1;
+    // if (type == 1) { // 只有时间是升序，最小数据是最优数据
+    //     desc = 0;
+    // }
+    const pbData = cell.getAttribute('cellValue');
+    if (type == 0) { // 局数绿色
+        if (pbData <= dataMin + (dataMax - dataMin) * 0.1) {
+            return '#c6e7c0';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.3) {
+            return '#9be9a8';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.5) {
+            return '#40c463';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.7) {
+            return '#30a14e';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.9) {
+            return '#216e39';
+        } else {
+            return '#144d27';
+        }
+    } else if (type == 1) { // 时间粉色
+        if (level == 3) {
+            if (pbData >= 100) {
+                return '#ffd6e7';
+            } else if (pbData >= 80) {
+                return '#ffb3d9';
+            } else if (pbData >= 70) {
+                return '#ff8fbf';
+            } else if (pbData >= 60) {
+                return '#f368a0';
+            } else if (pbData >= 50) {
+                return '#e64980';
+            } else {
+                return '#c2255c';
+            }
+        } else if (level == 2) {
+            if (pbData >= 30) {
+                return '#ffd6e7';
+            } else if (pbData >= 24) {
+                return '#ffb3d9';
+            } else if (pbData >= 20) {
+                return '#ff8fbf';
+            } else if (pbData >= 16) {
+                return '#f368a0';
+            } else if (pbData >= 12) {
+                return '#e64980';
+            } else {
+                return '#c2255c';
+            }
+        } else if (level == 1) {
+            if (pbData >= 5) {
+                return '#ffd6e7';
+            } else if (pbData >= 3) {
+                return '#ffb3d9';
+            } else if (pbData >= 2) {
+                return '#ff8fbf';
+            } else if (pbData >= 1) {
+                return '#f368a0';
+            } else if (pbData >= 0.7) {
+                return '#e64980';
+            } else {
+                return '#c2255c';
+            }
+        }
+    } else if (type == 3) { // bvs红色
+        if (pbData <= dataMin + (dataMax - dataMin) * 0.4) {
+            return '#ffd4d4';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.6) {
+            return '#ffaaaa';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.8) {
+            return '#ff8787';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.9) {
+            return '#fa5252';
+        } else if (pbData <= dataMin + (dataMax - dataMin) * 0.95) {
+            return '#c92a2a';
+        } else {
+            return '#8a1c1c';
+        }
+    } else if (type == 5) { // 效率橙色
+        if (level == 3) {
+            if (pbData <= 110) {
+                return '#ffe0b5';
+            } else if (pbData <= 120) {
+                return '#ffc978';
+            } else if (pbData <= 130) {
+                return '#ffa94d';
+            } else if (pbData <= 138) {
+                return '#ff922b';
+            } else if (pbData <= 145) {
+                return '#e67700';
+            } else {
+                return '#b35c00';
+            }
+        } else {
+            if (pbData <= dataMin + (dataMax - dataMin) * 0.2) {
+                return '#ffe0b5';
+            } else if (pbData <= dataMin + (dataMax - dataMin) * 0.4) {
+                return '#ffc978';
+            } else if (pbData <= dataMin + (dataMax - dataMin) * 0.6) {
+                return '#ffa94d';
+            } else if (pbData <= dataMin + (dataMax - dataMin) * 0.8) {
+                return '#ff922b';
+            } else if (pbData <= dataMin + (dataMax - dataMin) * 0.9) {
+                return '#e67700';
+            } else {
+                return '#b35c00';
+            }
+        }
+    } else if (type == 7) { // 盲扫蓝色
+        if (level == 3) {
+            if (pbData >= 130) {
+                return '#d0e3ff';
+            } else if (pbData >= 100) {
+                return '#a5d1ff';
+            } else if (pbData >= 80) {
+                return '#7db8ff';
+            } else if (pbData >= 70) {
+                return '#3d8bfd';
+            } else if (pbData >= 60) {
+                return '#0a58ca';
+            } else {
+                return '#083d91';
+            }
+        } else if (level == 2) {
+            if (pbData >= 40) {
+                return '#d0e3ff';
+            } else if (pbData >= 30) {
+                return '#a5d1ff';
+            } else if (pbData >= 24) {
+                return '#7db8ff';
+            } else if (pbData >= 18) {
+                return '#3d8bfd';
+            } else if (pbData >= 14) {
+                return '#0a58ca';
+            } else {
+                return '#083d91';
+            }
+        } else if (level == 1) {
+            if (pbData >= 5) {
+                return '#d0e3ff';
+            } else if (pbData >= 3) {
+                return '#a5d1ff';
+            } else if (pbData >= 2) {
+                return '#7db8ff';
+            } else if (pbData >= 1) {
+                return '#3d8bfd';
+            } else if (pbData >= 0.7) {
+                return '#0a58ca';
+            } else {
+                return '#083d91';
+            }
+        }
+    }
+}
+function formatDate(date) { // 将日期转为'2025-01-01'的格式
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+function initDailyPBTooltip() { // 悬浮显示
+    const tooltip = document.getElementById('dailyPBTooltip');
+    const cells = document.querySelectorAll('.dailyPBDayCell');
+    cells.forEach(cell => {
+        cell.addEventListener('mouseover', function(e) {
+            const dateStr = this.getAttribute('cellDate');
+            const pbData = this.getAttribute('cellValue');
+            if (dateStr) {
+                tooltip.innerHTML = `${dateStr}： ${pbData}`; // 显示内容
+                tooltip.style.display = 'block';
+                updateTooltipPosition(e, tooltip); // 浮窗位置
+            }
+        });
+        
+        cell.addEventListener('mouseout', function() {
+            tooltip.style.display = 'none';
+        });
+        
+        cell.addEventListener('mousemove', function(e) {
+            updateTooltipPosition(e, tooltip);
+        });
+    });
+}
+function updateTooltipPosition(event, tooltip) { // 浮窗位置
+    const x = event.clientX + 10;
+    const y = event.clientY + 10;
+    // 确保工具提示不会超出视口
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    let finalX = x;
+    let finalY = y;
+    if (x + tooltipWidth > windowWidth) {
+        finalX = windowWidth - tooltipWidth - 10;
+    }
+    if (y + tooltipHeight > windowHeight) {
+        finalY = windowHeight - tooltipHeight - 10;
+    }
+    tooltip.style.left = `${finalX}px`;
+    tooltip.style.top = `${finalY}px`;
+}
+
 /* 收集我的游戏数据 */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'sendBVDistribution') {
@@ -1120,67 +1577,67 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get('autoUpdate', function (result) {
         const autoUpdate = result.autoUpdate;
         document.getElementById('toggleSwitch1').checked = autoUpdate[0][0];
-        document.getElementById("hourSelect1").value = autoUpdate[0][1];
-        document.getElementById("minuteSelect1").value = autoUpdate[0][2];
-        document.getElementById("secondSelect1").value = autoUpdate[0][3];
+        document.getElementById('hourSelect1').value = autoUpdate[0][1];
+        document.getElementById('minuteSelect1').value = autoUpdate[0][2];
+        document.getElementById('secondSelect1').value = autoUpdate[0][3];
         document.getElementById('toggleSwitch2').checked = autoUpdate[1][0];
-        document.getElementById("hourSelect2").value = autoUpdate[1][1];
-        document.getElementById("minuteSelect2").value = autoUpdate[1][2];
-        document.getElementById("secondSelect2").value = autoUpdate[1][3];
+        document.getElementById('hourSelect2').value = autoUpdate[1][1];
+        document.getElementById('minuteSelect2').value = autoUpdate[1][2];
+        document.getElementById('secondSelect2').value = autoUpdate[1][3];
         document.getElementById('toggleSwitch3').checked = autoUpdate[2][0];
-        document.getElementById("hourSelect3").value = autoUpdate[2][1];
-        document.getElementById("minuteSelect3").value = autoUpdate[2][2];
-        document.getElementById("secondSelect3").value = autoUpdate[2][3];
+        document.getElementById('hourSelect3').value = autoUpdate[2][1];
+        document.getElementById('minuteSelect3').value = autoUpdate[2][2];
+        document.getElementById('secondSelect3').value = autoUpdate[2][3];
         document.getElementById('toggleSwitchAt').checked = autoUpdate[3][0];
     });
     /* 自动刷新下拉菜单 */
-    const h1 = document.getElementById("hourSelect1");
-    const m1 = document.getElementById("minuteSelect1");
-    const s1 = document.getElementById("secondSelect1");
-    const h2 = document.getElementById("hourSelect2");
-    const m2 = document.getElementById("minuteSelect2");
-    const s2 = document.getElementById("secondSelect2");
-    const h3 = document.getElementById("hourSelect3");
-    const m3 = document.getElementById("minuteSelect3");
-    const s3 = document.getElementById("secondSelect3");
+    const h1 = document.getElementById('hourSelect1');
+    const m1 = document.getElementById('minuteSelect1');
+    const s1 = document.getElementById('secondSelect1');
+    const h2 = document.getElementById('hourSelect2');
+    const m2 = document.getElementById('minuteSelect2');
+    const s2 = document.getElementById('secondSelect2');
+    const h3 = document.getElementById('hourSelect3');
+    const m3 = document.getElementById('minuteSelect3');
+    const s3 = document.getElementById('secondSelect3');
     for (let hour = 0; hour < 24; hour++) { // 生成小时选项
-        let o1 = document.createElement("option");
+        let o1 = document.createElement('option');
         o1.value = hour;
         o1.textContent = String(hour).padStart(2, '0'); // 格式化小时
         h1.appendChild(o1);
-        let o2 = document.createElement("option");
+        let o2 = document.createElement('option');
         o2.value = hour;
         o2.textContent = String(hour).padStart(2, '0'); // 格式化小时
         h2.appendChild(o2);
-        let o3 = document.createElement("option");
+        let o3 = document.createElement('option');
         o3.value = hour;
         o3.textContent = String(hour).padStart(2, '0'); // 格式化小时
         h3.appendChild(o3);
     }
     for (let min = 0; min < 60; min++) { // 生成分钟选项
-        let o1 = document.createElement("option");
+        let o1 = document.createElement('option');
         o1.value = min;
         o1.textContent = String(min).padStart(2, '0'); // 格式化分钟
         m1.appendChild(o1);
-        let o2 = document.createElement("option");
+        let o2 = document.createElement('option');
         o2.value = min;
         o2.textContent = String(min).padStart(2, '0'); // 格式化分钟
         m2.appendChild(o2);
-        let o3 = document.createElement("option");
+        let o3 = document.createElement('option');
         o3.value = min;
         o3.textContent = String(min).padStart(2, '0'); // 格式化分钟
         m3.appendChild(o3);
     }
     for (let sec = 0; sec < 60; sec++) { // 生成秒钟选项
-        let o1 = document.createElement("option");
+        let o1 = document.createElement('option');
         o1.value = sec;
         o1.textContent = String(sec).padStart(2, '0'); // 格式化秒钟
         s1.appendChild(o1);
-        let o2 = document.createElement("option");
+        let o2 = document.createElement('option');
         o2.value = sec;
         o2.textContent = String(sec).padStart(2, '0'); // 格式化秒钟
         s2.appendChild(o2);
-        let o3 = document.createElement("option");
+        let o3 = document.createElement('option');
         o3.value = sec;
         o3.textContent = String(sec).padStart(2, '0'); // 格式化秒钟
         s3.appendChild(o3);
@@ -1188,7 +1645,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /* 保存设置 */
     document.getElementById('saveSetting').addEventListener('click', function () {
         var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0]];
-        autoUpdate[0][0]  = document.getElementById("toggleSwitch1").checked;
+        autoUpdate[0][0]  = document.getElementById('toggleSwitch1').checked;
         if (autoUpdate[0][0]) {
             dailyTaskUpdate();
         }
@@ -1196,7 +1653,7 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[0][2] = m1.value;
         autoUpdate[0][3] = s1.value;
 
-        autoUpdate[1][0]  = document.getElementById("toggleSwitch2").checked;
+        autoUpdate[1][0]  = document.getElementById('toggleSwitch2').checked;
         if (autoUpdate[1][0]) {
             dailyTaskEventArena();
         }
@@ -1204,7 +1661,7 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[1][2] = m2.value;
         autoUpdate[1][3] = s2.value;
 
-        autoUpdate[2][0]  = document.getElementById("toggleSwitch3").checked;
+        autoUpdate[2][0]  = document.getElementById('toggleSwitch3').checked;
         if (autoUpdate[2][0]) {
             dailyTaskFriendQuest();
         }
@@ -1212,23 +1669,23 @@ document.addEventListener('DOMContentLoaded', function() {
         autoUpdate[2][2] = m3.value;
         autoUpdate[2][3] = s3.value;
 
-        autoUpdate[3][0]  = document.getElementById("toggleSwitchAt").checked;
+        autoUpdate[3][0]  = document.getElementById('toggleSwitchAt').checked;
 
         chrome.storage.local.set({ autoUpdate: autoUpdate });
 
         const pId = document.getElementById('personalId').value;
-        if (pId.trim() === "") {
-            document.getElementById('saveSucc').innerText = "保存成功！"
-            document.getElementById('saveSucc').style.display = "block";
+        if (pId.trim() === '') {
+            document.getElementById('saveSucc').innerText = '保存成功！'
+            document.getElementById('saveSucc').style.display = 'block';
         } else if (!isNaN(pId)) {
             chrome.storage.local.set({ pId: pId });
             document.getElementById('pIdNow').innerText = pId;
             document.getElementById('personalId').placeholder = pId;
-            document.getElementById('saveSucc').innerText = "保存成功！"
-            document.getElementById('saveSucc').style.display = "block";
+            document.getElementById('saveSucc').innerText = '保存成功！'
+            document.getElementById('saveSucc').style.display = 'block';
         } else {
-            document.getElementById('saveSucc').innerText = "ID格式错误"
-            document.getElementById('saveSucc').style.display = "block";
+            document.getElementById('saveSucc').innerText = 'ID格式错误'
+            document.getElementById('saveSucc').style.display = 'block';
         }
         var configurableCoef = [];
         if (document.getElementById('act2ep').value) {

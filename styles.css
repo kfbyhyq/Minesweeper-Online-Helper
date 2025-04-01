@@ -499,6 +499,9 @@ option {
     padding: 0px 10px;
     font-size: 14px; /* 字体大小 */
 }
+.pbOfBVButton.activeButton {
+    background-color: #8fc4ef;
+}
 
 #copyNotify {
     position: absolute; /* 绝对定位 */
@@ -540,4 +543,41 @@ option {
     border-radius: 4px;
     pointer-events: none;
     font-size: 12px;
+}
+
+/* 每日PB */
+#dailyPBTable {
+    border-collapse: separate;
+    /* table-layout: fixed; */
+    max-width: none;
+}
+#dailyPBTable tr {
+    background-color: transparent;
+}
+#dailyPBTable td {
+    border: 0px solid #474747;
+    padding: 0px;
+}
+.dailyPBLabel {
+    font-size: 10px;
+    color: #000000;
+}
+.dailyPBDayCell {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background-color: #ebedf0;
+}
+
+#dailyPBTooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    white-space: nowrap;
 }

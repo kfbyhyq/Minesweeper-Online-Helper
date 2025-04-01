@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             var bvResult = countBV();
                             bvMap[bvResult.join('')] = 1;
+                            let game = document.querySelector("#GameBlock > table");
                             let chartEleNew = document.createElement('canvas'); // 创建折线图区域
                             chartEleNew.id = 'displayChart';
                             chartEleNew.style.width = '800px';

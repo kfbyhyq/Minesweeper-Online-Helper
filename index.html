@@ -24,7 +24,7 @@
             <a href="#" id="nav-eventShop">活动商店</a>
             <a href="#" id="nav-perfect">完美装备</a>
             <a href="#" id="nav-contacts">好友</a>
-            <a href="#" id="nav-pbOfBV">BVPB</a>
+            <a href="#" id="nav-pbOfBV">PB数据</a>
             <a href="#" id="nav-eventArena" class="event" style="display: none;">活动竞技场</a>
             <a href="#" id="nav-friendQuest" class="event" style="display: none;">友谊任务</a>
             <a href="#" id="nav-wheel" class="event" style="display: none;">命运转盘</a>
@@ -213,6 +213,7 @@
                 </div>
             </div>
             <div id="pbOfBV" class="page">
+                <h1>BVPB</h1>
                 <button id="myGamePage">打开我的游戏页</button>
                 <span class="blank"></span>
                 <button id="updatePbofBV">重新统计</button>
@@ -238,7 +239,7 @@
                 </button><span class="blank"></span>
                 <button id="pbOfBV-nf" class="pbOfBVButton">盲扫</button>
                 <br><br>
-                <span id="noPbOfBV" class="plainText" style="display:none;">暂无各BV的PB数据，可在“我的游戏”页面通过插件弹出页“统计我的游戏”收集。</span>
+                <span id="noPbOfBV" class="plainText" style="display:none;">暂无各BV的PB数据，可在“我的游戏”页面通过插件弹出页“统计我的游戏”收集，或点击“重新统计”生成。</span>
                 <div class="flexContent">
                     <div class="flexContentSon">
                         <table id="pbOfBVTable" class="ticketTable"></table>
@@ -259,6 +260,23 @@
                         <span class="plainText">独占一个BV得0.25分；</span>
                     </div>
                 </div>
+                <h1>每日PB</h1>
+                <span id="dailyPBLevel" style="display:none;">3</span>
+                <span id="dailyPBType" style="display:none;">0</span>
+                <span id="dailyPBYear" style="display:none;">0</span>
+                <button id="dailyPB-beg-1" class="pbOfBVButton dailyPBLevelButton">初级</button>
+                <button id="dailyPB-int-2" class="pbOfBVButton dailyPBLevelButton">中级</button>
+                <button id="dailyPB-exp-3" class="pbOfBVButton dailyPBLevelButton activeButton">高级</button><br>
+                <button id="dailyPB-wins-0" class="pbOfBVButton dailyPBTypeButton activeButton">局数</button>
+                <button id="dailyPB-time-1" class="pbOfBVButton dailyPBTypeButton">时间</button>
+                <button id="dailyPB-bvs-3" class="pbOfBVButton dailyPBTypeButton">3BV/S</button>
+                <button id="dailyPB-eff-5" class="pbOfBVButton dailyPBTypeButton">效率</button>
+                <button id="dailyPB-nf-7" class="pbOfBVButton dailyPBTypeButton">盲扫</button><br>
+                <button id="dailyPB-lastYear" class="pbOfBVButton dailyPBYearButton activeButton">近一年</button>
+                <br><br>
+                <table id="dailyPBTable"></table>
+                <span id="nodailyPB" class="plainText" style="display:none;">暂无每日PB数据，可在“我的游戏”页面通过插件弹出页“统计我的游戏”收集，或点击“重新统计”生成。</span>
+                <div id="dailyPBTooltip"></div>
             </div>
             <div id="eventArena" class="page">
                 <h1>活动竞技场门票价格</h1>
