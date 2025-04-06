@@ -13,27 +13,33 @@ document.addEventListener('DOMContentLoaded', function() {
                         var index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                         var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '速度', '初级局数', '中级局数', '高级局数'];
                         var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级'];
-                        var keywordEff = '效率';
+                        var keywordEff = '效率达到';
                         var typeNum = 13;
                         var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], [4, 10], '', ''];
                         // var level = [2, 4, 1, 3, 5];
                         var next = -1;
                         var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
-                        var eqInfo = ['下一任务等级', '可用任务列表：', '', '', '', '', '', '距离', '', '近10个任务：', '', '', '', '', '', '', '', '', '', ''];
-                        var secShift = 16;
+                        var eqInfo = ['下一任务：', '等级范围：', '可用任务列表：', '', '', '', '', '', '距离机密：', '', '近10个任务：', '', '', '', '', '', '', '', '', '', ''];
+                        var secShift = 9;
                         var secCycle = 19;
-                        try {
-                            for (let i = 0; i < 10; i++) {
-                                let questLevel = document.querySelector(`#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(${i+1}) > td:nth-child(1)`);
-                                let questContent = document.querySelector(`#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(${i+1}) > td:nth-child(2)`);
+                        var questTable;
+                        // 定位任务表
+                        document.querySelectorAll('.table.table-bordered').forEach(table => {
+                            const title = table.querySelector("thead > tr > th:nth-child(4)");
+                            if (title && (title.textContent == '冠军' || title.textContent == 'Winners')) {
+                                questTable = table;
+                            }
+                        });
+                        if (questTable) {
+                            // 提取近期任务
+                            var i = 0;
+                            questTable.querySelectorAll('tbody > tr[id^="quest_row_"]').forEach(quest => {
+                                let questLevel = quest.querySelector('td:nth-child(1)');
+                                let questContent = quest.querySelector('td:nth-child(2)');
                                 if (questContent && questLevel) {
                                     let ql = questLevel.textContent;
                                     let qc = questContent.textContent;
-                                    eqInfo[10+i] = ql + '  ' + qc;
-                                    // console.log(eqInfo[10+i]);
-                                    // if (ql.includes('E')) {
-                                    //     next = i;
-                                    // }
+                                    eqInfo[11+i] = ql + '  ' + qc;
                                     if (qc.includes(keywordEff)) {
                                         if (qc.includes(keyword[0])) {
                                             index[0]++;
@@ -48,18 +54,32 @@ document.addEventListener('DOMContentLoaded', function() {
                                             }
                                         }
                                     }
-                                } else {
-                                    break;
+                                    i++;
                                 }
+                            });
+                            console.log(index)
+                            // 分析下一任务等级
+                            const timeNow = new Date();
+                            eqInfo[0] = '下一任务：' + (timeNow.getHours() + 1) + ':00';
+                            // 计算距离机密的数量
+                            const currentYear = timeNow.getUTCFullYear();
+                            const currentMonth = timeNow.getUTCMonth();
+                            const startHour = new Date(Date.UTC(currentYear, currentMonth, 4, 0, 0, 0)); // 创建本月4号UTC 0点的Date对象
+                            const diffMs = timeNow - startHour;
+                            var secret;
+                            if (diffMs > 0) {
+                                const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                                secret = secCycle - (hours % secCycle) - 1;
+                            } else {
+                                secret = '未知';
                             }
-                            let firstId = document.querySelector("#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(1)").id.match(/\d+$/)[0];
-                            var secret = [];
+                            // let firstId = questTable.querySelector("tbody > tr:nth-child(1)").id.match(/\d+$/)[0];
                             // var toE = [];
                             var nextLevel = [];
                             var nextRange = [];
-                            if (secShift) { secret = (secCycle - (parseInt((+firstId + 1) / 2) + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
+                            // if (secShift) { secret = (secCycle - (parseInt((+firstId + 1) / 2) + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
                             // if (next < 0) {
-                            let firstLevel = document.querySelector('#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+/)[0];
+                            let firstLevel = questTable.querySelector('tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+/)[0];
                             if (firstLevel <= levelRange[0][1]) { 
                                 next = 3;  // 3或8，level=3
                                 // toE = '1或6';
@@ -73,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 next = 1; // 2或7，level=1
                                 // toE = '2或7';
                             } else if (firstLevel = levelRange[3][1]) {
-                                let secondLevelElement = document.querySelector('#QuestsBlock > table:nth-child(9) > tbody > tr:nth-child(2) > td:nth-child(1)');
+                                let secondLevelElement = questTable.querySelector('tbody > tr:nth-child(2) > td:nth-child(1)');
                                 if (secondLevelElement) {
                                     let secondLevel = secondLevelElement.textContent.match(/\d+/)[0];
                                     if (secondLevel <= levelRange[1][1]) {
@@ -98,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 nextRange = 'L' + levelRange[nextLevel][0] + '-' + levelRange[nextLevel][1];
                             }
                             // eqInfo[7] = '距离机密：' + secret + '，距离E：' + toE;
-                            eqInfo[7] = '距离机密：' + secret;
-                            eqInfo[0] = '下一任务等级：' + nextRange;
+                            eqInfo[8] = '距离机密：' + secret;
+                            eqInfo[1] = '等级范围：' + nextRange;
                             if (secret == 0) {
                                 eqInfo[0] = eqInfo[0] + ' 【机密】';
                             }
@@ -107,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             //     eqInfo[0] = eqInfo[0] + ' 【E】';
                             // }
     
-                            var row = 2;
+                            var row = 3;
                             if (next < 0) {
                                 for (let k = 0; k < typeNum; k++) {
                                     if (index[k] == 0) {
@@ -169,9 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             // saveAsTxt(eqInfo, '活动任务.txt');
     
                             chrome.runtime.sendMessage({ action: 'eventQuest', eqInfo: eqInfo });
-                        } catch (error) {
-                            console.log(error);
-                            window.alert('错误页面', error);
                         }
                         
                         function saveAsTxt(dataArray, filename) {

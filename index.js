@@ -1,3 +1,157 @@
+/* 网站主题 */
+document.addEventListener('DOMContentLoaded', function() {
+    /* 初始化主题 */
+    chrome.storage.local.get(['themeMap', 'theme'], function (result) {
+        var themeMap = result.themeMap;
+        var theme = result.theme;
+        if (!themeMap) { // 无主题字典则初始化
+            themeMap = defaultThemes;
+            chrome.storage.local.set({ themeMap: themeMap });
+        }
+        const themeSelect = document.getElementById('themeSelect');
+        const theme0 = new Option('默认', '默认');
+        themeSelect.add(theme0); // 先添加默认选项
+        for (let themeName in themeMap) {
+            if (themeName != '默认') {
+                const theme1 = new Option(themeName, themeName);
+                themeSelect.add(theme1); // 依次添加每个选项
+            }
+        }
+        if (!theme) {
+            theme = '默认'; // 无当前应用的主题则置为"默认"
+            chrome.storage.local.set({ theme: theme });
+        }
+        themeSelect.value = theme; // 下拉菜单置于当前应用的主题
+        document.documentElement.classList.add(theme); // 设置应用的主题
+        if (Object.keys(themeMap[theme]).length > 0) { // 字典中有内容说明是自定义的主题
+            for (const [key, value] of Object.entries(themeMap[theme])) {
+                if (key != 'themeName' && key != 'introduce') {
+                    document.documentElement.style.setProperty(`--${key}`, value[0]);
+                }
+            }
+        }
+    });
+    /* 选择主题 */
+    document.getElementById('themeSelect').addEventListener('change', function() {
+        var newTheme = document.getElementById('themeSelect').value;
+        chrome.storage.local.get(['themeMap', 'theme'], function (result) {
+            var themeMap = result.themeMap || {};
+            var theme = result.theme;
+            if (theme) {
+                if (theme != newTheme) {
+                    chrome.storage.local.set({ theme: newTheme });
+                    for (let themeName in themeMap) {
+                        document.documentElement.classList.remove(themeName); // 清空其他主题
+                    }
+                    document.documentElement.style = '';
+                    document.documentElement.classList.add(newTheme); // 设置应用的主题
+                    if (Object.keys(themeMap[newTheme]).length > 0) { // 字典中有内容说明是自定义的主题
+                        for (const [key, value] of Object.entries(themeMap[newTheme])) {
+                            if (key != 'themeName' && key != 'introduce') {
+                                document.documentElement.style.setProperty(`--${key}`, value[0]);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+    /* 上传自定义主题 */
+    document.getElementById('uploadThemeButton').addEventListener('click', function () {
+        document.getElementById('uploadTheme').click();
+    });
+    document.getElementById('uploadTheme').onchange = function(event) {
+        const file = event.target.files[0]; // 获取选中的文件
+        const reader = new FileReader();
+        // 成功读取后解析文件
+        reader.onload = function (event) {
+            try {
+                const dataIn = JSON.parse(event.target.result);
+                if (dataIn['themeName']) { // 检查themeName字段，成功则认为格式正确
+                    const themeName = dataIn['themeName'];
+                    chrome.storage.local.get(['themeMap', 'theme'], function (result) {
+                        var themeMap = result.themeMap || {};
+                        var theme = result.theme;
+                        themeMap[themeName] = dataIn; // 以themeName的值为键存入主题字典
+                        chrome.storage.local.set({ themeMap: themeMap });
+                        theme = themeName; // 设置当前应用的主题为新添加的主题
+                        chrome.storage.local.set({ theme: theme });
+                        // 加入下拉菜单
+                        const themeSelect = document.getElementById('themeSelect');
+                        const oldTheme = themeSelect.querySelectorAll(`option[value="${themeName}"]`);
+                        oldTheme.forEach(option => option.remove()); // 删除重名的选项 保证添加到末端
+                        const newTheme = new Option(themeName, themeName, 0, 1);
+                        themeSelect.add(newTheme);
+                        for (const [key, value] of Object.entries(dataIn)) {
+                            if (key != 'themeName' && key != 'introduce') {
+                                document.documentElement.style.setProperty(`--${key}`, value[0]);
+                            }
+                        }
+                    });
+                } else {
+                    window.alert('文件格式错误');
+                }
+            } catch (e) {
+                console.error('上传自定义主题失败', e);
+                window.alert('上传自定义主题失败');
+            }
+        };
+        reader.readAsText(file);
+    };
+    /* 清空自定义主题 */
+    document.getElementById('clearTheme').addEventListener('click', function () {
+        chrome.storage.local.get(['themeMap', 'theme'], function (result) {
+            var themeMap = defaultThemes;
+            var theme = '默认';
+            chrome.storage.local.set({ themeMap: themeMap });
+            chrome.storage.local.set({ theme: theme });
+            const themeSelect = document.getElementById('themeSelect');
+            themeSelect.innerHTML = '';
+            const theme0 = new Option('默认', '默认', 1, 1);
+            themeSelect.add(theme0); // 先添加默认选项
+            for (let themeName in themeMap) {
+                if (themeName != '默认') {
+                    const theme1 = new Option(themeName, themeName);
+                    themeSelect.add(theme1); // 依次添加每个选项
+                }
+            }
+            document.documentElement.style = '';
+            document.documentElement.className = theme; // 设置应用的主题
+        });
+    });
+    /* 下载主题模板 */
+    document.getElementById('downloadThemeExample').addEventListener('click', function () {
+        const jsonData = JSON.stringify(themeExample, null, 2); // 格式化 JSON
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'themeExample.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // 释放 URL 对象
+    });
+    /* 下载全部主题 */
+    document.getElementById('downloadAllTheme').addEventListener('click', function () {
+        chrome.storage.local.get(['themeMap', 'theme'], function (result) {
+            var themeMap = result.themeMap || {};
+            const jsonData = JSON.stringify(themeMap, null, 2); // 格式化 JSON
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'allTheme.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url); // 释放 URL 对象
+        });
+    });
+});
+
 function showPage(pageId) {
     // 隐藏所有页面
     document.querySelectorAll('.page').forEach(page => {
@@ -631,106 +785,49 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.remove('pbOfBVNew');
     displayBVPB();
-    const level = document.getElementById('pbOfBVLevel');
-    const type = document.getElementById('pbOfBVType');
-    const isNf = document.getElementById('pbOfBVIsNf');
-    const beg = document.getElementById('pbOfBV-beg');
-    const int = document.getElementById('pbOfBV-int');
-    const exp = document.getElementById('pbOfBV-exp');
-    const wins = document.getElementById('pbOfBV-wins');
-    const time = document.getElementById('pbOfBV-time');
-    const bvs = document.getElementById('pbOfBV-bvs');
-    const eff = document.getElementById('pbOfBV-eff');
+    // 等级按钮
+    const levelButtons = document.querySelectorAll('.BVPBLevelButton');
+    levelButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            levelButtons.forEach(btn => { // 先移除所有按钮的activeButton类
+                btn.classList.remove('activeButton');
+            });
+            this.classList.add('activeButton'); // 为当前点击的按钮添加activeButton类
+            var match = this.id.match(/\d+$/);
+            document.getElementById('pbOfBVLevel').textContent = parseInt(match[0]);
+            displayBVPB();
+            if (document.getElementById('pkStatus').textContent == 1) {
+                displayBVPBNew();
+            }
+        });
+    });
+    // 类别按钮
+    const typeButtons = document.querySelectorAll('.BVPBTypeButton');
+    typeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            typeButtons.forEach(btn => { // 先移除所有按钮的activeButton类
+                btn.classList.remove('activeButton');
+            });
+            this.classList.add('activeButton'); // 为当前点击的按钮添加activeButton类
+            var match = this.id.match(/\d+$/);
+            document.getElementById('pbOfBVType').textContent = parseInt(match[0]);
+            displayBVPB();
+            if (document.getElementById('pkStatus').textContent == 1) {
+                displayBVPBNew();
+            }
+        });
+    });
     const nf = document.getElementById('pbOfBV-nf');
-    // 默认为高级时间
-    level.textContent = 3;
-    exp.style.backgroundColor = '#8fc4ef';
-    type.textContent = 1;
-    time.style.backgroundColor = '#8fc4ef';
+    const isNf = document.getElementById('pbOfBVIsNf');
     isNf.textContent = 0;
-    nf.style.backgroundColor = '#D8F1EE';
-    beg.addEventListener('click', function() {
-        level.textContent = 1;
-        beg.style.backgroundColor = '#8fc4ef';
-        int.style.backgroundColor = '#D8F1EE';
-        exp.style.backgroundColor = '#D8F1EE';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    int.addEventListener('click', function() {
-        level.textContent = 2;
-        beg.style.backgroundColor = '#D8F1EE';
-        int.style.backgroundColor = '#8fc4ef';
-        exp.style.backgroundColor = '#D8F1EE';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    exp.addEventListener('click', function() {
-        level.textContent = 3;
-        beg.style.backgroundColor = '#D8F1EE';
-        int.style.backgroundColor = '#D8F1EE';
-        exp.style.backgroundColor = '#8fc4ef';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    wins.addEventListener('click', function() {
-        type.textContent = 0;
-        wins.style.backgroundColor = '#8fc4ef';
-        time.style.backgroundColor = '#D8F1EE';
-        bvs.style.backgroundColor = '#D8F1EE';
-        eff.style.backgroundColor = '#D8F1EE';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    time.addEventListener('click', function() {
-        type.textContent = 1;
-        wins.style.backgroundColor = '#D8F1EE';
-        time.style.backgroundColor = '#8fc4ef';
-        bvs.style.backgroundColor = '#D8F1EE';
-        eff.style.backgroundColor = '#D8F1EE';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    bvs.addEventListener('click', function() {
-        type.textContent = 3;
-        wins.style.backgroundColor = '#D8F1EE';
-        time.style.backgroundColor = '#D8F1EE';
-        bvs.style.backgroundColor = '#8fc4ef';
-        eff.style.backgroundColor = '#D8F1EE';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
-    eff.addEventListener('click', function() {
-        type.textContent = 5;
-        wins.style.backgroundColor = '#D8F1EE';
-        time.style.backgroundColor = '#D8F1EE';
-        bvs.style.backgroundColor = '#D8F1EE';
-        eff.style.backgroundColor = '#8fc4ef';
-        displayBVPB();
-        if (document.getElementById('pkStatus').textContent == 1) {
-            displayBVPBNew();
-        }
-    });
     nf.addEventListener('click', function() {
         if (isNf.textContent == 0) {
             isNf.textContent = 1;
-            nf.style.backgroundColor = '#8fc4ef';
+            nf.classList.add('activeButton')
             displayBVPB();
         } else {
             isNf.textContent = 0;
-            nf.style.backgroundColor = '#D8F1EE';
+            nf.classList.remove('activeButton');
             displayBVPB();
         }
         if (document.getElementById('pkStatus').textContent == 1) {
@@ -1276,34 +1373,34 @@ function formatDate(date) { // 将日期转为'2025-01-01'的格式
     return `${year}-${month}-${day}`;
 }
 function initDailyPBTooltip() { // 悬浮显示
-    const tooltip = document.getElementById('dailyPBTooltip');
+    const dailyPBTooltip = document.getElementById('dailyPBTooltip');
     const cells = document.querySelectorAll('.dailyPBDayCell');
     cells.forEach(cell => {
         cell.addEventListener('mouseover', function(e) {
             const dateStr = this.getAttribute('cellDate');
             const pbData = this.getAttribute('cellValue');
             if (dateStr) {
-                tooltip.innerHTML = `${dateStr}： ${pbData}`; // 显示内容
-                tooltip.style.display = 'block';
-                updateTooltipPosition(e, tooltip); // 浮窗位置
+                dailyPBTooltip.innerHTML = `${dateStr}： ${pbData}`; // 显示内容
+                dailyPBTooltip.style.display = 'block';
+                updateTooltipPosition(e, dailyPBTooltip); // 浮窗位置
             }
         });
         
         cell.addEventListener('mouseout', function() {
-            tooltip.style.display = 'none';
+            dailyPBTooltip.style.display = 'none';
         });
         
         cell.addEventListener('mousemove', function(e) {
-            updateTooltipPosition(e, tooltip);
+            updateTooltipPosition(e, dailyPBTooltip);
         });
     });
 }
-function updateTooltipPosition(event, tooltip) { // 浮窗位置
+function updateTooltipPosition(event, dailyPBTooltip) { // 浮窗位置
     const x = event.clientX + 10;
     const y = event.clientY + 10;
     // 确保工具提示不会超出视口
-    const tooltipWidth = tooltip.offsetWidth;
-    const tooltipHeight = tooltip.offsetHeight;
+    const tooltipWidth = dailyPBTooltip.offsetWidth;
+    const tooltipHeight = dailyPBTooltip.offsetHeight;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     let finalX = x;
@@ -1314,8 +1411,8 @@ function updateTooltipPosition(event, tooltip) { // 浮窗位置
     if (y + tooltipHeight > windowHeight) {
         finalY = windowHeight - tooltipHeight - 10;
     }
-    tooltip.style.left = `${finalX}px`;
-    tooltip.style.top = `${finalY}px`;
+    dailyPBTooltip.style.left = `${finalX}px`;
+    dailyPBTooltip.style.top = `${finalY}px`;
 }
 
 /* 收集我的游戏数据 */
@@ -1644,127 +1741,135 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     /* 保存设置 */
     document.getElementById('saveSetting').addEventListener('click', function () {
-        var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0]];
-        autoUpdate[0][0]  = document.getElementById('toggleSwitch1').checked;
-        if (autoUpdate[0][0]) {
-            dailyTaskUpdate();
-        }
-        autoUpdate[0][1] = h1.value;
-        autoUpdate[0][2] = m1.value;
-        autoUpdate[0][3] = s1.value;
+        /* 刷新时间 */
+        {
+            var autoUpdate = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0]];
+            autoUpdate[0][0] = document.getElementById('toggleSwitch1').checked;
+            if (autoUpdate[0][0]) {
+                dailyTaskUpdate();
+            }
+            autoUpdate[0][1] = h1.value;
+            autoUpdate[0][2] = m1.value;
+            autoUpdate[0][3] = s1.value;
 
-        autoUpdate[1][0]  = document.getElementById('toggleSwitch2').checked;
-        if (autoUpdate[1][0]) {
-            dailyTaskEventArena();
-        }
-        autoUpdate[1][1] = h2.value;
-        autoUpdate[1][2] = m2.value;
-        autoUpdate[1][3] = s2.value;
+            autoUpdate[1][0] = document.getElementById('toggleSwitch2').checked;
+            if (autoUpdate[1][0]) {
+                dailyTaskEventArena();
+            }
+            autoUpdate[1][1] = h2.value;
+            autoUpdate[1][2] = m2.value;
+            autoUpdate[1][3] = s2.value;
 
-        autoUpdate[2][0]  = document.getElementById('toggleSwitch3').checked;
-        if (autoUpdate[2][0]) {
-            dailyTaskFriendQuest();
-        }
-        autoUpdate[2][1] = h3.value;
-        autoUpdate[2][2] = m3.value;
-        autoUpdate[2][3] = s3.value;
+            autoUpdate[2][0] = document.getElementById('toggleSwitch3').checked;
+            if (autoUpdate[2][0]) {
+                dailyTaskFriendQuest();
+            }
+            autoUpdate[2][1] = h3.value;
+            autoUpdate[2][2] = m3.value;
+            autoUpdate[2][3] = s3.value;
 
-        autoUpdate[3][0]  = document.getElementById('toggleSwitchAt').checked;
+            autoUpdate[3][0] = document.getElementById('toggleSwitchAt').checked;
 
-        chrome.storage.local.set({ autoUpdate: autoUpdate });
-
-        const pId = document.getElementById('personalId').value;
-        if (pId.trim() === '') {
-            document.getElementById('saveSucc').innerText = '保存成功！'
-            document.getElementById('saveSucc').style.display = 'block';
-        } else if (!isNaN(pId)) {
-            chrome.storage.local.set({ pId: pId });
-            document.getElementById('pIdNow').innerText = pId;
-            document.getElementById('personalId').placeholder = pId;
-            document.getElementById('saveSucc').innerText = '保存成功！'
-            document.getElementById('saveSucc').style.display = 'block';
-        } else {
-            document.getElementById('saveSucc').innerText = 'ID格式错误'
-            document.getElementById('saveSucc').style.display = 'block';
+            chrome.storage.local.set({ autoUpdate: autoUpdate });
         }
-        var configurableCoef = [];
-        if (document.getElementById('act2ep').value) {
-            configurableCoef[0] = document.getElementById('act2ep').value;
-        } else {
-            configurableCoef[0] = document.getElementById('act2ep').placeholder;
+        /* uid */
+        {
+            const pId = document.getElementById('personalId').value;
+            if (pId.trim() === '') {
+                document.getElementById('saveSucc').innerText = '保存成功！'
+                document.getElementById('saveSucc').style.display = 'block';
+            } else if (!isNaN(pId)) {
+                chrome.storage.local.set({ pId: pId });
+                document.getElementById('pIdNow').innerText = pId;
+                document.getElementById('personalId').placeholder = pId;
+                document.getElementById('saveSucc').innerText = '保存成功！'
+                document.getElementById('saveSucc').style.display = 'block';
+            } else {
+                document.getElementById('saveSucc').innerText = 'ID格式错误'
+                document.getElementById('saveSucc').style.display = 'block';
+            }
         }
-        if (document.getElementById('ep2mc').value) {
-            configurableCoef[1] = document.getElementById('ep2mc').value;
-        } else {
-            configurableCoef[1] = document.getElementById('ep2mc').placeholder;
-        }
-        if (document.getElementById('hp2mc').value) {
-            configurableCoef[12] = document.getElementById('hp2mc').value;
-        } else {
-            configurableCoef[12] = document.getElementById('hp2mc').placeholder;
-        }
-        if (document.getElementById('spArenaCoef').value) {
-            configurableCoef[2] = document.getElementById('spArenaCoef').value;
-        } else {
-            configurableCoef[2] = document.getElementById('spArenaCoef').placeholder;
-        }
-        if (document.getElementById('spngArenaCoef').value) {
-            configurableCoef[3] = document.getElementById('spngArenaCoef').value;
-        } else {
-            configurableCoef[3] = document.getElementById('spngArenaCoef').placeholder;
-        }
-        if (document.getElementById('nfArenaCoef').value) {
-            configurableCoef[4] = document.getElementById('nfArenaCoef').value;
-        } else {
-            configurableCoef[4] = document.getElementById('nfArenaCoef').placeholder;
-        }
-        if (document.getElementById('effArenaCoef').value) {
-            configurableCoef[5] = document.getElementById('effArenaCoef').value;
-        } else {
-            configurableCoef[5] = document.getElementById('effArenaCoef').placeholder;
-        }
-        if (document.getElementById('hdArenaCoef').value) {
-            configurableCoef[6] = document.getElementById('hdArenaCoef').value;
-        } else {
-            configurableCoef[6] = document.getElementById('hdArenaCoef').placeholder;
-        }
-        if (document.getElementById('rdArenaCoef').value) {
-            configurableCoef[7] = document.getElementById('rdArenaCoef').value;
-        } else {
-            configurableCoef[7] = document.getElementById('rdArenaCoef').placeholder;
-        }
-        if (document.getElementById('hcArenaCoef').value) {
-            configurableCoef[8] = document.getElementById('hcArenaCoef').value;
-        } else {
-            configurableCoef[8] = document.getElementById('hcArenaCoef').placeholder;
-        }
-        if (document.getElementById('hcngArenaCoef').value) {
-            configurableCoef[9] = document.getElementById('hcngArenaCoef').value;
-        } else {
-            configurableCoef[9] = document.getElementById('hcngArenaCoef').placeholder;
-        }
-        if (document.getElementById('edArenaCoef').value) {
-            configurableCoef[10] = document.getElementById('edArenaCoef').value;
-        } else {
-            configurableCoef[10] = document.getElementById('edArenaCoef').placeholder;
-        }
-        if (document.getElementById('nmArenaCoef').value) {
-            configurableCoef[11] = document.getElementById('nmArenaCoef').value;
-        } else {
-            configurableCoef[11] = document.getElementById('nmArenaCoef').placeholder;
-        }
-        chrome.storage.local.set({ configurableCoef: configurableCoef });
-        const acsTable = document.getElementById('arenaCoefSettingTable');
-        for (let t = 0; t < tm; t++) {
-            for (let l = 0; l < lm; l++) {
-                var time = arenaExpectTime[t][l] * configurableCoef[t + 2] * arenaPreCoef[t];
-                var h = time / 3600 | 0;
-                var m = (time - h * 3600) / 60 | 0;
-                var s = (time - h * 3600 - m * 60) | 0;
-                if (h > 100) {
-                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(3, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-                } else {
-                    acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        /* 可配置参数 */
+        {
+            var configurableCoef = [];
+            if (document.getElementById('act2ep').value) {
+                configurableCoef[0] = document.getElementById('act2ep').value;
+            } else {
+                configurableCoef[0] = document.getElementById('act2ep').placeholder;
+            }
+            if (document.getElementById('ep2mc').value) {
+                configurableCoef[1] = document.getElementById('ep2mc').value;
+            } else {
+                configurableCoef[1] = document.getElementById('ep2mc').placeholder;
+            }
+            if (document.getElementById('hp2mc').value) {
+                configurableCoef[12] = document.getElementById('hp2mc').value;
+            } else {
+                configurableCoef[12] = document.getElementById('hp2mc').placeholder;
+            }
+            if (document.getElementById('spArenaCoef').value) {
+                configurableCoef[2] = document.getElementById('spArenaCoef').value;
+            } else {
+                configurableCoef[2] = document.getElementById('spArenaCoef').placeholder;
+            }
+            if (document.getElementById('spngArenaCoef').value) {
+                configurableCoef[3] = document.getElementById('spngArenaCoef').value;
+            } else {
+                configurableCoef[3] = document.getElementById('spngArenaCoef').placeholder;
+            }
+            if (document.getElementById('nfArenaCoef').value) {
+                configurableCoef[4] = document.getElementById('nfArenaCoef').value;
+            } else {
+                configurableCoef[4] = document.getElementById('nfArenaCoef').placeholder;
+            }
+            if (document.getElementById('effArenaCoef').value) {
+                configurableCoef[5] = document.getElementById('effArenaCoef').value;
+            } else {
+                configurableCoef[5] = document.getElementById('effArenaCoef').placeholder;
+            }
+            if (document.getElementById('hdArenaCoef').value) {
+                configurableCoef[6] = document.getElementById('hdArenaCoef').value;
+            } else {
+                configurableCoef[6] = document.getElementById('hdArenaCoef').placeholder;
+            }
+            if (document.getElementById('rdArenaCoef').value) {
+                configurableCoef[7] = document.getElementById('rdArenaCoef').value;
+            } else {
+                configurableCoef[7] = document.getElementById('rdArenaCoef').placeholder;
+            }
+            if (document.getElementById('hcArenaCoef').value) {
+                configurableCoef[8] = document.getElementById('hcArenaCoef').value;
+            } else {
+                configurableCoef[8] = document.getElementById('hcArenaCoef').placeholder;
+            }
+            if (document.getElementById('hcngArenaCoef').value) {
+                configurableCoef[9] = document.getElementById('hcngArenaCoef').value;
+            } else {
+                configurableCoef[9] = document.getElementById('hcngArenaCoef').placeholder;
+            }
+            if (document.getElementById('edArenaCoef').value) {
+                configurableCoef[10] = document.getElementById('edArenaCoef').value;
+            } else {
+                configurableCoef[10] = document.getElementById('edArenaCoef').placeholder;
+            }
+            if (document.getElementById('nmArenaCoef').value) {
+                configurableCoef[11] = document.getElementById('nmArenaCoef').value;
+            } else {
+                configurableCoef[11] = document.getElementById('nmArenaCoef').placeholder;
+            }
+            chrome.storage.local.set({ configurableCoef: configurableCoef });
+            const acsTable = document.getElementById('arenaCoefSettingTable');
+            for (let t = 0; t < tm; t++) {
+                for (let l = 0; l < lm; l++) {
+                    var time = arenaExpectTime[t][l] * configurableCoef[t + 2] * arenaPreCoef[t];
+                    var h = time / 3600 | 0;
+                    var m = (time - h * 3600) / 60 | 0;
+                    var s = (time - h * 3600 - m * 60) | 0;
+                    if (h > 100) {
+                        acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(3, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                    } else {
+                        acsTable.rows[t + 1].cells[l + 2].textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                    }
                 }
             }
         }
@@ -1962,6 +2067,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (advancedModeIn) {
                         chrome.storage.local.set({ advancedMode: advancedModeIn });
                     }
+                    /* 主题 */
+                    let themeMap = result.themeMap;
+                    const themeMapIn = dataIn['themeMap'];
+                    if (themeMapIn) {
+                        for (const theme in themeMapIn) {
+                            themeMap[theme] = themeMapIn[theme]
+                        }
+                        chrome.storage.local.set({ themeMap: themeMap });
+                    }
+                    let theme = result.theme;
+                    const themeIn = dataIn['theme'];
+                    if (themeIn) {
+                        chrome.storage.local.set({ theme: themeIn });
+                    }
                 });
                 // location.reload();
                 console.log('恢复数据成功');
@@ -2120,3 +2239,231 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         dailyTaskFriendQuest();
     }
 });
+
+/* 自定义主题模板 */
+const themeExample = {
+    "themeName": "默认",
+    "introduce": "themeName后的变量为显示在设置中的主题名，重名的可以直接覆盖；每一行[]中第一个元素为颜色，第二个元素为说明，根据说明改颜色，不要动变量名和说明",
+    "headBgc": ["#70B2E2", "标题 背景色"],
+    "headFc": ["#ffffff", "标题 字色"],
+    "navBgc": ["#ADDFBA", "导航栏背景色"],
+    "navABgc": ["#ADDFBA", "导航栏项目 背景色"],
+    "navAFc": ["#333333", "导航栏项目 字色"],
+    "navHvBgc": ["#D6EBB3", "导航栏项目悬停 背景色"],
+    "navHvFc": ["#333333", "导航栏项目 悬停 字色"],
+    "navAcBgc": ["#7AD295", "导航栏项目 激活 背景色"],
+    "navAcFc": ["#ffffff", "导航栏项目 激活 字色"],
+    "navEvBgc": ["#bbc3f1", "导航栏活动项 背景色"],
+    "navEvFc": ["#333333", "导航栏活动项 字色"],
+    "navEvHvBgc": ["#bbd9f1", "导航栏活动项 悬停 背景色"],
+    "navEvHvFc": ["#333333", "导航栏活动项 悬停 字色"],
+    "navEvAcBgc": ["#92a1f7", "导航栏活动项 激活 背景色"],
+    "navEvAcFc": ["#ffffff", "导航栏活动项 激活 字色"],
+    "navUpBgc": ["#fdda4f", "导航栏刷新/链接项 背景色"],
+    "navUpFc": ["#333333", "导航栏刷新/链接项 字色"],
+    "navUpHvBgc": ["#fdda4f", "导航栏刷新/链接项 悬停 背景色"],
+    "navUpHvFc": ["#333333", "导航栏刷新/链接项 悬停 字色"],
+    "contentBgc": ["#ffffff", "内容区域 背景色"],
+    "contentFc": ["#000000", "内容区域 字色"],
+    "tableFc": ["#000000", "表格 字色"],
+    "tableOddRowBgc": ["#E4EEC9", "表格 奇数行 背景色"],
+    "tableEvenRowBgc": ["#d4ebf9", "表格 偶数行 背景色"],
+    "tableTic1ColBgc": ["#E4EEC9", "有标题的表格 标题列 背景色"],
+    "tableTic1RowBgc": ["#E4EEC9", "有标题的表格 标题行 背景色"],
+    "tableTicOddRowBgc": ["#a8dfff", "有标题的表格 奇数行 背景色"],
+    "tableTicEvenRowBgc": ["#d4ebf9", "有标题的表格 偶数行 背景色"],
+    "tableTicHvRowBgc": ["#6bc1f3", "有标题的表格 悬停行 背景色"],
+    "tableExtraRowBgc": ["#ddf196", "表格 额外标题（奖杯栏）"],
+    "atv1BestBgc": ["#b3eb9d", "门票价格图例 最赚"],
+    "atv1MidBgc": ["#ddf196", "门票价格图例 次赚"],
+    "atv1WorstBgc": ["#e4c79a", "门票价格图例 最亏"],
+    "levelFirstColor": ["#63BE7B", "色阶 最优颜色"],
+    "levelSecondColor": ["#FFEB84", "色阶 中间颜色"],
+    "levelThirdColor": ["#F8696B", "色阶 最差颜色"],
+    "buttonBgc": ["#D8F1EE", "按钮 背景色"],
+    "buttonFc": ["#000000", "按钮 字色"],
+    "buttonAcBgc": ["#8fc4ef", "按钮 激活 背景色"],
+    "buttonAcFc": ["#000000", "按钮 激活 字色"],
+    "buttonProgBgc": ["#ff9f18", "按钮 运行中 背景色"],
+    "buttonSuccBgc": ["#4caf50", "按钮 提取成功 背景色"],
+    "inputBgc": ["#eefff8", "输入框 背景色"],
+    "inputBdc": ["#cccccc", "输入框 边框色"],
+    "inputFc": ["#000000", "输入框 字色"],
+    "inputPhFc": ["#757575", "输入框 默认内容 字色"],
+    "inputHvBdc": ["#6bc1f3", "输入框 悬停 边框色"],
+    "inputHvSdc": ["#007bff80", "输入框 悬停 阴影色"],
+    "inputFcBdc": ["#6bc1f3", "输入框 聚焦 边框色"],
+    "inputFcSdc": ["#007bff80", "输入框 聚焦 阴影色"],
+    "sliderCircleC": ["#ffffff", "滑块 填充色"],
+    "sliderOffBgc": ["#cccccc", "滑块 关闭 背景色"],
+    "sliderOnBgc": ["#8cda8f", "滑块 开启 背景色"],
+    "selectBgc": ["#eefff8", "下拉菜单 背景色"],
+    "selectBdc": ["#cccccc", "下拉菜单 边框色"],
+    "selectFc": ["#000000", "下拉菜单 字色"],
+    "selectOpBgc": ["#eefff8", "下拉菜单选项 背景色"],
+    "floatCopyBgc": ["#e0fbd5", "悬浮提醒 已复制 背景色"],
+    "floatCopyFc": ["#000000", "悬浮提醒 已复制 字色"],
+    "floatTreeBgc": ["#000000cc", "悬浮提醒 树状图 背景色"],
+    "floatTreeFc": ["#ffffff", "悬浮提醒 树状图 字色"],
+    "floatHeatBgc": ["#000000cc", "悬浮提醒 热点图 背景色"],
+    "floatHeatFc": ["#ffffff", "悬浮提醒 热点图 字色"],
+    "cellBgc": ["#ebedf0", "热点图空白格 背景色"],
+    "perfectLineNotiFc": ["#db0000", "未达到完美线的高亮字色"],
+    "bvpkWin": ["#5bd56b", "bvpk获胜 背景色"],
+    "bvpkLose": ["#fbaa78", "bvpk失败 背景色"],
+    "bvpkDraw": ["#d4ebf9", "bvpk平局 背景色"],
+    "bvpkSolo": ["#a9efb4", "bvpk独占 背景色"],
+    "dailyPBLabelFc": ["#000000", "每日pb标签字色"]
+};
+/* 预设主题 */
+const defaultThemes = {
+    "默认": {}, 
+    "深色": {
+        "themeName": "深色",
+        "introduce": "",
+        "headBgc": ["#24292e", "标题 背景色"],
+        "headFc": ["#f6f8fa", "标题 字色"],
+        "navBgc": ["#2d333b", "导航栏背景色"],
+        "navABgc": ["#2d333b", "导航栏项目 背景色"],
+        "navAFc": ["#adbac7", "导航栏项目 字色"],
+        "navHvBgc": ["#373e47", "导航栏项目悬停 背景色"],
+        "navHvFc": ["#cdd9e5", "导航栏项目 悬停 字色"],
+        "navAcBgc": ["#444c56", "导航栏项目 激活 背景色"],
+        "navAcFc": ["#ffffff", "导航栏项目 激活 字色"],
+        "navEvBgc": ["#053275", "导航栏活动项 背景色"],
+        "navEvFc": ["#ffffff", "导航栏活动项 字色"],
+        "navEvHvBgc": ["#123a7b", "导航栏活动项 悬停 背景色"],
+        "navEvHvFc": ["#ffffff", "导航栏活动项 悬停 字色"],
+        "navEvAcBgc": ["#0c4ba3", "导航栏活动项 激活 背景色"],
+        "navEvAcFc": ["#ffffff", "导航栏活动项 激活 字色"],
+        "navUpBgc": ["#d19300", "导航栏刷新/链接项 背景色"],
+        "navUpFc": ["#24292e", "导航栏刷新/链接项 字色"],
+        "navUpHvBgc": ["#d6a62b", "导航栏刷新/链接项 悬停 背景色"],
+        "navUpHvFc": ["#24292e", "导航栏刷新/链接项 悬停 字色"],
+        "contentBgc": ["#1e2227", "内容区域 背景色"],
+        "contentFc": ["#dae5f0", "内容区域 字色"],
+        "tableFc": ["#ecf1f5", "表格 字色"],
+        "tableOddRowBgc": ["#2d333b", "表格 奇数行 背景色"],
+        "tableEvenRowBgc": ["#22272e", "表格 偶数行 背景色"],
+        "tableTic1ColBgc": ["#373e47", "有标题的表格 标题列 背景色"],
+        "tableTic1RowBgc": ["#373e47", "有标题的表格 标题行 背景色"],
+        "tableTicOddRowBgc": ["#2d333b", "有标题的表格 奇数行 背景色"],
+        "tableTicEvenRowBgc": ["#22272e", "有标题的表格 偶数行 背景色"],
+        "tableTicHvRowBgc": ["#316dca", "有标题的表格 悬停行 背景色"],
+        "tableExtraRowBgc": ["#f0b72f", "表格 额外标题（奖杯栏）"],
+        "atv1BestBgc": ["#2da44e", "门票价格图例 最赚"],
+        "atv1MidBgc": ["#f0b72f", "门票价格图例 次赚"],
+        "atv1WorstBgc": ["#d33a2f", "门票价格图例 最亏"],
+        "levelFirstColor": ["#2da44e", "色阶 最优颜色"],
+        "levelSecondColor": ["#f0b72f", "色阶 中间颜色"],
+        "levelThirdColor": ["#d33a2f", "色阶 最差颜色"],
+        "buttonBgc": ["#373e47", "按钮 背景色"],
+        "buttonFc": ["#e1e1e1", "按钮 字色"],
+        "buttonAcBgc": ["#1d509d", "按钮 激活 背景色"],
+        "buttonAcFc": ["#ffffff", "按钮 激活 字色"],
+        "buttonProgBgc": ["#f0b72f", "按钮 运行中 背景色"],
+        "buttonSuccBgc": ["#2da44e", "按钮 提取成功 背景色"],
+        "inputBgc": ["#2d333b", "输入框 背景色"],
+        "inputBdc": ["#444c56", "输入框 边框色"],
+        "inputFc": ["#ecf1f5", "输入框 字色"],
+        "inputPhFc": ["#757575", "输入框 默认内容 字色"],
+        "inputHvBdc": ["#4184e4", "输入框 悬停 边框色"],
+        "inputHvSdc": ["#4184e480", "输入框 悬停 阴影色"],
+        "inputFcBdc": ["#4184e4", "输入框 聚焦 边框色"],
+        "inputFcSdc": ["#4184e480", "输入框 聚焦 阴影色"],
+        "sliderCircleC": ["#f6f8fa", "滑块 填充色"],
+        "sliderOffBgc": ["#444c56", "滑块 关闭 背景色"],
+        "sliderOnBgc": ["#2da44e", "滑块 开启 背景色"],
+        "selectBgc": ["#2d333b", "下拉菜单 背景色"],
+        "selectBdc": ["#444c56", "下拉菜单 边框色"],
+        "selectFc": ["#ecf1f5", "下拉菜单 字色"],
+        "selectOpBgc": ["#373e47", "下拉菜单选项 背景色"],
+        "floatCopyBgc": ["#2d333b", "悬浮提醒 已复制 背景色"],
+        "floatCopyFc": ["#adbac7", "悬浮提醒 已复制 字色"],
+        "floatTreeBgc": ["#2d333bcc", "悬浮提醒 树状图 背景色"],
+        "floatTreeFc": ["#adbac7", "悬浮提醒 树状图 字色"],
+        "floatHeatBgc": ["#2d333bcc", "悬浮提醒 热点图 背景色"],
+        "floatHeatFc": ["#adbac7", "悬浮提醒 热点图 字色"],
+        "cellBgc": ["#2d333b", "热点图空白格 背景色"],
+        "perfectLineNotiFc": ["#f85149", "未达到完美线的高亮字色"],
+        "bvpkWin": ["#2da44e", "bvpk获胜 背景色"],
+        "bvpkLose": ["#d33a2f", "bvpk失败 背景色"],
+        "bvpkDraw": ["#444c56", "bvpk平局 背景色"],
+        "bvpkSolo": ["#3fb950", "bvpk独占 背景色"],
+        "dailyPBLabelFc": ["#e1d5d5", "每日pb标签字色"]
+    },
+    "鲜艳": {
+        "themeName": "鲜艳",
+        "introduce": "",
+        "headBgc": ["#1ABCBD", "标题 背景色"],
+        "headFc": ["#FFFFFF", "标题 字色"],
+        "navBgc": ["#F4A5A1", "导航栏背景色"],
+        "navABgc": ["#F4A5A1", "导航栏项目 背景色"],
+        "navAFc": ["#1E293B", "导航栏项目 字色"],
+        "navHvBgc": ["#ff8295", "导航栏项目悬停 背景色"],
+        "navHvFc": ["#1E293B", "导航栏项目 悬停 字色"],
+        "navAcBgc": ["#f85d74", "导航栏项目 激活 背景色"],
+        "navAcFc": ["#FFFFFF", "导航栏项目 激活 字色"],
+        "navEvBgc": ["#51d9d9", "导航栏活动项 背景色"],
+        "navEvFc": ["#1E293B", "导航栏活动项 字色"],
+        "navEvHvBgc": ["#1ABCBD", "导航栏活动项 悬停 背景色"],
+        "navEvHvFc": ["#1E293B", "导航栏活动项 悬停 字色"],
+        "navEvAcBgc": ["#1ABCBD", "导航栏活动项 激活 背景色"],
+        "navEvAcFc": ["#FFFFFF", "导航栏活动项 激活 字色"],
+        "navUpBgc": ["#FFE246", "导航栏刷新/链接项 背景色"],
+        "navUpFc": ["#1E293B", "导航栏刷新/链接项 字色"],
+        "navUpHvBgc": ["#ffea70", "导航栏刷新/链接项 悬停 背景色"],
+        "navUpHvFc": ["#1E293B", "导航栏刷新/链接项 悬停 字色"],
+        "contentBgc": ["#FFFFFF", "内容区域 背景色"],
+        "contentFc": ["#1E293B", "内容区域 字色"],
+        "tableFc": ["#081221", "表格 字色"],
+        "tableOddRowBgc": ["#06b8a0", "表格 奇数行 背景色"],
+        "tableEvenRowBgc": ["#e8f7f7", "表格 偶数行 背景色"],
+        "tableTic1ColBgc": ["#06b8a0", "有标题的表格 标题列 背景色"],
+        "tableTic1RowBgc": ["#06b8a0", "有标题的表格 标题行 背景色"],
+        "tableTicOddRowBgc": ["#e8f7f7", "有标题的表格 奇数行 背景色"],
+        "tableTicEvenRowBgc": ["#79D1C3", "有标题的表格 偶数行 背景色"],
+        "tableTicHvRowBgc": ["#4db0c6", "有标题的表格 悬停行 背景色"],
+        "tableExtraRowBgc": ["#D9F99D", "表格 额外标题（奖杯栏）"],
+        "atv1BestBgc": ["#b3eb9d", "门票价格图例 最赚"],
+        "atv1MidBgc": ["#ddf196", "门票价格图例 次赚"],
+        "atv1WorstBgc": ["#e4c79a", "门票价格图例 最亏"],
+        "levelFirstColor": ["#63BE7B", "色阶 最优颜色"],
+        "levelSecondColor": ["#FFEB84", "色阶 中间颜色"],
+        "levelThirdColor": ["#F8696B", "色阶 最差颜色"],
+        "buttonBgc": ["#ffb5db", "按钮 背景色"],
+        "buttonFc": ["#000000", "按钮 字色"],
+        "buttonAcBgc": ["#f74971", "按钮 激活 背景色"],
+        "buttonAcFc": ["#FFFFFF", "按钮 激活 字色"],
+        "buttonProgBgc": ["#eab04a", "按钮 运行中 背景色"],
+        "buttonSuccBgc": ["#1ad597", "按钮 提取成功 背景色"],
+        "inputBgc": ["#ffeaef", "输入框 背景色"],
+        "inputBdc": ["#CBD5E1", "输入框 边框色"],
+        "inputFc": ["#1E293B", "输入框 字色"],
+        "inputPhFc": ["#8e9aaa", "输入框 默认内容 字色"],
+        "inputHvBdc": ["#f74971", "输入框 悬停 边框色"],
+        "inputHvSdc": ["#f7497180", "输入框 悬停 阴影色"],
+        "inputFcBdc": ["#f74971", "输入框 聚焦 边框色"],
+        "inputFcSdc": ["#f7497180", "输入框 聚焦 阴影色"],
+        "sliderCircleC": ["#FFFFFF", "滑块 填充色"],
+        "sliderOffBgc": ["#CBD5E1", "滑块 关闭 背景色"],
+        "sliderOnBgc": ["#26e3dd", "滑块 开启 背景色"],
+        "selectBgc": ["#ffeaef", "下拉菜单 背景色"],
+        "selectBdc": ["#CBD5E1", "下拉菜单 边框色"],
+        "selectFc": ["#1E293B", "下拉菜单 字色"],
+        "selectOpBgc": ["#EFF6FF", "下拉菜单选项 背景色"],
+        "floatCopyBgc": ["#10B981", "悬浮提醒 已复制 背景色"],
+        "floatCopyFc": ["#FFFFFF", "悬浮提醒 已复制 字色"],
+        "floatTreeBgc": ["#1E293BCC", "悬浮提醒 树状图 背景色"],
+        "floatTreeFc": ["#FFFFFF", "悬浮提醒 树状图 字色"],
+        "floatHeatBgc": ["#1E293BCC", "悬浮提醒 热点图 背景色"],
+        "floatHeatFc": ["#FFFFFF", "悬浮提醒 热点图 字色"],
+        "cellBgc": ["#F1F5F9", "热点图空白格 背景色"],
+        "perfectLineNotiFc": ["#ff0000", "未达到完美线的高亮字色"],
+        "bvpkWin": ["#10B981", "bvpk获胜 背景色"],
+        "bvpkLose": ["#EF4444", "bvpk失败 背景色"],
+        "bvpkDraw": ["#3B82F6", "bvpk平局 背景色"],
+        "bvpkSolo": ["#A3E635", "bvpk独占 背景色"],
+        "dailyPBLabelFc": ["#000000", "每日pb标签字色"]
+    }
+};

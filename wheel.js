@@ -313,6 +313,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 document.addEventListener('DOMContentLoaded', function() {
     const currentDate = new Date();
     if ((currentDate.getUTCMonth() + 1) % 4 != 3) {
-        document.getElementById("event2").style.display = 'none';
+        document.getElementById("event3").style.display = 'none';
     }
 });

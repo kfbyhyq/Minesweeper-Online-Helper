@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'sendWheelQuest') { // 命运转盘
         let allQuests = request.allQuests;
         console.log('收到任务数据：', allQuests);
-        document.getElementById('updateWheel').style.backgroundColor = '#4caf50';
+        document.getElementById('updateWheel').style.backgroundColor = getColorSetting('buttonSuccBgc');
         document.getElementById('flagWheel').textContent = 1;   // 设置成功标记
         var wheelType = {
             'shard387': '效率',
@@ -124,7 +124,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         let eqInfo = request.eqInfo;
         console.log(timeStr, '活动任务信息:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
-        document.getElementById('updateEq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
+        document.getElementById('updateEq').style.backgroundColor = getColorSetting('buttonSuccBgc');   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag4').textContent = 1;   // 设置成功标记
 
         const output = eqInfo.map(item => item + '<br>').join('');
@@ -630,7 +630,7 @@ function displayTables() {
             displayMatrix(perfectLine, 'tablePerfectLine', 4);
             for (let i = 2; i < perfectLine.length; i++) {
                 if (perfectLine[0][2] < perfectLine[i][2]) {
-                    document.getElementById('tablePerfectLine').rows[i].cells[2].style.color = 'rgb(219, 0, 0)';
+                    document.getElementById('tablePerfectLine').rows[i].cells[2].style.color = getColorSetting('perfectLineNotiFc');
                 }
             }
             let customLine = document.getElementById('tablePerfectLine').rows[16].cells[0];
@@ -946,14 +946,17 @@ function displayTables() {
             tableAv.style.fontSize = cellFontSize + 'px';
             tableAr.style.fontSize = cellFontSize + 'px';
             tableAtr.style.fontSize = cellFontSize + 'px';
+            const atv1BestBgc = getColorSetting('atv1BestBgc');
+            const atv1MidBgc = getColorSetting('atv1MidBgc');
+            const atv1WorstBgc = getColorSetting('atv1WorstBgc');
             for (let t = 0; t < tm; t++) {
                 for (let l = 0; l < lm; l++) {
                     /* 比较大小 设置颜色 */
                     if (arenaRate[2 * t + 1][l + 1] > arenaRate[2 * t + 2][l + 1]) { // 打精英不如打普通
                         // tableAv.rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
-                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = "#b3eb9d"; // 最赚
+                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = atv1BestBgc; // 最赚
                         // tableAv.rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
-                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = atv1MidBgc; // 比卖掉赚
                     // } else if (xType[t] * coef[2] * elite[l] * hp2mc > ticketPrice[t + 1][l + 1]) { // 升精英的花费不如买个新的
                     //     tableAv.rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
                     //     tableAv.rows[2 * t + 1].cells[2 * l + 2].style.backgroundColor = "#b3eb9d"; // 最赚
@@ -961,9 +964,9 @@ function displayTables() {
                     //     tableAv.rows[2 * t + 2].cells[2 * l + 2].style.backgroundColor = "#ddf196"; // 比卖掉赚
                     } else {
                         // tableAv.rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#b3eb9d"; // 最赚
-                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = "#b3eb9d"; // 最赚
+                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = atv1BestBgc; // 最赚
                         // tableAv.rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#ddf196"; // 比卖掉赚
-                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = "#ddf196"; // 比卖掉赚
+                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = atv1MidBgc; // 比卖掉赚
                     }
                     tableAr.rows[2 * t + 1].cells[l + 1].style.backgroundColor = levelColorAr[2 * t * lm + 2 * l]; // 色阶
                     tableAr.rows[2 * t + 2].cells[l + 1].style.backgroundColor = levelColorAr[2 * t * lm + 2 * l + 1]; // 色阶
@@ -971,11 +974,11 @@ function displayTables() {
                     tableAtr.rows[2 * t + 2].cells[l + 1].style.backgroundColor = levelColorAtr[2 * t * lm + 2 * l + 1]; // 色阶
                     if (arenaRate[2 * t + 1][l + 1] <= 1) {
                         // tableAv.rows[2 * t + 1].cells[2 * l + 3].style.backgroundColor = "#e4c79a"; // 卖掉赚
-                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                        tableAv.rows[2 * t + 1].cells[l + 1].style.backgroundColor = atv1WorstBgc; // 卖掉赚
                     }
                     if (arenaRate[2 * t + 2][l + 1] <= 1) {
                         // tableAv.rows[2 * t + 2].cells[2 * l + 3].style.backgroundColor = "#e4c79a"; // 卖掉赚
-                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = "#e4c79a"; // 卖掉赚
+                        tableAv.rows[2 * t + 2].cells[l + 1].style.backgroundColor = atv1WorstBgc; // 卖掉赚
                     }
                 }
             }
@@ -1064,6 +1067,7 @@ function displayBVPB() {
                     desc = 0;
                 }
                 var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
+                console.log(colorArray)
                 for (let i = 0; i < itemNum; i++) {
                     const cell = pbt.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
                     cell.style.backgroundColor = colorArray[i];
@@ -1170,10 +1174,10 @@ function displayBVPBNew() {
                     ['分数', '', ''],
                     ['独占BV', '', '']
                 ];
-                const winColor = 'rgb(91, 213, 107)';
-                const loseColor = 'rgb(251, 170, 120)';
-                const drawColor = 'rgb(212, 235, 249)';
-                const soloColor = 'rgb(169, 239, 180)';
+                const winColor = getColorSetting('bvpkWin');
+                const loseColor = getColorSetting('bvpkLose');
+                const drawColor = getColorSetting('bvpkDraw');
+                const soloColor = getColorSetting('bvpkSolo');
                 const pbt0 = document.getElementById("pbOfBVTable");
                 var rn = Math.max(pbt0.rows.length, pbt1.rows.length);
                 for (let i = 1; i < rn; i++) {
@@ -1487,7 +1491,17 @@ function displayTextMatrix(matrix, tableId, width = 0) {
 }
 
 /* 根据值设置色阶 */
-function setLevelColor(arrayIni, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, averageMid = true, firstColor = '#63BE7B', secondColor = '#FFEB84', thirdColor = '#F8696B') {
+function setLevelColor(arrayIni, descend = false, colorNum = 2, maxSet = Infinity, minSet = -Infinity, averageMid = true, firstColor = 0, secondColor = 0, thirdColor = 0) {
+    if (firstColor == 0) {
+        firstColor = getColorSetting('levelFirstColor');
+    }
+    if (secondColor == 0) {
+        secondColor = getColorSetting('levelSecondColor');
+    }
+    if (thirdColor == 0) {
+        thirdColor = getColorSetting('levelThirdColor');
+    }
+    
     var array = [];
     var arrayInd = [];
     var noneFlag = 0;
@@ -1614,4 +1628,14 @@ function setLevelColor(arrayIni, descend = false, colorNum = 2, maxSet = Infinit
     }
     // console.log(levelColor);
     return levelColor;
+}
+
+/* 获取当前生效的颜色配置 */
+function getColorSetting(varName, element = document.documentElement) {
+    // 确保变量名以"--"开头
+    const normalizedVarName = varName.startsWith('--') ? varName : `--${varName}`;
+    // 获取计算后的样式（包含所有继承和覆盖后的最终值）
+    const styles = getComputedStyle(element);
+    // 返回变量值（去除首尾空格）
+    return styles.getPropertyValue(normalizedVarName).trim();
 }

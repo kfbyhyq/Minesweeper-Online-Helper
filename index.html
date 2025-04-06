@@ -82,19 +82,19 @@
                 <span class="plainText">净收益为收益减开销，时间单位为秒，每种竞技场的用时系数可在设置页配置。</span><br><br>
                 <div class="flexContent">
                     <div class="fqContentSon">
-                        <div class="atv" id="atv1">最赚</div>
-                        <div class="atv" id="atv2">次赚</div>
-                        <div class="atv" id="atv3">卖掉赚</div><br><br>
+                        <div class="atv" id="atv1Best">最赚</div>
+                        <div class="atv" id="atv1Mid">次赚</div>
+                        <div class="atv" id="atv1Worst">卖掉赚</div><br><br>
                         <table id="tableArenaValue" class="ticketTable0"></table><br>
                     </div>
                     <div class="fqContentSon">
-                        <div class="atv" id="atv4">最赚</div>
-                        <div class="atv" id="atv5">最亏</div><br><br>
+                        <div class="atv" id="atv2Best">最赚</div>
+                        <div class="atv" id="atv2Worst">最亏</div><br><br>
                         <table id="tableArenaRate" class="ticketTable0"></table><br>
                     </div>
                     <div class="fqContentSon">
-                        <div class="atv" id="atv4">最赚</div>
-                        <div class="atv" id="atv5">最亏</div><br><br>
+                        <div class="atv" id="atv2Best">最赚</div>
+                        <div class="atv" id="atv2Worst">最亏</div><br><br>
                         <table id="tableArenaTimeRate" class="ticketTable0"></table><br>
                     </div>
                 </div>
@@ -229,13 +229,13 @@
                 <span id="pbOfBVLevel" style="display:none;">3</span>
                 <span id="pbOfBVType" style="display:none;">1</span>
                 <span id="pbOfBVIsNf" style="display:none;">0</span>
-                <button id="pbOfBV-beg" class="pbOfBVButton">初级</button>
-                <button id="pbOfBV-int" class="pbOfBVButton">中级</button>
-                <button id="pbOfBV-exp" class="pbOfBVButton">高级</button><br>
-                <button id="pbOfBV-wins" class="pbOfBVButton">局数</button>
-                <button id="pbOfBV-time" class="pbOfBVButton">时间</button>
-                <button id="pbOfBV-bvs" class="pbOfBVButton">3BV/S</button>
-                <button id="pbOfBV-eff" class="pbOfBVButton">效率</button>
+                <button id="pbOfBV-beg-1" class="pbOfBVButton BVPBLevelButton">初级</button>
+                <button id="pbOfBV-int-2" class="pbOfBVButton BVPBLevelButton">中级</button>
+                <button id="pbOfBV-exp-3" class="pbOfBVButton BVPBLevelButton activeButton">高级</button><br>
+                <button id="pbOfBV-wins-0" class="pbOfBVButton BVPBTypeButton">局数</button>
+                <button id="pbOfBV-time-1" class="pbOfBVButton BVPBTypeButton activeButton">时间</button>
+                <button id="pbOfBV-bvs-3" class="pbOfBVButton BVPBTypeButton">3BV/S</button>
+                <button id="pbOfBV-eff-5" class="pbOfBVButton BVPBTypeButton">效率</button>
                 </button><span class="blank"></span>
                 <button id="pbOfBV-nf" class="pbOfBVButton">盲扫</button>
                 <br><br>
@@ -413,6 +413,18 @@
                 <div id="eqInfo">...</div>
             </div>
             <div id="setting" class="page">
+                <h1>网站设置</h1>
+                <span class="plainText">主题：</span>
+                <select id="themeSelect" class="inputBox wideInputBox1"></select>
+                <span class="blank"></span><span class="blank"></span>
+                <button id="uploadThemeButton">上传自定义主题</button>
+                <input type="file" id="uploadTheme" style="display:none" accept=".json" />
+                <span class="blank"></span>
+                <button id="clearTheme">清空自定义主题</button>
+                <span class="blank"></span>
+                <button id="downloadThemeExample">下载主题模板</button>
+                <span class="blank"></span>
+                <button id="downloadAllTheme">下载全部主题</button>
                 <h1>账号设置</h1>
                 <span class="plainText">当前登录账号uID（个人主页网址中的数字）：</span>
                 <input id="personalId" class="inputBox wideInput"><span id="pIdNow" style="display:none"></span>

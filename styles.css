@@ -1,3 +1,89 @@
+/* 自定义颜色 */
+:root {
+    --headBgc: #70B2E2; /* 标题 背景色 */
+    --headFc: #ffffff; /* 标题 字色 */
+
+    --navBgc: #ADDFBA; /* 导航栏背景色 */
+    --navABgc: #ADDFBA; /* 导航栏项目 背景色 */
+    --navAFc: #333333; /* 导航栏项目 字色 */
+    --navHvBgc: #D6EBB3; /* 导航栏项目悬停 背景色 */
+    --navHvFc: #333333; /* 导航栏项目 悬停 字色 */
+    --navAcBgc: #7AD295; /* 导航栏项目 激活 背景色 */
+    --navAcFc: #ffffff; /* 导航栏项目 激活 字色 */
+    --navEvBgc: #bbc3f1; /* 导航栏活动项 背景色 */
+    --navEvFc: #333333; /* 导航栏活动项 字色 */
+    --navEvHvBgc: #bbd9f1; /* 导航栏活动项 悬停 背景色 */
+    --navEvHvFc: #333333; /* 导航栏活动项 悬停 字色 */
+    --navEvAcBgc: #92a1f7; /* 导航栏活动项 激活 背景色 */
+    --navEvAcFc: #ffffff; /* 导航栏活动项 激活 字色 */
+    --navUpBgc: #fdda4f; /* 导航栏刷新/链接项 背景色 */
+    --navUpFc: #333333; /* 导航栏刷新/链接项 字色 */
+    --navUpHvBgc: #fcf281; /* 导航栏刷新/链接项 悬停 背景色 */
+    --navUpHvFc: #333333; /* 导航栏刷新/链接项 悬停 字色 */
+
+    --contentBgc: #ffffff; /* 内容区域 背景色 */
+    --contentFc: #000000; /* 内容区域 字色 */
+
+    --tableFc: #000000; /* 表格 字色 */
+    --tableOddRowBgc: #E4EEC9; /* 表格 奇数行 背景色 */
+    --tableEvenRowBgc: #d4ebf9; /* 表格 偶数行 背景色 */
+    --tableTic1ColBgc: #E4EEC9; /* 有标题的表格 标题列 背景色 */
+    --tableTic1RowBgc: #E4EEC9; /* 有标题的表格 标题行 背景色 */
+    --tableTicOddRowBgc: #a8dfff; /* 有标题的表格 奇数行 背景色 */
+    --tableTicEvenRowBgc: #d4ebf9; /* 有标题的表格 偶数行 背景色 */
+    --tableTicHvRowBgc: #6bc1f3; /* 有标题的表格 悬停行 背景色 */
+    --tableExtraRowBgc: #ddf196; /* 表格 额外标题（奖杯栏） */
+
+    --atv1BestBgc: #b3eb9d; /* 门票价格图例 最赚 */
+    --atv1MidBgc: #ddf196; /* 门票价格图例 次赚 */
+    --atv1WorstBgc: #e4c79a; /* 门票价格图例 最亏 */
+    
+    --levelFirstColor: #63BE7B;/* 色阶 最优颜色 */
+    --levelSecondColor: #FFEB84;/* 色阶 中间颜色 */
+    --levelThirdColor: #F8696B;/* 色阶 最差颜色 */
+
+    --buttonBgc: #D8F1EE; /* 按钮 背景色 */
+    --buttonFc: #000000; /* 按钮 字色 */
+    --buttonAcBgc: #8fc4ef; /* 按钮 激活 背景色 */
+    --buttonAcFc: #000000; /* 按钮 激活 字色 */
+    --buttonProgBgc: #ff9f18; /* 按钮 运行中 背景色 */
+    --buttonSuccBgc: #4caf50; /* 按钮 提取成功 背景色 */
+
+    --inputBgc: #eefff8; /* 输入框 背景色 */
+    --inputBdc: #cccccc; /* 输入框 边框色 */
+    --inputFc: #000000; /* 输入框 字色 */
+    --inputPhFc: #757575; /* 输入框 默认内容 字色 */
+    --inputHvBdc: #6bc1f3; /* 输入框 悬停 边框色 */
+    --inputHvSdc: #007bff80; /* 输入框 悬停 阴影色 */
+    --inputFcBdc: #6bc1f3; /* 输入框 聚焦 边框色 */
+    --inputFcSdc: #007bff80; /* 输入框 聚焦 阴影色 */
+
+    --sliderCircleC: #ffffff; /* 滑块 填充色 */
+    --sliderOffBgc: #cccccc; /* 滑块 关闭 背景色 */
+    --sliderOnBgc: #8cda8f; /* 滑块 开启 背景色 */
+
+    --selectBgc: #eefff8; /* 下拉菜单 背景色 */
+    --selectBdc: #cccccc; /* 下拉菜单 边框色 */
+    --selectFc: #000000; /* 下拉菜单 字色 */
+    --selectOpBgc: #eefff8; /* 下拉菜单选项 背景色 */
+
+    --floatCopyBgc: #e0fbd5; /* 悬浮提醒 已复制 背景色 */
+    --floatCopyFc: #000000; /* 悬浮提醒 已复制 字色 */
+    --floatTreeBgc: #000000cc; /* 悬浮提醒 树状图 背景色 */
+    --floatTreeFc: #ffffff; /* 悬浮提醒 树状图 字色 */
+    --floatHeatBgc: #000000cc; /* 悬浮提醒 热点图 背景色 */
+    --floatHeatFc: #ffffff; /* 悬浮提醒 热点图 字色 */
+
+    --cellBgc: #ebedf0; /* 热点图空白格 背景色 */
+
+    --perfectLineNotiFc: #db0000; /* 未达到完美线的高亮字色 */
+    --bvpkWin: #5bd56b; /* bvpk获胜 背景色 */
+    --bvpkLose: #fbaa78; /* bvpk失败 背景色 */
+    --bvpkDraw: #d4ebf9; /* bvpk平局 背景色 */
+    --bvpkSolo: #a9efb4; /* bvpk独占 背景色 */
+    --dailyPBLabelFc: #000000; /* 每日pb标签字色 */
+}
+
 /* 设置整个页面的布局为 flexbox，使其支持左右布局 */
 body {
     display: flex;
@@ -8,9 +94,9 @@ body {
 
 /* 标题栏的样式 */
 #header {
-    background-color: #70B2E2; /* 背景颜色 */
+    background-color: var(--headBgc); /* 背景颜色 */
     font-size: 14px; /* 字体大小 */
-    color: #fff; /* 字体颜色 */
+    color: var(--headFc); /* 字体颜色 */
     padding: 0px; /* 内边距 */
     text-align: center; /* 居中对齐文本 */
     position: fixed; /* 固定位置 */
@@ -32,7 +118,7 @@ body {
     min-width: 120px; /* 最小宽度 */
     max-width: 160px;
     font-size: 16px; /* 字体大小 */
-    background-color: #ADDFBA; /* 背景颜色 */
+    background-color: var(--navBgc); /* 背景颜色 */
     padding: 0px; /* 内边距 */
     border-top: 1px solid #ddd; /* 顶部边框 */
     position: fixed; /* 固定位置 */
@@ -57,26 +143,55 @@ body {
     padding: 1.6vh 0vh; /* 内边距 */
     text-align: center; /* 居中对齐文本 */
     text-decoration: none; /* 去掉下划线 */
-    color: #333; /* 字体颜色 */
+    background-color: var(--navABgc); /* 背景颜色 */
+    color: var(--navAFc); /* 字体颜色 */
 }
 
 /* 设置导航栏链接的悬停效果 */
 #navbar a:hover {
-    background-color: #D6EBB3; /* 悬停时的背景颜色 */
+    background-color: var(--navHvBgc);
+    color: var(--navHvFc);
 }
 
 /* 设置激活的导航栏链接的效果 */
 #navbar a.active {
-    background-color: #7AD295;
-    color: white;
+    background-color: var(--navAcBgc);
+    color: var(--navAcFc);
 }
 
-/* 设置内容区域的样式 */
-#content {
-    flex: 1; /* 使内容区域占据剩余的空间 */
-    padding: 10px 20px; /* 内边距 */
-    background-color: #fff; /* 背景颜色 */
-    overflow-x: auto; /* 仅在需要时添加水平滚动条 */
+#navbar .event {
+    background-color: var(--navEvBgc);
+    color: var(--navEvFc);
+}
+#navbar .event:hover {
+    background-color: var(--navEvHvBgc);
+    color: var(--navEvHvFc)
+}
+#navbar .event.active {
+    background-color: var(--navEvAcBgc); /* 背景颜色 */
+    color: var(--navEvAcFc);
+}
+
+/* 刷新按钮格式 */
+#navbar #update {
+    background-color: var(--navUpBgc);
+    color: var(--navUpFc);
+}
+#navbar #update:hover {
+    background-color: var(--navUpHvBgc);
+    color: var(--navUpHvFc);
+}
+/* GitHub主页 */
+#navbar #github {
+    background-color: var(--navUpBgc);
+    color: var(--navUpFc);
+    margin-top: auto;
+    font-size: 14px; /* 字体大小 */
+    padding: 1.6vh 0vh; /* 内边距 */
+}
+#navbar #github:hover {
+    background-color: var(--navUpHvBgc);
+    color: var(--navUpHvFc);
 }
 
 /* 隐藏所有页面内容 */
@@ -89,37 +204,19 @@ body {
     display: block; /* 使当前激活的页面可见 */
 }
 
-#navbar .event {
-    background-color: #bbc3f1; /* 背景颜色 */
-}
-#navbar .event:hover {
-    background-color: #bbd9f1; /* 背景颜色 */
-}
-#navbar .event.active {
-    background-color: #92a1f7; /* 背景颜色 */
-    color: white;
+/* 设置内容区域的样式 */
+#content {
+    flex: 1; /* 使内容区域占据剩余的空间 */
+    padding: 10px 20px; /* 内边距 */
+    background-color: var(--contentBgc); /* 背景颜色 */
+    color: var(--contentFc);
+    overflow-x: auto; /* 仅在需要时添加水平滚动条 */
 }
 
-/* 刷新按钮格式 */
-#navbar #update {
-    background-color: #fdda4f;
-}
-#navbar #update:hover {
-    background-color: #fce27c;
-}
-/* GitHub主页 */
-#navbar #github {
-    background-color: #fdda4f;
-    margin-top: auto;
-    font-size: 14px; /* 字体大小 */
-    padding: 1.6vh 0vh; /* 内边距 */
-}
-#navbar #github:hover {
-    background-color: #fce27c;
-}
 /* 通用表格格式 */
 table {
     border-collapse: collapse; /* 合并边框 */
+    color: var(--tableFc);
     /* width: 100%; */
     max-width: 90vw;
 }
@@ -130,10 +227,10 @@ th, td {
     white-space: nowrap; /* 防止换行 */
 }
 tr:nth-child(odd) {
-    background-color: #E4EEC9; /* 每隔行背景颜色 */
+    background-color: var(--tableOddRowBgc); /* 每隔行背景颜色 */
 }
 tr:nth-child(even) {
-    background-color: #d4ebf9; /* 每隔行背景颜色 */
+    background-color: var(--tableEvenRowBgc); /* 每隔行背景颜色 */
 }
 .noempty td:empty {
     visibility: hidden;
@@ -141,24 +238,27 @@ tr:nth-child(even) {
 /* 专属表格格式 */
 .ticketTable tbody td:first-child {
     /* background-color: #ACD8A7; */
-    background-color: #E4EEC9; /* 第一列背景颜色 */
+    background-color: var(--tableTic1ColBgc); /* 第一列背景颜色 */
     font-weight: bold;
     width: 10%;
 }
 .ticketTable tbody tr:first-child {
-    background-color: #E4EEC9; /* 第一行背景颜色 */
+    background-color: var(--tableTic1RowBgc); /* 第一行背景颜色 */
     font-weight: bold;
 }
 .ticketTable tr:nth-child(odd) {
-    background-color: #a8dfff; /* 每隔行背景颜色 */
+    background-color: var(--tableTicOddRowBgc); /* 每隔行背景颜色 */
+}
+.ticketTable tr:nth-child(even) {
+    background-color: var(--tableTicEvenRowBgc); /* 每隔行背景颜色 */
 }
 .ticketTable tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 
 .ticketTable2 tbody td:first-child {
     /* background-color: #ACD8A7; */
-    background-color: #E4EEC9; /* 第一列背景颜色 */
+    background-color: var(--tableTic1ColBgc); /* 第一列背景颜色 */
     font-weight: bold;
     width: 10%;
 }
@@ -167,60 +267,60 @@ tr:nth-child(even) {
     width: 10%;
 }
 .ticketTable2 tbody tr:first-child {
-    background-color: #E4EEC9; /* 第一行背景颜色 */
+    background-color: var(--tableTic1RowBgc); /* 第一行背景颜色 */
     font-weight: bold;
 }
 .ticketTable2 tr:nth-child(odd) {
-    background-color: #a8dfff;
+    background-color: var(--tableTicOddRowBgc);
 }
 /* .ticketTable2 tr:nth-child(3n+2) {
     background-color: #ebf2f7;
 } */
 .ticketTable2 tr:nth-child(even) {
-    background-color: #d4ebf9;
+    background-color: var(--tableTicEvenRowBgc);
 }
 .ticketTable2 tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 
 .ticketTable0 tbody td:nth-child(1) {
     font-weight: bold;
 }
 .ticketTable0 tbody tr:first-child {
-    background-color: #E4EEC9; /* 第一行背景颜色 */
+    background-color: var(--tableTic1RowBgc); /* 第一行背景颜色 */
     font-weight: bold;
 }
 .ticketTable0 tr:nth-child(odd) {
-    background-color: #a8dfff;
+    background-color: var(--tableTicOddRowBgc);
 }
 .ticketTable0 tr:nth-child(even) {
-    background-color: #d4ebf9;
+    background-color: var(--tableTicEvenRowBgc);
 }
 .ticketTable0 tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 .atv {
     padding: 10px; /* 内边距 */
     text-align: center; /* 文本居中 */
     white-space: nowrap; /* 防止换行 */
-    background-color: #ddf196;
+    /* background-color: #ddf196; */
     display: inline-block;
     gap: 0px;
 }
-#atv1 {
-    background-color: #b3eb9d;
+#atv1Best {
+    background-color: var(--atv1BestBgc);
 }
-#atv2 {
-    background-color: #ddf196;
+#atv1Mid {
+    background-color: var(--atv1MidBgc);
 }
-#atv3 {
-    background-color: #e4c79a;
+#atv1Worst {
+    background-color: var(--atv1WorstBgc);
 }
-#atv4 {
-    background-color: #63BE7B;
+#atv2Best {
+    background-color: var(--levelFirstColor);
 }
-#atv5 {
-    background-color: #F8696B;
+#atv2Worst {
+    background-color: var(--levelThirdColor);
 }
 .highlight {
     /* border-width: 2px; */
@@ -229,8 +329,8 @@ tr:nth-child(even) {
 
 /* 设置按钮格式 */
 button {
-    background-color: #D8F1EE; /* 背景颜色 */
-    color: #000; /* 文字颜色 */
+    background-color: var(--buttonBgc); /* 背景颜色 */
+    color: var(--buttonFc); /* 文字颜色 */
     margin: 0px;
     padding: 10px 20px; /* 内边距，上下10px，左右20px */
     border: none; /* 去掉边框 */
@@ -256,7 +356,7 @@ button {
     width: 80px;
     min-width: 50px;
     height: 22px;
-    background-color: #E4EEC9;
+    background-color: var(--tableTic1RowBgc);
 }
 .eaRate {
     font-size: 16px;
@@ -269,10 +369,10 @@ button {
     height: 22px;
 }
 .eaRate tr:nth-child(odd) {
-    background-color: #d4ebf9; /* 每隔行背景颜色 */
+    background-color: var(--tableTicOddRowBgc); /* 每隔行背景颜色 */
 }
 .eaRate tr:nth-child(even) {
-    background-color: #a8dfff; /* 每隔行背景颜色 */
+    background-color: var(--tableTicEvenRowBgc); /* 每隔行背景颜色 */
 }
 .editable {
     text-align: center;
@@ -285,7 +385,7 @@ button {
     gap: 0px;
     width: 80px;
     min-width: 50px;
-    background-color: #6bc1f3;
+    background-color: var(--tableTicHvRowBgc);
 }
 .nonedit {
     text-align: center;
@@ -297,7 +397,7 @@ button {
     gap: 0px;
     width: 80px;
     min-width: 50px;
-    background-color: #a8dfff;
+    background-color: var(--tableTicEvenRowBgc);
 }
 input {
     display: inline-block;
@@ -308,9 +408,12 @@ input {
     cursor: pointer;
     gap: 0px;
     width: 80px;
-    background-color: #6bc1f3;
+    background-color: var(--tableTicHvRowBgc);
+    color: var(--inputFc);
 }
-
+input::placeholder {
+    color: var(--inputPhFc);
+}
 .hidden {
     display: none;
 }
@@ -323,31 +426,31 @@ input {
     width: 60px;
     padding: 6px; /* 内边距 */
     border-radius: 5px; /* 圆角边框 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    background-color: #eefff8;
+    border: 1px solid var(--inputBdc); /* 边框颜色 */
+    background-color: var(--inputBgc);
 }
 .wideInput {
     width: 120px;
     padding: 6px; /* 内边距 */
     border-radius: 5px; /* 圆角边框 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    background-color: #eefff8;
+    border: 1px solid var(--inputBdc); /* 边框颜色 */
+    background-color: var(--inputBgc);
 }
 .narrowInput {
     width: 30px;
     padding: 6px; /* 内边距 */
     border-radius: 5px; /* 圆角边框 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    background-color: #eefff8;
+    border: 1px solid var(--inputBdc); /* 边框颜色 */
+    background-color: var(--inputBgc);
 }
 .inputBox:hover {
-    border-color: #6bc1f3; /* 悬停时边框颜色 */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 悬停时阴影效果 */
+    border-color: var(--inputHvBdc); /* 悬停时边框颜色 */
+    box-shadow: 0 0 5px var(--inputHvSdc); /* 悬停时阴影效果 */
 }
 .inputBox:focus {
     outline: none; /* 去掉默认聚焦边框 */
-    border-color: #6bc1f3; /* 聚焦时边框颜色 */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 聚焦时阴影效果 */
+    border-color: var(--inputFcBdc); /* 聚焦时边框颜色 */
+    box-shadow: 0 0 5px var(--inputFcSdc); /* 聚焦时阴影效果 */
 }
 /* 宽下拉菜单 */
 .wideInputBox1 {
@@ -383,7 +486,7 @@ input {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc; /* 默认状态颜色 */
+    background-color: var(--sliderOffBgc); /* 默认状态颜色 */
     transition: .4s;
     border-radius: 34px; /* 圆角 */
 }
@@ -394,13 +497,13 @@ input {
     width: 18px;
     left: 3px;
     bottom: 3px;
-    background-color: white; /* 滑动的圆形按钮 */
+    background-color: var(--sliderCircleC); /* 滑动的圆形按钮 */
     transition: .4s;
     border-radius: 50%; /* 圆形 */
 }
 /* 当checkbox被选中时，改变背景颜色和滑动圆形按钮的位置 */
 input:checked + .slider {
-    background-color: #8cda8f; /* 选中状态颜色 */
+    background-color: var(--sliderOnBgc); /* 选中状态颜色 */
 }
 
 input:checked + .slider:before {
@@ -412,13 +515,14 @@ select {
     padding: 6px; /* 内边距 */
     font-size: 16px; /* 字体大小 */
     border-radius: 5px; /* 圆角边框 */
-    border: 1px solid #ccc; /* 边框颜色 */
-    background-color: #eefff8; /* 背景色 */
+    border: 1px solid var(--selectBdc); /* 边框颜色 */
+    background-color: var(--selectBgc); /* 背景色 */
+    color: var(--selectFc);
     appearance: none; /* 去掉默认下拉箭头 */
     text-align: center; /* 居中对齐文本 */
 }
 option {
-    background-color: #eefff8; /* 背景色 */
+    background-color: var(--selectOpBgc); /* 背景色 */
 }
 /* 友谊任务相关设置 */
 .flexContent {
@@ -430,34 +534,40 @@ option {
 }
 /* 表格格式 */
 .questTable tbody tr:first-child {
-    background-color: #E4EEC9; /* 第一行背景颜色 */
+    background-color: var(--tableTic1RowBgc); /* 第一行背景颜色 */
     font-weight: bold;
 }
 .questTable tr:nth-child(odd) {
-    background-color: #a8dfff; /* 每隔行背景颜色 */
+    background-color: var(--tableTicOddRowBgc); /* 每隔行背景颜色 */
+}
+.questTable tr:nth-child(even) {
+    background-color: var(--tableTicEvenRowBgc); /* 每隔行背景颜色 */
 }
 .questTable tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 
 /* 奖杯表格格式 */
 #tableTrophy tr:nth-child(4n+1) {
-    background-color: #ddf196; 
+    background-color: var(--tableExtraRowBgc); 
     font-weight: bold;
 }
 .sortTable {
     width: 600px;
 }
 .sortTable th {
-    background-color: #E4EEC9;
+    background-color: var(--tableTic1RowBgc);
     font-weight: bold;
     cursor: pointer;
 }
 .sortTable tr:nth-child(odd) {
-    background-color: #a8dfff; /* 每隔行背景颜色 */
+    background-color: var(--tableTicOddRowBgc); /* 每隔行背景颜色 */
+}
+.sortTable tr:nth-child(even) {
+    background-color: var(--tableTicEvenRowBgc); /* 每隔行背景颜色 */
 }
 .sortTable tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 
 .blank {
@@ -500,13 +610,14 @@ option {
     font-size: 14px; /* 字体大小 */
 }
 .pbOfBVButton.activeButton {
-    background-color: #8fc4ef;
+    background-color: var(--buttonAcBgc);
+    color: var(--buttonAcFc);
 }
 
 #copyNotify {
     position: absolute; /* 绝对定位 */
-    background-color: #e0fbd5; /* 背景色 */
-    color: #000; /* 文字颜色 */
+    background-color: var(--floatCopyBgc); /* 背景色 */
+    color: var(--floatCopyFc); /* 文字颜色 */
     padding: 6px 8px; /* 内边距 */
     border-radius: 6px; /* 圆角 */
     z-index: 1000; /* 确保在最上层 */
@@ -520,26 +631,29 @@ option {
 }
 #tablePerfectLine tbody td:first-child {
     /* background-color: #ACD8A7; */
-    background-color: #E4EEC9; /* 第一列背景颜色 */
+    background-color: var(--tableTic1ColBgc); /* 第一列背景颜色 */
     font-weight: bold;
 }
 #tablePerfectLine tbody tr:nth-child(2) {
-    background-color: #E4EEC9; /* 第一行背景颜色 */
+    background-color: var(--tableTic1RowBgc); /* 第一行背景颜色 */
     font-weight: bold;
 }
 #tablePerfectLine tr:nth-child(odd) {
-    background-color: #a8dfff; /* 每隔行背景颜色 */
+    background-color: var(--tableTicOddRowBgc); /* 每隔行背景颜色 */
+}
+#tablePerfectLine tr:nth-child(even) {
+    background-color: var(--tableTicEvenRowBgc); /* 每隔行背景颜色 */
 }
 #tablePerfectLine tr:hover {
-    background-color: #6bc1f3; /* 鼠标悬停行的背景颜色 */
+    background-color: var(--tableTicHvRowBgc); /* 鼠标悬停行的背景颜色 */
 }
 
 /* 树状图 */
-.tooltip {
+.treeMapTooltip {
     position: absolute;
     padding: 8px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background: var(--floatTreeBgc);
+    color: var(--floatTreeFc);
     border-radius: 4px;
     pointer-events: none;
     font-size: 12px;
@@ -560,20 +674,20 @@ option {
 }
 .dailyPBLabel {
     font-size: 10px;
-    color: #000000;
+    color: var(--dailyPBLabelFc);
 }
 .dailyPBDayCell {
     width: 14px;
     height: 14px;
     border-radius: 3px;
-    background-color: #ebedf0;
+    background-color: var(--cellBgc);
 }
 
 #dailyPBTooltip {
     position: absolute;
     padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background: var(--floatHeatBgc);
+    color: var(--floatHeatFc);
     border-radius: 4px;
     font-size: 13px;
     pointer-events: none;

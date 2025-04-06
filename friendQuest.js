@@ -295,9 +295,9 @@ function displayFriendQuest() {
                 .attr("height", height);
 
             // 创建tooltip
-            const tooltip = d3.select("body")
+            const treeMapTooltip = d3.select("body")
                 .append("div")
-                .attr("class", "tooltip")
+                .attr("class", "treeMapTooltip")
                 .style("opacity", 0);
 
             // 创建层级结构
@@ -306,7 +306,7 @@ function displayFriendQuest() {
                 .sort((a, b) => b.value - a.value);
 
             // 创建树状图布局
-            d3.treemap()
+            d3.treeMapTooltip()
                 .size([width, height])
                 .tile(d3.treemapSquarify)
                 .round(true)
@@ -363,16 +363,16 @@ function displayFriendQuest() {
             }
 
             function showTooltip(event, d) {
-                tooltip.transition()
+                treeMapTooltip.transition()
                     .duration(200)
                     .style("opacity", 0.9);
-                tooltip.html(`${d.data.title}: ${d.data.value}`)
+                treeMapTooltip.html(`${d.data.title}: ${d.data.value}`)
                     .style("left", (event.pageX + 5) + "px")
                     .style("top", (event.pageY - 28) + "px");
             }
 
             function hideTooltip() {
-                tooltip.transition()
+                treeMapTooltip.transition()
                     .duration(500)
                     .style("opacity", 0);
             }
