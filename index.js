@@ -1423,10 +1423,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         console.log('收到我的游戏数据：', BVDistribution);   // 在控制台打出结果
         // document.getElementById('buttonDistributionBV').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         if (level) { // 不考虑自定义
-            chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap'], function(result) {
+            chrome.storage.local.get(['BVMap', 'pbOfBV', 'pbOfBVMap', 'dailyPB'], function(result) {
                 const BVMap = result.BVMap || {};
                 const pbOfBV = result.pbOfBV || {};
                 const pbOfBVMap = result.pbOfBVMap || {};
+                const dailyPB = result.dailyPB || {};
                 // const BVMap = {};
                 // const pbOfBV = {};
                 if (!BVMap[level]) {
@@ -1436,11 +1437,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     pbOfBV[level] = {};
                 }
                 for (let i = 1; i < BVDistribution.length; i++) {
-                    if (BVDistribution[i][9]) {
+                    if (BVDistribution[i][9]) { // 只考虑完成的对局
                         const id = BVDistribution[i][7];
                         const bv = BVDistribution[i][3];
-                        if (!BVMap[level][id]) {
+                        if (!BVMap[level][id]) { // 过滤掉重复提取的对局
+                            // 录入所有对局记录BVMap
                             BVMap[level][id] = BVDistribution[i].slice(1);
+                            // 更新BVPB
                             if (pbOfBV[level][bv]) {
                                 pbOfBV[level][bv][0]++;
                                 if (+BVDistribution[i][1] < +pbOfBV[level][bv][1]) {
@@ -1492,6 +1495,50 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                     pbOfBV[level][bv][13] = id;
                                 }
                             }
+                            // 更新dailyPB
+                            const dateParts = BVDistribution[i][6].split(/[/ :]/); // 解析日期
+                            const year = parseInt(dateParts[0]);
+                            const month = parseInt(dateParts[1]) - 1;
+                            const day = parseInt(dateParts[2]);
+                            const hours = parseInt(dateParts[3]);
+                            const minutes = parseInt(dateParts[4]);
+                            const localDate = new Date(year, month, day, hours, minutes); // 自动使用浏览器时区
+                            const utcYear = localDate.getUTCFullYear();
+                            const utcMonth = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+                            const utcDay = String(localDate.getUTCDate()).padStart(2, '0');
+                            const dateStr = `${utcYear}-${utcMonth}-${utcDay}`; // 日期关键词
+                            if (dailyPB[level][dateStr]) {
+                                dailyPB[level][dateStr][0]++;
+                                if (+BVDistribution[i][1] < +dailyPB[level][dateStr][1]) {
+                                    dailyPB[level][dateStr][1] = BVDistribution[i][1];
+                                    dailyPB[level][dateStr][2] = id;
+                                }
+                                if (+BVDistribution[i][4] > +dailyPB[level][dateStr][3]) {
+                                    dailyPB[level][dateStr][3] = BVDistribution[i][4];
+                                    dailyPB[level][dateStr][4] = id;
+                                }
+                                if (+(BVDistribution[i][5].replace('%','')) > +(dailyPB[level][dateStr][5].replace('%',''))) {
+                                    dailyPB[level][dateStr][5] = BVDistribution[i][5];
+                                    dailyPB[level][dateStr][6] = id;
+                                }
+                                if (BVDistribution[i][2] == 1) { // 是盲扫
+                                    if (dailyPB[level][dateStr][7]) {
+                                        if (+BVDistribution[i][1] < +dailyPB[level][dateStr][7]) {
+                                            dailyPB[level][dateStr][7] = BVDistribution[i][1];
+                                            dailyPB[level][dateStr][8] = id;
+                                        }
+                                    } else {
+                                        dailyPB[level][dateStr][7] = BVDistribution[i][1];
+                                        dailyPB[level][dateStr][8] = id;
+                                    }
+                                }
+                            } else {
+                                dailyPB[level][dateStr] = [1, BVDistribution[i][1], id, BVDistribution[i][4], id, BVDistribution[i][5], id];
+                                if (BVDistribution[i][2] == 1) {
+                                    dailyPB[level][dateStr][7] = BVDistribution[i][1];
+                                    dailyPB[level][dateStr][8] = id;
+                                }
+                            }
                         }
                     }
                 }
@@ -1502,9 +1549,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 console.log(BVMap);
                 console.log(pbOfBV);
                 console.log(pbOfBVMap);
+                console.log(dailyPB);
                 chrome.storage.local.set({ BVMap: BVMap });
                 chrome.storage.local.set({ pbOfBV: pbOfBV });
                 chrome.storage.local.set({ pbOfBVMap: pbOfBVMap });
+                chrome.storage.local.set({ dailyPB: dailyPB });
             });
         }
     } else if (request.action === 'sendBVDistribution500') {
