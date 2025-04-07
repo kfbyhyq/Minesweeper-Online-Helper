@@ -951,7 +951,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 if (questContent && questLevel) {
                                     let ql = questLevel.textContent;
                                     let qc = questContent.textContent;
-                                    eqInfo[11+i] = ql + '  ' + qc;
+                                    eqInfo[11+i] = String(i + 1) + '. ' + ql + '  ' + qc;
                                     if (qc.includes(keywordEff)) {
                                         if (qc.includes(keyword[0])) {
                                             index[0]++;

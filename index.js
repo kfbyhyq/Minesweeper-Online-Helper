@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                     }
+                    displayTables();
                 }
             }
         });
