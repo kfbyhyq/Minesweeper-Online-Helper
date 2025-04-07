@@ -923,7 +923,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     target: { tabId },
                     function: function () {
                         var index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '速度', '初级局数', '中级局数', '高级局数'];
+                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数'];
                         var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级'];
                         var keywordEff = '效率达到';
                         var typeNum = 13;
