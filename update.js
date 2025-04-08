@@ -1007,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             } else if (firstLevel < levelRange[3][1]) {
                                 next = 1; // 2或7，level=1
                                 // toE = '2或7';
-                            } else if (firstLevel = levelRange[3][1]) {
+                            } else if (firstLevel == levelRange[3][1]) {
                                 let secondLevelElement = questTable.querySelector('tbody > tr:nth-child(2) > td:nth-child(1)');
                                 if (secondLevelElement) {
                                     let secondLevel = secondLevelElement.textContent.match(/\d+/)[0];
