@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数'];
                         var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级'];
                         var keywordEff = '效率达到';
+                        var keywordAt = '门票';
                         var typeNum = 13;
                         var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], [4, 10], '', ''];
                         // var level = [2, 4, 1, 3, 5];
@@ -46,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         } else if (qc.includes(keyword[1])) {
                                             index[1]++;
                                         }
+                                    } else if (qc.includes(keywordAt)) {
+                                        index[9]++;
                                     } else {
                                         for (let j = 2; j < typeNum; j++) {
                                             if (qc.includes(keyword[j])) {

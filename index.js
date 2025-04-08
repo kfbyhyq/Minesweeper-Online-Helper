@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                     displayTables();
+                    displayBVPB();
+                    displayPriceDaily();
                 }
             }
         });
