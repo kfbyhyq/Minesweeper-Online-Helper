@@ -1110,14 +1110,14 @@ function displayDailyPB() {
                 const today = new Date(); // 当前日期，显示结束日
                 if (year == 0) {
                     const endDate = new Date(today);
-                    endDate.setDate(endDate.getDate() + (7 - today.getDay()) % 7); // 表格结束日：本周周日
+                    endDate.setDate(endDate.getUTCDate() + (7 - today.getUTCDay()) % 7); // 表格结束日：本周周日
                     const startDate = new Date(endDate);
-                    startDate.setDate(startDate.getDate() - 53  * 7 + 1); // 表格起始日：52周前的周一
+                    startDate.setDate(startDate.getUTCDate() - 53  * 7 + 1); // 表格起始日：52周前的周一
                     generateDateCell(startDate, startDate, today, dailyPB[level], level, type);
                 } else {
                     const startDate = new Date(year, 0, 1);
                     const firstDate = new Date(startDate);
-                    firstDate.setDate(firstDate.getDate() - (firstDate.getDay() - 1) % 7);
+                    firstDate.setDate(firstDate.getUTCDate() - (firstDate.getUTCDay() - 1) % 7);
                     const endDate = new Date(year, 11, 31);
                     if (endDate < today) {
                         generateDateCell(firstDate, startDate, endDate, dailyPB[level], level, type);
@@ -1166,9 +1166,9 @@ function generateDateCell(firstDate, startDate, endDate, data, level, type) { //
         for (let weekday = 0; weekday < 7; weekday++) { // 周一到周日
             // 计算当前日期
             const currentDate = new Date(firstDate);
-            currentDate.setDate(currentDate.getDate() + week * 7 + weekday);
-            if (currentDate.getDate() == 1) {
-                dailyPBTable.rows[7].cells[week].textContent = currentDate.getMonth() + 1;
+            currentDate.setDate(currentDate.getUTCDate() + week * 7 + weekday);
+            if (currentDate.getUTCDate() == 1) {
+                dailyPBTable.rows[7].cells[week].textContent = currentDate.getUTCMonth() + 1;
             }
             // 定位日期格子
             const cell = dailyPBTable.rows[weekday].cells[week];
@@ -1370,9 +1370,9 @@ function getColorForDateCell(cell, dataMin, dataMax, level, type) { // 颜色选
     }
 }
 function formatDate(date) { // 将日期转为'2025-01-01'的格式
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
 function initDailyPBTooltip() { // 悬浮显示
@@ -2097,6 +2097,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                         chrome.storage.local.set({ friendQuestDaily: fqDaily });
+                    }
+                    /* 全球任务 */
+                    let eqtMap = result.eventQuestTallyMap || {};
+                    const eqtMapIn = dataIn['eventQuestTallyMap'];
+                    if (eqtMapIn) {
+                        for (const month in eqtMapIn) {
+                            eqtMap[month] = eqtMapIn[month]
+                        }
+                        chrome.storage.local.set({ eventQuestTallyMap: eqtMap });
                     }
                     /* 设置 */
                     let pId = result.pId;

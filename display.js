@@ -120,9 +120,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
         console.log(wheelOutput);
         document.getElementById("wheelResult").innerHTML = wheelOutput.replaceAll('\n', '<br>');
-    } else if (request.action === 'eventQuest') { // 全球任务
+    } else if (request.action === 'eventQuest') { // 全球任务 分析任务
         let eqInfo = request.eqInfo;
-        console.log(timeStr, '活动任务信息:', eqInfo);   // 在控制台打出结果
+        console.log(timeStr, '全球任务分析:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
         document.getElementById('updateEq').style.backgroundColor = getColorSetting('buttonSuccBgc');   // 将对应按钮变为绿色，表示提取成功
         document.getElementById('flag4').textContent = 1;   // 设置成功标记
@@ -170,6 +170,39 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 var cellE = typeERow.insertCell();
                 cellE.textContent = eventQuestMap[ti + 1][le - 3];
             }
+        }
+    } else if (request.action === 'sendEventQuestTallyMap') { // 全球任务 排行榜
+        let tallyMap = request.tallyMap;
+        console.log('全球任务排行榜:', tallyMap);   // 在控制台打出结果
+        chrome.storage.local.get(['eventQuestTallyMap'], function(result) {
+            let eventQuestTallyMap = result.eventQuestTallyMap || {};
+            const currentDate = new Date();
+            const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+            eventQuestTallyMap[newMonth] = tallyMap;
+            chrome.storage.local.set({ eventQuestTallyMap: eventQuestTallyMap });     // 保存数据
+        });
+        // 排序
+        const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
+            const scoreA = tallyMap['tally'][a];
+            const scoreB = tallyMap['tally'][b];
+            for (let i = 0; i < 5; i++) {
+                if (scoreA[i] != scoreB[i]) {
+                    return (scoreB[i] - scoreA[i]);
+                }
+            }
+            return 1;
+        });
+        document.getElementById('eventQuestTallyTime').textContent = '更新时间：' + tallyMap['time'];
+        const eqTallyTable = document.getElementById('eventQuestTally');
+        eqTallyTable.innerHTML = '<tr><td>排名</td><td>昵称</td><td>🥇</td><td>🥈</td><td>🥉</td><td>4th</td><td>5th</td></tr>';
+        for (let i = 0; i < sortedPlayers.length; i++) {
+            const tallyRow = eqTallyTable.insertRow();
+            tallyRow.innerHTML = `<td>${i + 1}</td><td>${sortedPlayers[i]}</td>
+            <td>${tallyMap['tally'][sortedPlayers[i]][0]}</td>
+            <td>${tallyMap['tally'][sortedPlayers[i]][1]}</td>
+            <td>${tallyMap['tally'][sortedPlayers[i]][2]}</td>
+            <td>${tallyMap['tally'][sortedPlayers[i]][3]}</td>
+            <td>${tallyMap['tally'][sortedPlayers[i]][4]}</td>`;
         }
     } else if (request.action === 'sendGemsPrice') { // 宝石场币
         let gemsPrice = request.gemsPrice;
@@ -409,7 +442,7 @@ function displayTables() {
                 '金币', '功勋']];
             for (let i = 0; i < pdDate.length; i++) {
                 if (pdMap[pdDate[i]][24]) {
-                    if (pdMap[pdDate[i]][24] && (pdMap[pdDate[i]][24][1] < pdMap[dnow][24][1])) {
+                    if (pdMap[pdDate[i]][24][1] && (pdMap[pdDate[i]][24][1] < pdMap[dnow][24][1])) {
                         const trophyNew = pdMap[pdDate[i]].slice(24, 28);
                         trophyNew[0][4] = '达成日期';
                         trophyNew[0][5] = pdDate[i].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
@@ -1028,6 +1061,38 @@ function displayTables() {
         /* BVPB */
         // displayBVPB();
         // 此处移除，在index.js初始化
+        /* 全球任务排行榜 */
+        if (result.eventQuestTallyMap) {
+            const newDate = new Date();
+            if ((newDate.getUTCMonth() + 1) % 4 == 0 && newDate.getUTCDate() > 3) {
+                const newMonth = newDate.getUTCFullYear() + String(newDate.getUTCMonth() + 1).padStart(2, '0');
+                let tallyMap = result.eventQuestTallyMap[newMonth] || {};
+                if (tallyMap) {
+                    const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
+                        const scoreA = tallyMap['tally'][a];
+                        const scoreB = tallyMap['tally'][b];
+                        for (let i = 0; i < 5; i++) {
+                            if (scoreA[i] != scoreB[i]) {
+                                return (scoreB[i] - scoreA[i]);
+                            }
+                        }
+                        return 1;
+                    });
+                    document.getElementById('eventQuestTallyTime').textContent = '更新时间：' + tallyMap['time'];
+                    const eqTallyTable = document.getElementById('eventQuestTally');
+                    eqTallyTable.innerHTML = '<tr><td>排名</td><td>昵称</td><td>🥇</td><td>🥈</td><td>🥉</td><td>4th</td><td>5th</td></tr>';
+                    for (let i = 0; i < sortedPlayers.length; i++) {
+                        const tallyRow = eqTallyTable.insertRow();
+                        tallyRow.innerHTML = `<td>${i + 1}</td><td>${sortedPlayers[i]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][0]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][1]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][2]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][3]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][4]}</td>`;
+                    }
+                }
+            } 
+        }
     });
 }
 
@@ -1109,7 +1174,6 @@ function displayBVPB() {
                     desc = 0;
                 }
                 var colorArray = setLevelColor(valueArray, desc, 3, Infinity, -Infinity, 0);
-                console.log(colorArray)
                 for (let i = 0; i < itemNum; i++) {
                     const cell = pbt.rows[(indexArray[i] / 10 | 0) - bvRange[level][0] + 1].cells[indexArray[i] % 10 + 1];
                     cell.style.backgroundColor = colorArray[i];
@@ -1146,7 +1210,7 @@ function displayBVPBNew() {
             if (pbOfBV[level]) {
                 document.getElementById("noPbOfBV").style.display = 'none';
                 var pbOfBVTable = [['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']];
-                var bvRange = [[], [0, 6], [2, 13], [10, 26]];
+                var bvRange = [[], [0, 6], [2, 13], [9, 26]];
                 for (let i = 0; i + bvRange[level][0] < bvRange[level][1]; i++) {
                     pbOfBVTable[i + 1] = [(i + bvRange[level][0]) * 10 + '+', '', '', '', '', '', '', '', '', '', ''];
                 }

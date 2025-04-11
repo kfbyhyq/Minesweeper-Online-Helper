@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    /* 分析活动任务 */
     const button = document.getElementById('buttonEq');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tab1) {
         if (tab1[0].url.includes('https://minesweeper.online/') && tab1[0].url.includes('event-quests')) {
@@ -216,16 +217,188 @@ document.addEventListener('DOMContentLoaded', function() {
             button.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
         }
     });
+    /* 统计奖牌榜 */
+    const buttonTally = document.getElementById('buttonEqTally');
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tab2) {
+        if (tab2[0].url.includes('https://minesweeper.online/') && tab2[0].url.includes('event-quests')) {
+            buttonTally.style.backgroundColor = '#6bc1f3';   // 对应按钮变为蓝色，表示可用
+            buttonTally.style.cursor = 'pointer'; // 鼠标指针样式
+            buttonTally.addEventListener('click', function () {
+                buttonTally.style.backgroundColor = '#ff9f18';   // 对应按钮变为橙色，表示运行中
+                const tabId = tab2[0].id;
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    function: function () {
+                        var tallyMap = {'time': '', 'tally': {}};
+                        var t0 = 100;
+                        var qti = 0; // 任务表索引
+                        var qpi = 0; // 任务表翻页区索引
+                        const questsBlock = document.querySelector("#QuestsBlock");
+                        for (let i = 0; i < questsBlock.children.length; i++) {
+                            const ele = questsBlock.children[i];
+                            if (ele.classList.contains('table-bordered')) {
+                                const title = ele.querySelector("thead > tr > th:nth-child(4)");
+                                if (title && (title.textContent == '冠军' || title.textContent == 'Winners')) {
+                                    qti = i + 1;
+                                    if (ele.nextElementSibling && ele.nextElementSibling.classList == 'pagination pagination-sm noselect') {
+                                        qpi = i + 2;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        const time = new Date();
+                        tallyMap['time'] = time.toString();
+                        if (qpi) {
+                            var pageNum = 1;
+                            tallyPageInterval = setInterval(() => {
+                                const pageActive = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.page.active`);
+                                if (pageActive.textContent == pageNum) {
+                                    // console.log('匹配', pageActive.textContent, pageNum)
+                                    var ready = 1;
+                                    document.querySelectorAll('div[id^="winners_"]').forEach(leaderboard => {
+                                        if (leaderboard.textContent == ' 正在加载...' || leaderboard.textContent == ' Loading...') {
+                                            ready = 0;
+                                        }
+                                    })
+                                    if (ready) {
+                                        document.querySelectorAll('div[id^="winners_"]').forEach(leaderboard => {
+                                            leaderboard.querySelectorAll('div > table > tbody > tr').forEach(lbtr => {
+                                                const rank = lbtr.querySelector(`td:nth-child(1)`).textContent;
+                                                const player = lbtr.querySelector(`td.vertical-align-top.username-overflow-column `).textContent;
+                                                if (!tallyMap['tally'][player]) {
+                                                    tallyMap['tally'][player] = [0, 0, 0, 0, 0];
+                                                }
+                                                if (rank <= 5) {
+                                                    tallyMap['tally'][player][rank - 1]++;
+                                                }
+                                            });
+                                        });
+                                        pageNum++;
+                                        const pageLastDisabled = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.last.disabled`);
+                                        if (pageLastDisabled) {
+                                            // console.log('结束', pageActive.textContent, pageNum)
+                                            clearInterval(tallyPageInterval);
+                                            const eCheck = document.querySelector(`#QuestsBlock > div:nth-child(${qti - 2}) > div.pull-left > label > input`);
+                                            eCheck.click();
+                                            countTally();
+                                        }
+                                    }
+                                } else if (pageActive.textContent < pageNum) {
+                                    // console.log('下一页', pageActive.textContent, pageNum)
+                                    const pageNext = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.next`);
+                                    pageNext.click();
+                                } else if (pageActive.textContent > pageNum) {
+                                    // console.log('过页', pageActive.textContent, pageNum)
+                                    const pageFirst = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.first`);
+                                    pageFirst.click();
+                                }
+                            }, t0);
+                        } else {
+                            document.querySelectorAll('div[id^="winners_"]').forEach(leaderboard => {
+                                leaderboard.querySelectorAll('div > table > tbody > tr').forEach(lbtr => {
+                                    const rank = lbtr.querySelector(`td:nth-child(1)`).textContent;
+                                    const player = lbtr.querySelector(`td.vertical-align-top.username-overflow-column `).textContent;
+                                    if (!tallyMap['tally'][player]) {
+                                        tallyMap['tally'][player] = [0, 0, 0, 0, 0];
+                                    }
+                                    tallyMap['tally'][player][rank - 1]++;
+                                });
+                            });
+                            const eCheck = document.querySelector(`#QuestsBlock > div:nth-child(${qti - 2}) > div.pull-left > label > input`);
+                            eCheck.click();
+                            countTally();
+                            console.log(tallyMap);
+                        }
+                        function countTally() {
+                            startQuery = setInterval(() => {
+                                const testTitle = document.querySelector("#QuestsBlock > div:nth-child(1) > table > tbody > tr > td:nth-child(1) > h2");
+                                if (testTitle) {
+                                    clearInterval(startQuery);
+                                    if (qpi) {
+                                        var pageNum = 1;
+                                        tallyPageIntervalNew = setInterval(() => {
+                                            const pageActive = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.page.active`);
+                                            if (pageActive.textContent == pageNum) {
+                                                // console.log('匹配', pageActive.textContent, pageNum)
+                                                const loadingTest = document.querySelector(`#QuestsBlock > table:nth-child(${qti}) > tbody > tr:nth-child(1) > td:nth-child(3) > div`);
+                                                if (loadingTest && loadingTest.textContent != ' 正在加载...' && !loadingTest.textContent != ' Loading...') {
+                                                    document.querySelectorAll('div[id^="winners_"]').forEach(leaderboard => {
+                                                        leaderboard.querySelectorAll('div > table > tbody > tr').forEach(lbtr => {
+                                                            const rank = lbtr.querySelector(`td:nth-child(1)`).textContent;
+                                                            const player = lbtr.querySelector(`td.vertical-align-top.username-overflow-column `).textContent;
+                                                            if (!tallyMap['tally'][player]) {
+                                                                tallyMap['tally'][player] = [0, 0, 0, 0, 0];
+                                                            }
+                                                            if (rank <= 5) {
+                                                                tallyMap['tally'][player][rank - 1]++;
+                                                            }
+                                                        });
+                                                    });
+                                                    pageNum++;
+                                                    const pageLastDisabled = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.last.disabled`);
+                                                    if (pageLastDisabled) {
+                                                        // console.log('结束', pageActive.textContent, pageNum)
+                                                        clearInterval(tallyPageIntervalNew);
+                                                        console.log(tallyMap);
+                                                        chrome.runtime.sendMessage({ action: 'sendEventQuestTallyMap', tallyMap: tallyMap });
+                                                    }
+                                                }
+                                            } else if (pageActive.textContent < pageNum) {
+                                                // console.log('下一页', pageActive.textContent, pageNum)
+                                                const pageNext = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.next`);
+                                                pageNext.click();
+                                            } else if (pageActive.textContent > pageNum) {
+                                                // console.log('过页', pageActive.textContent, pageNum)
+                                                const pageFirst = document.querySelector(`#QuestsBlock > ul:nth-child(${qpi}) > li.first`);
+                                                pageFirst.click();
+                                            }
+                                        }, t0);
+                                    } else {
+                                        document.querySelectorAll('div[id^="winners_"]').forEach(leaderboard => {
+                                            leaderboard.querySelectorAll('div > table > tbody > tr').forEach(lbtr => {
+                                                const rank = lbtr.querySelector(`td:nth-child(1)`).textContent;
+                                                const player = lbtr.querySelector(`td.vertical-align-top.username-overflow-column `).textContent;
+                                                if (!tallyMap['tally'][player]) {
+                                                    tallyMap['tally'][player] = [0, 0, 0, 0, 0];
+                                                }
+                                                tallyMap['tally'][player][rank - 1]++;
+                                            });
+                                        });
+                                        console.log(tallyMap);
+                                        chrome.runtime.sendMessage({ action: 'sendEventQuestTallyMap', tallyMap: tallyMap });
+                                    }
+                                }
+                            }, t0);
+                        }
+                    }
+                });
+            });
+        } else {
+            buttonTally.style.backgroundColor = '#9b9b9b';   // 对应按钮变为灰色，表示不可用
+        }
+    });
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === 'eventQuest') {
         let eqInfo = request.eqInfo;
-        console.log('活动任务信息:', eqInfo);   // 在控制台打出结果
+        console.log('全球任务分析:', eqInfo);   // 在控制台打出结果
         chrome.storage.local.set({ eqInfo: eqInfo });     // 保存数据
         document.getElementById('buttonEq').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
         const result = eqInfo.map(item => item + '<br>').join('');
         document.getElementById('result').innerHTML = result;
+    } else if (request.action === 'sendEventQuestTallyMap') {
+        let tallyMap = request.tallyMap;
+        console.log('全球任务排行榜:', tallyMap);   // 在控制台打出结果
+        chrome.storage.local.get(['eventQuestTallyMap'], function(result) {
+            let eventQuestTallyMap = result.eventQuestTallyMap || {};
+            const currentDate = new Date();
+            const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+            eventQuestTallyMap[newMonth] = tallyMap;
+            chrome.storage.local.set({ eventQuestTallyMap: eventQuestTallyMap });     // 保存数据
+        });
+        document.getElementById('buttonEqTally').style.backgroundColor = '#4caf50';   // 将对应按钮变为绿色，表示提取成功
     }
 });
 
