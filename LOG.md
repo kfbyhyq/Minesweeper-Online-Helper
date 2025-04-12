@@ -513,3 +513,9 @@ https://minesweeper.online/
    部分日期统一为UTC
 
    BVPB PK功能表格范围对齐
+
+### v3.11.4.1
+
+- 改动
+
+   修复奖牌榜部分未加载完成导致的遗漏
