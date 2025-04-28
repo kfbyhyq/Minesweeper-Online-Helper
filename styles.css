@@ -695,3 +695,7 @@ option {
     display: none;
     white-space: nowrap;
 }
+
+.absoluteTable {
+    position: absolute;
+}

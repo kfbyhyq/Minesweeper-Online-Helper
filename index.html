@@ -417,9 +417,14 @@
                 <span class="plainText" id="eqoTableText" style="display: none;">可能的任务内容如下，部分任务可能由于还未收集到而未列出，仅供参考；数据来源@nanaArashi</span>
                 <table class="ticketTable" id="eventQuestOptional"></table>
                 <h1>奖牌榜</h1>
-                <span class="plainText">在活动任务页通过插件弹出页“统计奖牌榜”更新</span><br>
+                <span class="plainText">在活动任务页通过插件弹出页“统计奖牌榜”更新</span><br><br>
+                <span class="plainText">选择赛季</span>
+                <select id="eventQuestTallySeasonSelect" class="inputBox wideInputBox1"></select><br>
                 <span id="eventQuestTallyTime" class="plainText"></span>
-                <table id="eventQuestTally" class="ticketTable"></table>
+                <div class="flexContent" id="eventQuestTallyContainer">
+                    <table id="eventQuestTally" class="ticketTable"></table>
+                    <table id="eventQuestPersonalTally" class="ticketTable absoluteTable" style="display: none;"></table>
+                </div>
             </div>
             <div id="setting" class="page">
                 <h1>网站设置</h1>

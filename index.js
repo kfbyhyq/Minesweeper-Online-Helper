@@ -1652,6 +1652,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+/* 全球任务排行榜选项 */
+document.addEventListener('DOMContentLoaded', function() {
+    let eqtsSelect = document.getElementById('eventQuestTallySeasonSelect');
+    chrome.storage.local.get(['eventQuestTallyMap', 'eventQuestRawRank'], function(result) {
+        if (result.eventQuestTallyMap) {
+            let seasons = Object.keys(result.eventQuestTallyMap).sort().reverse();
+            for (let i = 0; i < seasons.length; i++) {
+                const s1 = new Option(seasons[i], seasons[i]);
+                eqtsSelect.add(s1);
+            }
+        }
+    });
+    eqtsSelect.addEventListener('change', function() {
+        displayEventQuestTally();
+    });
+});
+
 const arenaExpectTime = [
     [37.5, 90, 165, 300, 462.5, 675, 910, 1200],
     [ 37.5, 90, 165, 300, 462.5, 675, 910, 1200 ],
@@ -2106,6 +2123,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             eqtMap[month] = eqtMapIn[month]
                         }
                         chrome.storage.local.set({ eventQuestTallyMap: eqtMap });
+                    }
+                    let eqtRawRank = result.eventQuestRawRank || {};
+                    const eqtRawRankIn = dataIn['eventQuestRawRank'];
+                    if (eqtRawRankIn) {
+                        for (const month in eqtRawRankIn) {
+                            eqtRawRank[month] = eqtRawRankIn[month]
+                        }
+                        chrome.storage.local.set({ eventQuestRawRank: eqtRawRank });
                     }
                     /* 设置 */
                     let pId = result.pId;

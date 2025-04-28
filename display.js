@@ -173,37 +173,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
     } else if (request.action === 'sendEventQuestTallyMap') { // 全球任务 排行榜
         let tallyMap = request.tallyMap;
+        let rawRank = request.rawRank;
         console.log('全球任务排行榜:', tallyMap);   // 在控制台打出结果
-        chrome.storage.local.get(['eventQuestTallyMap'], function(result) {
+        console.log('全球任务排行榜原始数据:', rawRank);   // 在控制台打出结果
+        chrome.storage.local.get(['eventQuestTallyMap', 'eventQuestRawRank'], function(result) {
             let eventQuestTallyMap = result.eventQuestTallyMap || {};
+            let eventQuestRawRank = result.eventQuestRawRank || {};
             const currentDate = new Date();
             const newMonth = currentDate.getUTCFullYear() + String(currentDate.getUTCMonth() + 1).padStart(2, '0');
             eventQuestTallyMap[newMonth] = tallyMap;
+            eventQuestRawRank[newMonth] = rawRank;
             chrome.storage.local.set({ eventQuestTallyMap: eventQuestTallyMap });     // 保存数据
+            chrome.storage.local.set({ eventQuestRawRank: eventQuestRawRank });     // 保存数据
         });
-        // 排序
-        const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
-            const scoreA = tallyMap['tally'][a];
-            const scoreB = tallyMap['tally'][b];
-            for (let i = 0; i < 5; i++) {
-                if (scoreA[i] != scoreB[i]) {
-                    return (scoreB[i] - scoreA[i]);
-                }
-            }
-            return 1;
-        });
-        document.getElementById('eventQuestTallyTime').textContent = '更新时间：' + tallyMap['time'];
-        const eqTallyTable = document.getElementById('eventQuestTally');
-        eqTallyTable.innerHTML = '<tr><td>排名</td><td>昵称</td><td>🥇</td><td>🥈</td><td>🥉</td><td>4th</td><td>5th</td></tr>';
-        for (let i = 0; i < sortedPlayers.length; i++) {
-            const tallyRow = eqTallyTable.insertRow();
-            tallyRow.innerHTML = `<td>${i + 1}</td><td>${sortedPlayers[i]}</td>
-            <td>${tallyMap['tally'][sortedPlayers[i]][0]}</td>
-            <td>${tallyMap['tally'][sortedPlayers[i]][1]}</td>
-            <td>${tallyMap['tally'][sortedPlayers[i]][2]}</td>
-            <td>${tallyMap['tally'][sortedPlayers[i]][3]}</td>
-            <td>${tallyMap['tally'][sortedPlayers[i]][4]}</td>`;
-        }
+        displayEventQuestTally();
     } else if (request.action === 'sendGemsPrice') { // 宝石场币
         let gemsPrice = request.gemsPrice;
         console.log(timeStr, '收到价格更新:', gemsPrice);
@@ -697,7 +680,7 @@ function displayTables() {
             var total = perfectLine[16][0] / (dayNum - 3) * Math.max(currentDate - 3, 0);
             perfectLine[16][2] = parseFloat(total.toFixed(0));
             if (personalData[18]) {
-                var left = (perfectLine[16][0] - personalData[18][7]) / Math.min(dayNum - currentDate + 1, dayNum - 3);
+                var left = (perfectLine[16][0] - personalData[18][7]) / Math.min(dayNum - currentDate, dayNum - 3);
                 perfectLine[16][3] = parseFloat(Math.max(0, left).toFixed(0));
             } else {
                 perfectLine[16][3] = '';
@@ -1061,38 +1044,9 @@ function displayTables() {
         /* BVPB */
         // displayBVPB();
         // 此处移除，在index.js初始化
+
         /* 全球任务排行榜 */
-        if (result.eventQuestTallyMap) {
-            const newDate = new Date();
-            if ((newDate.getUTCMonth() + 1) % 4 == 0 && newDate.getUTCDate() > 3) {
-                const newMonth = newDate.getUTCFullYear() + String(newDate.getUTCMonth() + 1).padStart(2, '0');
-                let tallyMap = result.eventQuestTallyMap[newMonth] || {};
-                if (tallyMap) {
-                    const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
-                        const scoreA = tallyMap['tally'][a];
-                        const scoreB = tallyMap['tally'][b];
-                        for (let i = 0; i < 5; i++) {
-                            if (scoreA[i] != scoreB[i]) {
-                                return (scoreB[i] - scoreA[i]);
-                            }
-                        }
-                        return 1;
-                    });
-                    document.getElementById('eventQuestTallyTime').textContent = '更新时间：' + tallyMap['time'];
-                    const eqTallyTable = document.getElementById('eventQuestTally');
-                    eqTallyTable.innerHTML = '<tr><td>排名</td><td>昵称</td><td>🥇</td><td>🥈</td><td>🥉</td><td>4th</td><td>5th</td></tr>';
-                    for (let i = 0; i < sortedPlayers.length; i++) {
-                        const tallyRow = eqTallyTable.insertRow();
-                        tallyRow.innerHTML = `<td>${i + 1}</td><td>${sortedPlayers[i]}</td>
-                        <td>${tallyMap['tally'][sortedPlayers[i]][0]}</td>
-                        <td>${tallyMap['tally'][sortedPlayers[i]][1]}</td>
-                        <td>${tallyMap['tally'][sortedPlayers[i]][2]}</td>
-                        <td>${tallyMap['tally'][sortedPlayers[i]][3]}</td>
-                        <td>${tallyMap['tally'][sortedPlayers[i]][4]}</td>`;
-                    }
-                }
-            } 
-        }
+        displayEventQuestTally();
     });
 }
 
@@ -1522,6 +1476,127 @@ function priceDailyOutput(dataMap, title, tableId, highlightRow = -1) {
     if (matchDate >= 0 && highlightRow >= 0) {
         outputTable.rows[+matchDate + 1].cells[+highlightRow + 1].classList.add('highlight');
     }
+}
+
+/* 全球任务排行榜 */
+function displayEventQuestTally() {
+    document.getElementById('eventQuestPersonalTally').style.display = 'none';
+    chrome.storage.local.get(['eventQuestTallyMap', 'eventQuestRawRank'], function(result) {
+        if (result.eventQuestTallyMap) {
+            const newDate = new Date();
+            if ((newDate.getUTCMonth() + 1) % 4 == 0 && newDate.getUTCDate() > 3) {
+                // const newMonth = newDate.getUTCFullYear() + String(newDate.getUTCMonth() + 1).padStart(2, '0');
+                var selectedMonth = document.getElementById('eventQuestTallySeasonSelect').value;
+                let tallyMap = result.eventQuestTallyMap[selectedMonth] || {};
+                if (tallyMap) {
+                    const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
+                        const scoreA = tallyMap['tally'][a];
+                        const scoreB = tallyMap['tally'][b];
+                        for (let i = 0; i < 5; i++) {
+                            if (scoreA[i] != scoreB[i]) {
+                                return (scoreB[i] - scoreA[i]);
+                            }
+                        }
+                        return 1;
+                    });
+                    document.getElementById('eventQuestTallyTime').textContent = '更新时间：' + tallyMap['time'];
+                    const eqTallyTable = document.getElementById('eventQuestTally');
+                    eqTallyTable.innerHTML = '<tr><td>排名</td><td>昵称</td><td>🥇</td><td>🥈</td><td>🥉</td><td>4th</td><td>5th</td></tr>';
+                    for (let i = 0; i < sortedPlayers.length; i++) {
+                        const tallyRow = eqTallyTable.insertRow();
+                        // for (let j = 0; j < 5; j++) {
+                        //     if (tallyMap['tally'][sortedPlayers[i]][j] == undefined) {
+                        //         tallyMap['tally'][sortedPlayers[i]][j] = '';
+                        //     }
+                        // }
+                        tallyRow.innerHTML = `<td>${i + 1}</td><td class="eqtPlayer">${sortedPlayers[i]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][0]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][1]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][2]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][3]}</td>
+                        <td>${tallyMap['tally'][sortedPlayers[i]][4]}</td>`;
+                    }
+                    // 个人详细数据
+                    let rawRank = result.eventQuestRawRank[selectedMonth] || {};
+                    if (Object.keys(rawRank).length > 0) {
+                        eqTallyTable.querySelectorAll('.eqtPlayer').forEach(player => {
+                            player.style.cursor = 'pointer';
+                            player.addEventListener('click', function() {
+                                const playerName = player.textContent;
+                                var personalTable = [
+                                    ['', '🥇', '🥈', '🥉', '4th', '5th', '总计'],
+                                    ['普通', 0, 0, 0, 0, 0, 0],
+                                    ['E', 0, 0, 0, 0, 0, 0],
+                                    ['中级效率', 0, 0, 0, 0, 0, 0],
+                                    ['高级效率', 0, 0, 0, 0, 0, 0],
+                                    ['竞技场', 0, 0, 0, 0, 0, 0],
+                                    ['连胜', 0, 0, 0, 0, 0, 0],
+                                    ['盲扫', 0, 0, 0, 0, 0, 0],
+                                    ['无猜', 0, 0, 0, 0, 0, 0],
+                                    ['自定义', 0, 0, 0, 0, 0, 0],
+                                    ['金币', 0, 0, 0, 0, 0, 0],
+                                    ['宝石', 0, 0, 0, 0, 0, 0],
+                                    ['竞速', 0, 0, 0, 0, 0, 0],
+                                    ['初级局数', 0, 0, 0, 0, 0, 0],
+                                    ['中级局数', 0, 0, 0, 0, 0, 0],
+                                    ['高级局数', 0, 0, 0, 0, 0, 0],
+                                ];
+                                const ts = {
+                                    "中级效率": 3,
+                                    "高级效率": 4,
+                                    "竞技场": 5,
+                                    "连胜": 6,
+                                    "盲扫": 7,
+                                    "无猜": 8,
+                                    "自定义": 9,
+                                    "金币": 10,
+                                    "宝石": 11,
+                                    "竞速": 12,
+                                    "初级局数": 13,
+                                    "中级局数": 14,
+                                    "高级局数": 15
+                                }
+                                personalTable[0][0] = playerName;
+                                for (let i = 1; i < rawRank.length; i++) {
+                                    var match = 0;
+                                    if (rawRank[i][4] == playerName) {
+                                        match = 1;
+                                    } else if (rawRank[i][5] == playerName) {
+                                        match = 2;
+                                    } else if (rawRank[i][6] == playerName) {
+                                        match = 3;
+                                    } else if (rawRank[i][7] == playerName) {
+                                        match = 4;
+                                    } else if (rawRank[i][8] == playerName) {
+                                        match = 5;
+                                    }
+                                    if (match > 0) {
+                                        personalTable[ts[rawRank[i][3]]][match]++;
+                                        personalTable[ts[rawRank[i][3]]][6]++;
+                                        if (rawRank[i][1].includes('E')) {
+                                            personalTable[2][match]++;
+                                            personalTable[2][6]++;
+                                        } else {
+                                            personalTable[1][match]++;
+                                            personalTable[1][6]++;
+                                        }
+                                    }
+                                }
+                                displayTextMatrix(personalTable, 'eventQuestPersonalTally');
+                                let eqptTable = document.getElementById('eventQuestPersonalTally');
+                                eqptTable.style.display = 'block';
+                                // 计算点击行相对于容器的位置
+                                const rowRect = this.closest('tr').getBoundingClientRect();
+                                // 设置补充表的位置
+                                eqptTable.style.top = rowRect.top + 'px';
+                                eqptTable.style.left = rowRect.right + 'px';
+                            });
+                        });
+                    }
+                }
+            } 
+        }
+    });
 }
 
 /* 处理矩阵并显示为表格 */
