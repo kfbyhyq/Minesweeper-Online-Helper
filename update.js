@@ -700,7 +700,9 @@ function updatePersonalData() {
         
                                 /* 读资源数 */
                                 let resource = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span");
-                                personalData[row + 1][0] = resource.childNodes[0].textContent.replace(/\s+/g, '');
+                                let coinEle = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(1)");
+                                // personalData[row + 1][0] = resource.childNodes[0].textContent.replace(/\s+/g, '');
+                                personalData[row + 1][0] = coinEle.getAttribute('data-original-title').replace(/\s+/g, '');
                                 const spans = resource.querySelectorAll("span");
                                 spans.forEach((span) => {
                                     if (span.querySelector("img")) {
