@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     let gemPrice = gems[i].querySelector("td.text-right");
                                     let gemName = gems[i].querySelector("td:nth-child(3)");
                                     for (let j = 0; j < 10; j++) {
-                                        if (personalData[row][j] == gemName.textContent) {
+                                        if (gemName && personalData[row][j] == gemName.textContent) {
                                             personalData[row + 1][j] = gemPrice.textContent.replace(/ /g, "");
                                             break;
                                         }
