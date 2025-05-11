@@ -660,7 +660,7 @@ function updatePersonalData() {
                                         let coinPrice = coins[i].querySelector("td.text-right");
                                         let coinName = coins[i].querySelector("td:nth-child(3)");
                                         for (let j = 0; j < 10; j++) {
-                                            if (personalData[row][j] == coinName.textContent) {
+                                            if (coinName && personalData[row][j] == coinName.textContent) {
                                                 personalData[row + 1][j] = coinPrice.textContent.replace(/ /g, "");
                                                 break;
                                             }
