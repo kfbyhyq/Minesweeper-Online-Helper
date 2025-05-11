@@ -1662,10 +1662,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const s1 = new Option(seasons[i], seasons[i]);
                 eqtsSelect.add(s1);
             }
+            if (seasons.length < 2) { // 如果只有一个月的数据，补充空选项触发切换
+                const s0 = new Option('', 0);
+                eqtsSelect.add(s0);
+            }
         }
     });
     eqtsSelect.addEventListener('change', function() {
-        displayEventQuestTally();
+        if (eqtsSelect.value > 0) { // 忽略空选项
+            displayEventQuestTally();
+        }
     });
 });
 

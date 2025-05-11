@@ -1046,7 +1046,12 @@ function displayTables() {
         // 此处移除，在index.js初始化
 
         /* 全球任务排行榜 */
-        displayEventQuestTally();
+        const currentDate = new Date();
+        const dateMinus2 = new Date(currentDate);
+        dateMinus2.setUTCDate(currentDate.getUTCDate() - 2);
+        if ((dateMinus2.getUTCMonth() + 1) % 4 == 0) {
+            displayEventQuestTally();
+        }
     });
 }
 
@@ -1484,10 +1489,12 @@ function displayEventQuestTally() {
     chrome.storage.local.get(['eventQuestTallyMap', 'eventQuestRawRank'], function(result) {
         if (result.eventQuestTallyMap) {
             const newDate = new Date();
-            if ((newDate.getUTCMonth() + 1) % 4 == 0 && newDate.getUTCDate() > 3) {
+            // if ((newDate.getUTCMonth() + 1) % 4 == 0 && newDate.getUTCDate() > 3) {
+            if (true) {
                 // const newMonth = newDate.getUTCFullYear() + String(newDate.getUTCMonth() + 1).padStart(2, '0');
                 var selectedMonth = document.getElementById('eventQuestTallySeasonSelect').value;
                 let tallyMap = result.eventQuestTallyMap[selectedMonth] || {};
+                // console.log(tallyMap);
                 if (tallyMap) {
                     const sortedPlayers = Object.keys(tallyMap['tally']).sort((a, b) => {
                         const scoreA = tallyMap['tally'][a];
@@ -1518,6 +1525,7 @@ function displayEventQuestTally() {
                     }
                     // 个人详细数据
                     let rawRank = result.eventQuestRawRank[selectedMonth] || {};
+                    // console.log(rawRank);
                     if (Object.keys(rawRank).length > 0) {
                         eqTallyTable.querySelectorAll('.eqtPlayer').forEach(player => {
                             player.style.cursor = 'pointer';

@@ -595,14 +595,14 @@ function updatePersonalData() {
                     var t0 = 100;
                     try {
                         startPdQuery = setInterval(() => {
-                            let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(2)");
+                            let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(3)");
                             if (gem) {
                                 clearInterval(startPdQuery);
-                                // let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(2)");
+                                // let gem = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(3)");
                                 hoverBox(gem);      // 鼠标悬浮展开宝石数量
-                                let coin = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(3)");
+                                let coin = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
                                 hoverBox(coin);     // 鼠标悬浮展开竞技场币数量
-                                let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(4)");
+                                let ticket = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(7) > div.col-xs-8.form-text > span > span:nth-child(5)");
                                 hoverBox(ticket);   // 鼠标悬浮展开竞技场门票数量
                                 let equipment = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(6) > div.col-xs-8.form-text > table > tbody > tr > td:nth-last-child(1) > span > span");
                                 hoverBox(equipment);   // 鼠标悬浮展开装备信息
@@ -719,8 +719,9 @@ function updatePersonalData() {
                                 });
                                 let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
                                 personalData[row + 1][6] = hp.textContent.replace(/\s+/g, '');
-                                let ep1 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(14) > div.col-xs-8.form-text > div > span");
-                                let ep2 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(14) > div.col-xs-8.form-text > span:nth-child(2) > span");
+                                // 活动物品数
+                                let ep1 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > div > span");
+                                let ep2 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > span:nth-child(2) > span");
                                 if (ep1 && ep1.textContent) {
                                     personalData[row + 1][7] = ep1.textContent;
                                 } else if (ep2 && ep2.textContent) {
