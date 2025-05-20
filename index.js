@@ -1702,7 +1702,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('personalId').placeholder = '请设置账号';
         }
         const configurableCoef = result.configurableCoef;
-        if (configurableCoef) {
+        if (!configurableCoef) {
+            configurableCoef = [2.5, 56.6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 56.6];
+        }
+        // if (configurableCoef) {
             document.getElementById('act2ep').placeholder = configurableCoef[0];
             document.getElementById('ep2mc').placeholder = configurableCoef[1];
             document.getElementById('spArenaCoef').placeholder = configurableCoef[2];
@@ -1716,21 +1719,21 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edArenaCoef').placeholder = configurableCoef[10];
             document.getElementById('nmArenaCoef').placeholder = configurableCoef[11];
             document.getElementById('hp2mc').placeholder = configurableCoef[12];
-        } else {
-            document.getElementById('act2ep').placeholder = 2.5;
-            document.getElementById('ep2mc').placeholder = 56.6;
-            document.getElementById('spArenaCoef').placeholder = 1;
-            document.getElementById('spngArenaCoef').placeholder = 1;
-            document.getElementById('nfArenaCoef').placeholder = 1;
-            document.getElementById('effArenaCoef').placeholder = 1;
-            document.getElementById('hdArenaCoef').placeholder = 1;
-            document.getElementById('rdArenaCoef').placeholder = 1;
-            document.getElementById('hcArenaCoef').placeholder = 1;
-            document.getElementById('hcngArenaCoef').placeholder = 1;
-            document.getElementById('edArenaCoef').placeholder = 1;
-            document.getElementById('nmArenaCoef').placeholder = 1;
-            document.getElementById('hp2mc').placeholder = 56.6;
-        }
+        // } else {
+        //     document.getElementById('act2ep').placeholder = 2.5;
+        //     document.getElementById('ep2mc').placeholder = 56.6;
+        //     document.getElementById('spArenaCoef').placeholder = 1;
+        //     document.getElementById('spngArenaCoef').placeholder = 1;
+        //     document.getElementById('nfArenaCoef').placeholder = 1;
+        //     document.getElementById('effArenaCoef').placeholder = 1;
+        //     document.getElementById('hdArenaCoef').placeholder = 1;
+        //     document.getElementById('rdArenaCoef').placeholder = 1;
+        //     document.getElementById('hcArenaCoef').placeholder = 1;
+        //     document.getElementById('hcngArenaCoef').placeholder = 1;
+        //     document.getElementById('edArenaCoef').placeholder = 1;
+        //     document.getElementById('nmArenaCoef').placeholder = 1;
+        //     document.getElementById('hp2mc').placeholder = 56.6;
+        // }
         const acsTable = document.getElementById('arenaCoefSettingTable');
         for (let t = 0; t < tm; t++) {
             for (let l = 0; l < lm; l++) {

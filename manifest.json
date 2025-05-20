@@ -1,9 +1,9 @@
 {  
     "manifest_version": 3,  
     "name": "Minesweeper Online Helper",  
-    "version": "3.11.4.4",  
+    "version": "3.11.5",  
     "description": "Minesweeper Online助手",  
-    "permissions": ["activeTab", "scripting", "storage", "tabs", "alarms"],
+    "permissions": ["activeTab", "scripting", "storage", "tabs", "alarms", "unlimitedStorage"],
     "action": {
         "default_popup": "displayPage.html",  
         "default_icon": {  
