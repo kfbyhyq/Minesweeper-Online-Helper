@@ -64,7 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     skinMap[alrMatch[0]] = -1;
                                                     let row0 = document.createElement('div');
                                                     row0.className = 'cellRow';
-                                                    setArea0.appendChild(row0);
+                                                    if (!document.getElementById(alrMatch[0])) {
+                                                        setArea0.appendChild(row0);
+                                                    }
                                                     let cell0 = document.createElement('div');
                                                     cell0.classList = class0;
                                                     row0.appendChild(cell0);
@@ -86,7 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     skinMap[rcMatch[0]] = -1;
                                                     let row0 = document.createElement('div');
                                                     row0.className = 'cellRow';
-                                                    setArea0.appendChild(row0);
+                                                    if (!document.getElementById(rcMatch[0])) {
+                                                        setArea0.appendChild(row0);
+                                                    }
                                                     let cell0 = document.createElement('div');
                                                     cell0.classList = class0;
                                                     row0.appendChild(cell0);
