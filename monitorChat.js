@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         'Easy':['easy', '#17FFFF'], 'Medium':['med', '#17FFFF'], 'Hard':['hard', '#17FFFF'], 'Evil':['evil', '#17FFFF'], 
                                         'row':['ws', '#E0B1FF'], 'flags':['nf', '#72CFFE'], 'efficiency':['eff', '#FFD117'], 
                                         'minecoin':['mc', '#FFF017'], 'honour':['hp', '#B2F0FF'], 'gem':['gem', '#F0F0F0'], 'arena coins':['ac', '#83FFB2'], 'higher':['arena', '#83FFB2'], 
+                                        'PvP':['pvp', '#007700'],
                                         '初级':['初级', '#54E083'], '中级':['中级', '#54E083'], '高级':['高级', '#54E083'], '自定义':['自定义', '#C1C1C1'], 
                                         '简单':['简单', '#17FFFF'], '中等':['中等', '#17FFFF'], '困难':['困难', '#17FFFF'], '地狱':['地狱', '#17FFFF'], 
                                         '连胜':['连胜', '#E0B1FF'], '盲扫':['盲扫', '#72CFFE'], '效率':['效率', '#FFD117'], 
@@ -71,7 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         '初級':['初级', '#54E083'], '中級':['中级', '#54E083'], '高級':['高级', '#54E083'], '自訂':['自定义', '#C1C1C1'], 
                                         '簡單':['简单', '#17FFFF'], '中等':['中等', '#17FFFF'], '困難':['困难', '#17FFFF'], '地獄':['地狱', '#17FFFF'], 
                                         '連勝':['连胜', '#E0B1FF'], '無旗幟':['无旗', '#72CFFE'], '效率':['效率', '#FFD117'], 
-                                        '金幣':['金币', '#FFF017'], '榮譽值':['功勋', '#B2F0FF'], '寶石':['宝石', '#F0F0F0'], '競技場硬幣':['场币', '#83FFB2'], '競技場':['竞技场', '#83FFB2']}
+                                        '金幣':['金币', '#FFF017'], '榮譽值':['功勋', '#B2F0FF'], '寶石':['宝石', '#F0F0F0'], '競技場硬幣':['场币', '#83FFB2'], '競技場':['竞技场', '#83FFB2'],
+                                        '一對一':['pvp', '#007700']}
                                     // const matchedStr = [...message.matchAll(regex)].map(match => match[0]);
                                     const matchedResult = [...message.matchAll(regex)];
                                     console.log(matchedResult);
