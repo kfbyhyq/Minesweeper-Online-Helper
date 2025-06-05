@@ -306,7 +306,7 @@ function displayFriendQuest() {
                 .sort((a, b) => b.value - a.value);
 
             // 创建树状图布局
-            d3.treeMapTooltip()
+            d3.treemap()
                 .size([width, height])
                 .tile(d3.treemapSquarify)
                 .round(true)
