@@ -171,13 +171,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             let hp = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(5) > div.col-xs-8.form-text > span:nth-child(2)");
                             personalData[row + 1][6] = hp.textContent.replace(/\s+/g, '');
                             // 活动物品数
-                            let ep1 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > div > span");
-                            let ep2 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > span:nth-child(2) > span");
-                            if (ep1 && ep1.textContent) {
-                                personalData[row + 1][7] = ep1.textContent;
-                            } else if (ep2 && ep2.textContent) {
-                                personalData[row + 1][7] = ep2.textContent;
-                            }
+                            // let ep1 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > div > span");
+                            // let ep2 = document.querySelector("#PlayerBlock > div:nth-child(3) > div:nth-child(15) > div.col-xs-8.form-text > span:nth-child(2) > span");
+                            document.querySelectorAll('.form-group.form-group-player-info').forEach(line => {
+                                let lineTitle = line.querySelector('.col-xs-4.control-label');
+                                if (lineTitle && (lineTitle.textContent.includes('赛季') || lineTitle.textContent.includes('Season'))) {
+                                    let ep1 = line.querySelector('div.col-xs-8.form-text > div > span');
+                                    let ep2 = line.querySelector('div.col-xs-8.form-text > span:nth-child(2) > span');
+                                    if (ep1 && ep1.textContent) {
+                                        personalData[row + 1][7] = ep1.textContent;
+                                    } else if (ep2 && ep2.textContent) {
+                                        personalData[row + 1][7] = ep2.textContent;
+                                    }
+                                }
+                            });
                             row += 3;       // 空一行
     
                             /* 读装备信息 */

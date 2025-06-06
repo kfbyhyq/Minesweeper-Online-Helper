@@ -278,6 +278,11 @@ function displayFriendQuest() {
             displayMatrixBody(fqStats, 'tableFqStats');
             currentFqStats = fqStats;
             
+            /* 树状图 */
+            let questTreemap = document.getElementById('questReceivedClassifyTreemap');
+            if (questTreemap) {
+                questTreemap.innerHTML = '';
+            }
             // 转换数据格式
             const data = qrClassify[0].map((title, index) => ({
                 title: title,
