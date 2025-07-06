@@ -1230,6 +1230,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                         const eventType = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5) > span > span > span > span:nth-child(2) > img`);
                                                         if (eventType && eventType.className.includes('shard')) {
                                                             allQuests[itemNum][6] = eventType.className.match(/shard\d+/)[0];
+                                                        } else if (eventType && eventType.className.includes('icecream')) {
+                                                            allQuests[itemNum][6] = eventType.className.match(/icecream\d+/)[0];
                                                         } else {
                                                             allQuests[itemNum][6] = '';
                                                         }
@@ -1317,6 +1319,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 const eventType = document.querySelector(`#stat_table_body > tr:nth-child(${i}) > td:nth-child(5) > span > span > span > span:nth-child(2) > img`);
                                                 if (eventType && eventType.className.includes('shard')) {
                                                     allQuests[itemNum][6] = eventType.className.match(/shard\d+/)[0];
+                                                } else if (eventType && eventType.className.includes('icecream')) {
+                                                    allQuests[itemNum][6] = eventType.className.match(/icecream\d+/)[0];
                                                 } else {
                                                     allQuests[itemNum][6] = '';
                                                 }
