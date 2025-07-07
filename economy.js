@@ -34,11 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 }
                                 let upArrow = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(3) > span.help.price-up > i");
-                                hoverBox(upArrow);
+                                let downArrow = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(3) > span.help.price-down > i");
+                                if (upArrow) {
+                                    hoverBox(upArrow);
+                                } else if (downArrow) {
+                                    hoverBox(downArrow);
+                                }
                                 let growth = document.querySelector("#stat_table_body > tr.stat-my-row > td:nth-child(3) > div > div.tooltip-inner");
-                                personalEco[1][11] = growth.textContent;
-                                console.log(personalEco);
-                                chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
+                                if (growth) {
+                                    personalEco[1][11] = growth.textContent;
+                                    console.log(personalEco);
+                                    chrome.runtime.sendMessage({ action: 'personalEconomy', personalEco: personalEco });
+                                }
                             }, 2000);
                             
                             /* 模拟鼠标悬浮在button */
