@@ -11,13 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.scripting.executeScript({
                     target: { tabId },
                     function: function () {
-                        var index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数'];
-                        var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级'];
+                        var index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数', 'PvP'];
+                        var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级', 'PvP'];
                         var keywordEff = '效率达到';
                         var keywordAt = '门票';
-                        var typeNum = 13;
-                        var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], [4, 10], '', ''];
+                        var typeNum = 14;
+                        var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], [4, 10], '', '', ''];
                         // var level = [2, 4, 1, 3, 5];
                         var next = -1;
                         var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
@@ -66,22 +66,26 @@ document.addEventListener('DOMContentLoaded', function() {
                             const timeNow = new Date();
                             eqInfo[0] = '下一任务：' + (timeNow.getHours() + 1) + ':00';
                             // 计算距离机密的数量
-                            const currentYear = timeNow.getUTCFullYear();
-                            const currentMonth = timeNow.getUTCMonth();
-                            const startHour = new Date(Date.UTC(currentYear, currentMonth, 4, 0, 0, 0)); // 创建本月4号UTC 0点的Date对象
-                            const diffMs = timeNow - startHour;
+                            // const currentYear = timeNow.getUTCFullYear();
+                            // const currentMonth = timeNow.getUTCMonth();
+                            // const startHour = new Date(Date.UTC(currentYear, currentMonth, 4, 0, 0, 0)); // 创建本月4号UTC 0点的Date对象
+                            // const diffMs = timeNow - startHour;
                             var secret;
-                            if (diffMs > 0) {
-                                const hours = Math.floor(diffMs / (1000 * 60 * 60));
-                                secret = secCycle - (hours % secCycle) - 1;
+                            // if (diffMs > 0) {
+                            //     const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                            //     secret = secCycle - (hours % secCycle) - 1;
+                            // } else {
+                            //     secret = '未知';
+                            // }
+                            let firstId = questTable.querySelector("tbody > tr:nth-child(1)").id.match(/\d+$/)[0];
+                            if (secShift >= 0) { 
+                                secret = (secCycle - (parseInt((+firstId + 1) / 2) + secShift) % secCycle) % secCycle; 
                             } else {
-                                secret = '未知';
+                                secret = '未知'; 
                             }
-                            // let firstId = questTable.querySelector("tbody > tr:nth-child(1)").id.match(/\d+$/)[0];
                             // var toE = [];
                             var nextLevel = [];
                             var nextRange = [];
-                            // if (secShift) { secret = (secCycle - (parseInt((+firstId + 1) / 2) + secShift) % secCycle) % secCycle; } else { secret = '未知'; }
                             // if (next < 0) {
                             let firstLevel = questTable.querySelector('tbody > tr:nth-child(1) > td:nth-child(1)').textContent.match(/\d+/)[0];
                             if (firstLevel <= levelRange[0][1]) { 
@@ -233,11 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         var rawRank = [];
                         var rawRankTitle = ['任务id', '等级', '任务', '分类', '冠军', '亚军', '季军', '第四', '第五'];
                         // var rawRank2 = [['任务id', '等级', '任务', '分类', '冠军', '亚军', '季军', '第四', '第五']];
-                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数'];
-                        var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级'];
+                        var name = ['中级效率', '高级效率', '竞技场', '连胜', '盲扫', '无猜', '自定义', '金币', '宝石', '竞速', '初级局数', '中级局数', '高级局数', 'PvP'];
+                        var keyword = ['中级', '高级', '竞技场', '连胜', '盲扫', 'NG', '自定义', '金币', '获得', '用时', '初级', '中级', '高级', 'PvP'];
                         var keywordEff = '效率达到';
                         var keywordAt = '门票';
-                        var typeNum = 13;
+                        var typeNum = 14;
                         var t0 = 100;
                         var qti = 0; // 任务表索引
                         var qpi = 0; // 任务表翻页区索引
