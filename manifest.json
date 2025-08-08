@@ -1,7 +1,7 @@
 {  
     "manifest_version": 3,  
     "name": "Minesweeper Online Helper",  
-    "version": "3.11.5.5",  
+    "version": "3.11.5.6",  
     "description": "Minesweeper Online助手",  
     "permissions": ["activeTab", "scripting", "storage", "tabs", "alarms", "unlimitedStorage"],
     "action": {

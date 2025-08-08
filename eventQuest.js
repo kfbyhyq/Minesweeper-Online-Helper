@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         var next = -1;
                         var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
                         var eqInfo = ['下一任务：', '等级范围：', '可用任务列表：', '', '', '', '', '', '距离机密：', '', '近10个任务：', '', '', '', '', '', '', '', '', '', ''];
-                        var secShift = 9;
+                        var secShift = 13;
                         var secCycle = 19;
                         var questTable;
                         // 定位任务表
