@@ -945,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         var keywordEff = '效率达到';
                         var keywordAt = '门票';
                         var typeNum = 14;
-                        var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], [4, 10], '', '', ''];
+                        var restrict = ['', [12, 30], '', '', '', '', '', '', '', [4, 6], '', '', '', ''];
                         // var level = [2, 4, 1, 3, 5];
                         var next = -1;
                         var levelRange = [[4, 7], [8, 11], [12, 15], [16, 20], [20, 30]];
